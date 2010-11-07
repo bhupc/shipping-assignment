@@ -1,6 +1,6 @@
 CXXFLAGS = -Wall -g
 
-OBJECTS = Instance.o Segment.o Location.o
+OBJECTS = Instance.o Segment.o Location.o Engine.o
 
 default:	test1 example
 
@@ -15,5 +15,6 @@ clean:
 
 Instance.o: Instance.cpp Instance.h PtrInterface.h Ptr.h Engine.h 
 Segment.o: Segment.h Segment.cpp
-Location.o: Location.h Location.cpp Types.h Exceptions.h
+Location.o: Location.h Segment.h Location.cpp Types.h Exceptions.h
+Engine.o: Engine.h Engine.cpp
 test1.o: test1.cpp Instance.h PtrInterface.h Ptr.h

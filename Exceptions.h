@@ -3,7 +3,10 @@
 #include "Types.h"
 #include <exception>
 
+
 using namespace std;
+
+typedef string String;
 
 class Exception : public exception
 {

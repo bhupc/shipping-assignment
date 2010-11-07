@@ -7,32 +7,22 @@
 #include "Nominal.h"
 #include "Types.h"
 #include "Location.h"
+#include "Exceptions.h"
 
-class Location;
+using namespace Shipping;
+
 typedef Fwk::Ptr<Location> LocationPtr;
 
-class Mile : public Ordinal<Mile, unsigned int>
+namespace Shipping
 {
-  public:
-	  Mile(unsigned int val) : Ordinal<Mile, unsigned int>(val) {}
-};
 
-
-class Difficulty : public Ordinal<Difficulty, float>
-{
-  public:
-    Difficulty(float val) ;
-	private:
-
-};
-
-
-class Segment : public Fwk::PtrInterface<Segment>
-{
+    class Segment : public Fwk::PtrInterface<Segment>
+  {
 	  public:
 		  /* Just to hide details, we typedef the smart pointer. Both the const and non const versions */
 		  typedef Fwk::Ptr<Segment> Ptr;
-    typedef Fwk::Ptr<Segment const> PtrConst;
+      typedef Fwk::Ptr<Segment const> PtrConst;
+
 
 			/* The notifiee class for the Segment */
 
@@ -47,10 +37,6 @@ class Segment : public Fwk::PtrInterface<Segment>
 			    String name() const {return (notifier_ ? notifier_->name() : String()) ;}
 					Segment::PtrConst notifier() const {return notifier_;}
 					virtual void notifierIs(const Segment::PtrConst&);
-					void lrNextIs(NotifieeConst* _lrNext)
-					{
-					  lrNext_ = _lrNext;
-					}
 					static NotifieeConst::Ptr NotifieeConstIs()
 					{
 					  Ptr m = new NotifieeConst();
@@ -70,9 +56,8 @@ class Segment : public Fwk::PtrInterface<Segment>
 				  /* This is the reference to the notifier */
 				  Segment::PtrConst notifier_;
 					/* This is the next of the notifies in the notifiee  list */
-					NotifieeConst* lrNext_;
 					/* This is the protected constructor */
-					NotifieeConst() {lrNext_ = 0;}
+					NotifieeConst() {}
 
 			};
 
@@ -99,16 +84,7 @@ class Segment : public Fwk::PtrInterface<Segment>
 
 			};
 
-    
-		
 	  private:
-
-		  enum Mode
-			{
-			  truck_ = 0,
-				boat_ = 1,
-				plane_ = 2
-			};
       /* This is the global name of the Segment */
 			String name_;
 
@@ -127,14 +103,14 @@ class Segment : public Fwk::PtrInterface<Segment>
 			/* This is a smart pointer to the return segment of this segment. Making it a const for now */
 			Segment::PtrConst returnSegment_;
 
+      TransportType mode_;
 			/* This is the listof the notifiees to be notified on events */
 		  list<NotifieeConst> _notifiee;
 
 
 			public:
-        static inline Mode truck() {return truck_ ;}
-	      static inline Mode boat() { return boat_;}
-        static inline Mode plane() { return plane_ ;}
+        inline TransportType mode() const  { return mode_;}
+				inline void modeIs(TransportType _mode) {mode_ = _mode;}
 
         inline String  name() const {return name_; }
         LocationPtr location() const { return source_;}
@@ -142,9 +118,9 @@ class Segment : public Fwk::PtrInterface<Segment>
         Difficulty difficulty() const {return difficulty_;}
         bool expediteSupport() const {return expediteSupport_; }
         Segment::PtrConst returnSegment() const {return returnSegment_;}
-
-
-
+     public:
+		    Segment(const String& _name) : name_(_name) {}
 	};
 
+}
 #endif
