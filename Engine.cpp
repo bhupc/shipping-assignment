@@ -3,7 +3,7 @@
 
 using namespace Shipping;
 
-void Engine::NotifieeConst::notifierIs(const Engine::PtrConst& _notifier)
+void Engine::Notifiee::notifierIs(Engine::Ptr _notifier)
 {
   if(notifier_ == _notifier)
 	{
@@ -12,10 +12,12 @@ void Engine::NotifieeConst::notifierIs(const Engine::PtrConst& _notifier)
 
   notifier_ = _notifier;
 
-  //_notifier->newNotifiee(const_cast<Engine::NotifieeConst*>(this));	
+  notifier_->newNotifiee(this); 
+  //notifier_->newNotifiee(const_cast<Engine::NotifieeConst*>(this));	
+
 }
 
-void Engine::newNotifiee(const Engine::NotifieeConst* _notifiee)
+void Engine::newNotifiee(Engine::Notifiee* _notifiee)
 {
   notifiee_.push_back(_notifiee);
 }

@@ -17,27 +17,26 @@ namespace Shipping {
   
  class Engine : public Fwk::PtrInterface<Engine>
  {
+   public:
    typedef Fwk::Ptr<Engine> Ptr;
 	 typedef Fwk::Ptr<Engine const> PtrConst;
    
 	 public:
 
-	 class NotifieeConst : public Fwk::PtrInterface<NotifieeConst>
+	 
+	 class Notifiee: public Fwk::PtrInterface<Notifiee>
 	 {
-	   protected:
-		 Engine::PtrConst notifier_;
-		 NotifieeConst() {}
+	   typedef Fwk::Ptr<Notifiee> Ptr;
+		 protected:
+		 Engine::Ptr notifier_;
 
 		 public:
-
-		 typedef Fwk::Ptr<NotifieeConst> Ptr;
-		 typedef Fwk::Ptr<NotifieeConst const> PtrConst;
-     
-     Engine::PtrConst notifier() const { return notifier_; }
-     void notifierIs(const Engine::PtrConst& engine);
-		 static NotifieeConst::Ptr NotifieeConstIs()
+     Notifiee(){}
+     Engine::Ptr notifier() const { return notifier_; }
+     void notifierIs(Engine::Ptr engine);
+		 static Notifiee::Ptr NotifieeIs()
 		 {
-			 Ptr m = new NotifieeConst();
+			 Ptr m = new Notifiee();
 			 return m;
 		 }
 
@@ -52,30 +51,10 @@ namespace Shipping {
 
 	 };
 
-	 class Notifiee : public NotifieeConst
-	 {
-	   protected:
-		 Engine::PtrConst notifier_;
-		 Notifiee();
-	   public:
-		   typedef Fwk::Ptr<Notifiee> Ptr;
-			 typedef Fwk::Ptr<Notifiee const> PtrConst;
-
-			 Engine::Ptr notifier() const {return const_cast<Engine*>(NotifieeConst::notifier().ptr()); }
-
-			 static Notifiee::Ptr NotifieeIs()
-			 {
-			   Ptr m = new Notifiee();
-				 return m; 
-			 }
-			 
-	 };
-
-
-	void newNotifiee(const Engine::NotifieeConst*);
+	void newNotifiee(Engine::Notifiee*);
   protected:
 
-	vector<const Engine::NotifieeConst*> notifiee_;
+	vector<const Engine::Notifiee*> notifiee_;
 
 	/* Call this to add a new segment to this shipping engine */
 	Segment::Ptr SegmentNew(const String& name);

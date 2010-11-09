@@ -53,7 +53,7 @@ namespace Shipping
 
         inline String  name() const {return name_; }
         inline LocationPtr source() const {return source_;}
-				void sourceIs(Segment::Ptr, LocationPtr); 
+				void sourceIs(LocationPtr); 
 				Mile length() const {return length_;}
 				void lengthIs(Mile _length) { length_ = _length;}
         Difficulty difficulty() const {return difficulty_;}
