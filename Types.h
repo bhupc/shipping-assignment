@@ -33,7 +33,6 @@ class Mile : public Ordinal<Mile, double>
   class Difficulty : public Ordinal<Difficulty, double>
   {
   public:
-	  String string_;
 	  Difficulty(): Ordinal<Difficulty, double>(0.0) {string_ = "0.0"; }
     Difficulty(double val) throw (RangeException) : Ordinal<Difficulty, double>(val){
 		  if( (val < 1.0) ||  (val > 5.0) )
@@ -45,9 +44,11 @@ class Mile : public Ordinal<Mile, double>
 			sprintf(buf, "%.2f", val);
       string_.assign(buf);
 		}
+		String string() const {return string_;}
 		
 	private:
 
+	  String string_;
   };
 
 	class TransportType : public Nominal<TransportType, unsigned int>

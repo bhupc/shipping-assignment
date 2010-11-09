@@ -8,12 +8,13 @@
 namespace Shipping {
 
 using namespace std;
-
+using namespace Fwk;
 //
 // Rep layer classes
 //
 
 class ManagerImpl : public Instance::Manager {
+
 public:
     ManagerImpl();
 
@@ -25,12 +26,15 @@ public:
 
     // Manager method
     void instanceDel(const string& name);
-
+    
+		Ptr<Engine> engine() const { return engine_;}
 private:
     map<string,Ptr<Instance> > instance_;
 	Ptr<Instance> stats_;
 	Ptr<Instance> conn_;
 	Ptr<Instance> fleet_;
+  Ptr<Engine> engine_;
+
 };
 
 class LocationRep : public Instance {
@@ -49,7 +53,7 @@ public:
     void attributeIs(const string& name, const string& v);
 	// Has no attributes to write to !
 
-	Location::Ptr LocationEng(){return LocationEng_};
+	Location::Ptr LocationEng(){return LocationEng_ ;}
 
 protected:
     Ptr<ManagerImpl> manager_;
@@ -57,9 +61,9 @@ protected:
 	// Should I store segment Pointers ? Needed for attribute reading !
 	// When segment lists this as source it should update this vector 
 	// We can rather use only vector as mapping pointers can be had by instance ? 
-    Location loc = LocationInstance.getLocation(instance_name);
-	loc.segment(offset);
-	vector<string> segments_;
+ //   Location loc = LocationInstance.getLocation(instance_name);
+//	loc.segment(offset);
+//	vector<string> segments_;
 
     int segmentNumber(const string& name);
 };
@@ -72,7 +76,7 @@ public:
     {
 			// Should we keep the same names
 			// Do TypeIS
-			LocationEng_ = TerminalNew(name); 
+			LocationEng_ = manager_->engine()->TerminalNew(name); 
 			LocationEng_->typeIs(TransportType::truck());
 	}
 
@@ -91,7 +95,7 @@ public:
         LocationRep(name, manager)
     {
 		// Do Type IS
-        LocationEng_ = TerminalNew(name);
+        LocationEng_ = manager_->engine()->TerminalNew(name);
 		LocationEng_->typeIs(TransportType::plane());
     }
 };
@@ -102,7 +106,7 @@ public:
     BoatTerminalRep(const string& name, ManagerImpl *manager) :
         LocationRep(name, manager)
     {
-        LocationEng_ = Terminalnew(name);
+        LocationEng_ = manager_->engine()->TerminalNew(name);
 		LocationEng_->typeIs(TransportType::boat());
     }
 };
@@ -114,7 +118,7 @@ public:
         LocationRep(name, manager)
     {
         // Nothing else to do.
-		LocationEng_ = CustomerLocationNew(name);
+		LocationEng_ = manager_->engine()->CustomerLocationNew(name);
     }
 };
 
@@ -124,7 +128,7 @@ public:
     PortRep(const string& name, ManagerImpl *manager) :
         LocationRep(name, manager)
     {
-        LocationEng_ = PortNew(name);
+        LocationEng_ = manager_->engine()->PortNew(name);
     }
 
 };
@@ -134,7 +138,7 @@ public:
 class SegmentRep : public Instance {
 public:
 
-    SegmnentRep(const string& name, ManagerImpl* manager) :
+    SegmentRep(const string& name, ManagerImpl* manager) :
         Instance(name), manager_(manager)
     {
         // Nothing else to do.
@@ -143,7 +147,7 @@ public:
     // Instance method
     string attribute(const string& name);
 
-	Segment::Ptr SegmentEng(){return SegmentEng_};
+	Segment::Ptr SegmentEng(){return SegmentEng_;}
 
     // Instance method
     void attributeIs(const string& name, const string& v);
@@ -163,7 +167,7 @@ public:
         SegmentRep(name, manager)
     {
         // Nothing else to do.
-		SegmentEng_ = SegmentNew(name);
+		SegmentEng_ = manager_->engine()->SegmentNew(name);
 		SegmentEng_->modeIs(TransportType::truck());
     }
 };
@@ -174,7 +178,7 @@ public:
     BoatSegmentRep(const string& name, ManagerImpl *manager) :
         SegmentRep(name, manager)
     {
-		SegmentEng_ = SegmentNew(name);
+		SegmentEng_ = manager_->engine()->SegmentNew(name);
 		SegmentEng_->modeIs(TransportType::boat());
     }
 };
@@ -186,10 +190,13 @@ public:
         SegmentRep(name, manager)
     {
         // Nothing else to do.
-		SegmentEng_ = SegmentNew(name);
+		SegmentEng_ = manager_->engine()->SegmentNew(name);
 		SegmentEng_->modeIs(TransportType::boat());
     }
 };
+
+
+
 
 //---------------------------------
 // STATSrep CLASS
@@ -264,12 +271,16 @@ private:
 
 };
 
+
+
+
 //-------------------------------------------------------
 
 ManagerImpl::ManagerImpl() {
 	stats_ = NULL;
 	conn_ = NULL;
 	fleet_ = NULL;
+  engine_ = NULL;
 }
 
 // ---------------------------------------------------------
@@ -331,31 +342,36 @@ Ptr<Instance> ManagerImpl::instanceNew(const string& name, const string& type) {
 		if(!conn_)
 			return conn_;
 		else
+		{
 			Ptr<ConnRep> t = new ConnRep(name, this);
 			instance_[name] = t;
 			conn_ = t;
 			return t;
+		}	
 	}
 
 	if(type=="stats"){
 		if(!stats_)
 			return stats_;
 		else
+		{
 			Ptr<StatsRep> t = new StatsRep(name, this);
 			instance_[name] = t;
 			stats_ = t;
 			return t;
+		}	
 	}
 
 	if(type=="fleet"){
 		if(!fleet_)
 			return fleet_;
 		else
+		{
 			Ptr<FleetRep> t = new FleetRep(name, this);
 			instance_[name] = t;
 			fleet_ = t;
 			return t;
-
+    }
 	}
 
 	// Do also for CONN, STATS, FLEET
@@ -420,6 +436,8 @@ string SegmentRep::attribute(const string& name) {
 		return (SegmentEng_->difficulty()).string();
 	}
 
+	return "";
+
 }
 
 
@@ -443,25 +461,26 @@ void SegmentRep::attributeIs(const string& name, const string& v) {
 	if (name == "return segment"){
 		// Issue is Private
 		// Name-> RepLayerObject -> locationEng
-		 map<string,Ptr<Instance> >::const_iterator t = instance_.find(v);
-		 if(t != instance_.end()) {
-			SegmentEng_->returnSegmentIs(((*t).second)->SegmentEng());
-		}
+     Ptr<SegmentRep>res = Ptr<SegmentRep>(dynamic_cast<SegmentRep*>(manager_->instance(v).ptr()));
+		 if(res){
+				SegmentEng_->returnSegmentIs(res->SegmentEng());				
+		 }
+
 		return;
 	}
 
 	
 
 	if (name == "source"){
-		map<string,Ptr<Instance> >::const_iterator t = instance_.find(v);
-		 if(t != instance_.end()) {
-			SegmentEng_->returnSegmentIs(((*t).second)->LocationEng());
-		}
+		Ptr<LocationRep> src = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(v).ptr()));
+		if(src){
+			SegmentEng_->sourceIs(src->LocationEng());
+			}
 		return;
 	}
 
 	// Check Nominal Ordinal Types
-	double value = atof(v);
+	double value = atof(v.c_str());
 
 	if (name == "length"){
 		SegmentEng_->lengthIs(Mile(value));
@@ -487,7 +506,6 @@ int LocationRep::segmentNumber(const string& name) {
 }
 
 
-}
 
 /*
  * This is the entry point for your library.
@@ -496,6 +514,32 @@ int LocationRep::segmentNumber(const string& name) {
  * that object to interact with the middle layer (which will
  * in turn interact with the engine layer).
  */
+
+void StatsRep::attributeIs(const string& name,const string& v){
+}
+
+void ConnRep::attributeIs(const string& name,const string& v){
+}
+
+void FleetRep::attributeIs(const string& name, const string& v){
+}
+
+string StatsRep::attribute(const string& name){
+	return "";
+}
+
+string ConnRep::attribute(const string& name){
+	return "";
+}
+
+string FleetRep::attribute(const string& name){
+	return "";
+}
+
+}
+
 Ptr<Instance::Manager> shippingInstanceManager() {
     return new Shipping::ManagerImpl();
 }
+
+

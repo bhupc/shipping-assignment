@@ -56,7 +56,8 @@ namespace Shipping {
 
 	vector<const Engine::Notifiee*> notifiee_;
 
-	/* Call this to add a new segment to this shipping engine */
+  public:
+/* Call this to add a new segment to this shipping engine */
 	Segment::Ptr SegmentNew(const String& name);
 	/* invoke the following in order to created diff types of Locations in the shipping engine */
 	CustomerLocation::Ptr CustomerLocationNew(const String& name);

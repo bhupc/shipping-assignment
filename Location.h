@@ -38,15 +38,19 @@ namespace Shipping
 
       String name() const {return name_;}
 
-
+      virtual TransportType type() const { return type_;}
+			virtual void typeIs(TransportType _type) {type_ = TransportType::none();}
+		
+	 		virtual void segmentIs(unsigned int offset, SegmentPtrConst _segment) {}
       virtual void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException){}
+			
 			protected:
       /* This is the global name of this location */
 	    String name_;
-      vector<SegmentPtrConst> segment_;
-	 		virtual void segmentIs(unsigned int offset, SegmentPtrConst _segment) {}
+      TransportType type_;
+			vector<SegmentPtrConst> segment_;
 		  
-
+      
         
   };
 
@@ -63,7 +67,7 @@ namespace Shipping
 	    void segmentIs(unsigned int, SegmentPtrConst);
       void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException);
     public:
-	    CustomerLocation(const String& _name) { name_ = _name;}
+	    CustomerLocation(const String& _name) { name_ = _name; type_ = TransportType::none(); }
 
   };
 
@@ -79,7 +83,7 @@ namespace Shipping
 	    void segmentIs(unsigned int, SegmentPtrConst);
 	    void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException);
 		public:
-      Port(const String& _name) {name_= _name;}
+      Port(const String& _name) {name_= _name; type_ = TransportType::none();}
   };
 
   class Terminal : public Location
@@ -101,8 +105,6 @@ namespace Shipping
 	  public:
 	    Terminal(const String& _name) {name_ = _name; type_ = TransportType::none();}
     
-    private:
-		  TransportType type_;
 
   };
 
