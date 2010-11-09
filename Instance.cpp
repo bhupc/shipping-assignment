@@ -338,8 +338,8 @@ Ptr<Instance> ManagerImpl::instanceNew(const string& name, const string& type) {
 
 	// One thing for STATS, CON, FLEET is there can be only one instance, if there is an attempt to intialise other for same manager
 	// return the prev.
-	if(type=="conn"){
-		if(!conn_)
+	if(type=="Conn"){
+		if(conn_)
 			return conn_;
 		else
 		{
@@ -350,8 +350,8 @@ Ptr<Instance> ManagerImpl::instanceNew(const string& name, const string& type) {
 		}	
 	}
 
-	if(type=="stats"){
-		if(!stats_)
+	if(type=="Stats"){
+		if(stats_)
 			return stats_;
 		else
 		{
@@ -362,8 +362,8 @@ Ptr<Instance> ManagerImpl::instanceNew(const string& name, const string& type) {
 		}	
 	}
 
-	if(type=="fleet"){
-		if(!fleet_)
+	if(type=="Fleet"){
+		if(fleet_)
 			return fleet_;
 		else
 		{
@@ -397,7 +397,7 @@ string LocationRep::attribute(const string& name) {
 		// Now give the ith Segment to user
 		// if(i < segments_.size() && i>0)
 		//	return segments_[i];
-		return (LocationEng_->segment(i))->name();
+		return (LocationEng_->segment(i-1))->name();
     }
     return "";
 }

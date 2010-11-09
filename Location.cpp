@@ -23,8 +23,6 @@ namespace Shipping
 
 	void CustomerLocation::onSegmentSourceChanged(SegmentPtrConst _source) throw (IllegalSegmentException)
 	{
-    /* It is an error to add a new segment to a customer location */ 	
-    throw IllegalSegmentException("");
 	}
 
 
