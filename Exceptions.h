@@ -33,6 +33,12 @@ class RangeException : public Exception
   RangeException(String _what) : Exception(_what){}
 };
 
+class IllegalSegmentException : public Exception
+{
+  public:
+  IllegalSegmentException(String _what) : Exception(_what){}
+};
+
 
 
 
