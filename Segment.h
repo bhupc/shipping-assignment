@@ -66,7 +66,7 @@ namespace Shipping
 			bool expediteSupport_;
 
 			/* This is a smart pointer to the return segment of this segment. Making it a const for now */
-			Segment::PtrConst returnSegment_;
+			Segment::Ptr returnSegment_;
 
       TransportType mode_;
 			/* This is the listof the notifiees to be notified on events */
@@ -108,8 +108,8 @@ namespace Shipping
 					 }
 				}
 
-        Segment::PtrConst returnSegment() const {return returnSegment_;}
-        void returnSegmentIs(Segment::PtrConst _segment) { returnSegment_ = _segment;}
+        Segment::Ptr returnSegment() const {return returnSegment_;}
+				void returnSegmentIs(Segment::Ptr);
 				void notifieeIs(Notifiee* const _notifiee) { notifiee_.push_back(_notifiee);}
      public:
 		    Segment(const String& _name) : name_(_name) {

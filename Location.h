@@ -43,7 +43,23 @@ namespace Shipping
 			virtual void typeIs(TransportType _type) {type_ = TransportType::none();}
       		
 	 		virtual void segmentIs(unsigned int offset, SegmentPtrConst _segment) {}
-      virtual void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException){}
+      virtual void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException){
+			   
+			}
+			virtual void onSegmentSourceDel(SegmentPtrConst _segment)
+			{
+
+			  // Find the segment and delete it
+			  vector<SegmentPtrConst> :: iterator it = segment_.begin();
+				for(; it != segment_.end(); it++)
+				{
+				  if(_segment == (*it)) 
+					{
+	           segment_.erase(it);
+						 return;
+					}
+				}
+			}
 			
 			protected:
       /* This is the global name of this location */
