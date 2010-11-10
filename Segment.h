@@ -71,7 +71,8 @@ namespace Shipping
       TransportType mode_;
 			/* This is the listof the notifiees to be notified on events */
       vector<Segment::Notifiee*> notifiee_;
-
+      
+			
 			public:
         inline TransportType mode() const  { return mode_;}
 
@@ -110,6 +111,7 @@ namespace Shipping
 
         Segment::Ptr returnSegment() const {return returnSegment_;}
 				void returnSegmentIs(Segment::Ptr);
+				void onReturnSegmentChange(Segment::Ptr);
 				void notifieeIs(Notifiee* const _notifiee) { notifiee_.push_back(_notifiee);}
      public:
 		    Segment(const String& _name) : name_(_name) {
