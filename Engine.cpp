@@ -46,5 +46,8 @@ Terminal::Ptr Engine::TerminalNew(const String& name)
 	return m;
 }
 
-
-
+Fleet::Ptr Engine::FleetNew(const String& name)
+{
+  Fleet::Ptr m = Fleet::Ptr(new Fleet(name));
+        return m;
+}

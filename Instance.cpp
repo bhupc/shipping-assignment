@@ -232,12 +232,13 @@ public:
         Instance(name), manager_(manager)
     {
     	
-	fleetEng_ = manager_->engine()->FleetNew();
+	FleetEng_ = manager_->engine()->FleetNew(name);
     }
 
     // Instance method
     string attribute(const string& name);
 
+    Fleet::Ptr fleetEng(){return FleetEng_;}
     // Instance method
     void attributeIs(const string& name, const string& v);
 	// We are in the instance
@@ -245,7 +246,7 @@ public:
 
 protected:
     	Ptr<ManagerImpl> manager_;
-	Ptr<Fleet> fleetEng_;
+	Fleet::Ptr FleetEng_;
 };
 
 // -------------------------------------------------------
@@ -530,7 +531,7 @@ int LocationRep::segmentNumber(const string& name) {
     if (name.substr(0, segmentStrlen) == segmentStr) {
         const char* t = name.c_str() + segmentStrlen;
         return atoi(t);
-    }
+	}
     return 0;
 }
 
@@ -553,7 +554,37 @@ void ConnRep::attributeIs(const string& name,const string& v){
 }
 
 void FleetRep::attributeIs(const string& name, const string& v){
+	double value = atof(v.c_str());
 
+	if(name=="Boat, speed"){
+		FleetEng_->speedIs(0,MPH(value));
+	}
+	if(name=="Plane, speed"){
+		FleetEng_->speedIs(1,MPH(value));
+	}
+	if(name=="Truck, speed"){
+		FleetEng_->speedIs(2,MPH(value));
+	}
+
+	if(name=="Boat, capacity"){
+		FleetEng_->capacityIs(0,Capacity(value));
+	}
+	if(name=="Plane, capacity"){
+		FleetEng_->capacityIs(1,Capacity(value));
+	}
+	if(name=="Truck, capacity"){
+		FleetEng_->capacityIs(2,Capacity(value));
+	}
+
+	if(name=="Boat, cost"){
+		FleetEng_->costIs(0,Cost(value));
+	}
+	if(name=="Plane, cost"){
+		FleetEng_->costIs(1,Cost(value));
+	}
+	if(name=="Truck, cost"){
+		FleetEng_->costIs(2,Cost(value));
+	}
 }
 
 string StatsRep::attribute(const string& type){
@@ -595,6 +626,36 @@ string ConnRep::attribute(const string& name){
 }
 
 string FleetRep::attribute(const string& name){
+	if(name=="Boat, speed"){
+		return FleetEng_->speed(0).string();
+	}
+	if(name=="Plane, speed"){
+		return FleetEng_->speed(1).string();
+	}
+	if(name=="Truck, speed"){
+		return FleetEng_->speed(2).string();
+	}
+
+	if(name=="Boat, capacity"){
+		return FleetEng_->capacity(0).string();
+	}
+	if(name=="Plane, capacity"){
+		return FleetEng_->capacity(1).string();
+	}
+	if(name=="Truck, capacity"){
+		return FleetEng_->capacity(2).string();
+	}
+
+	if(name=="Boat, cost"){
+		return	FleetEng_->cost(0).string();
+	}
+	if(name=="Plane, cost"){
+		return FleetEng_->cost(1).string();
+	}
+	if(name=="Truck, cost"){
+		return FleetEng_->cost(2).string();
+	}
+	cerr << "Try to read non-existent attribute, Ignored "<< endl;
 	return "";
 }
 

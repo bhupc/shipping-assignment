@@ -64,7 +64,7 @@ namespace Shipping {
 	CustomerLocation::Ptr CustomerLocationNew(const String& name);
 	Port::Ptr PortNew(const String&);
 	Terminal::Ptr TerminalNew(const String&);
-  Fleet::Ptr FleetNew(const String&); 
+  	Fleet::Ptr FleetNew(const String&); 
  };
   
 

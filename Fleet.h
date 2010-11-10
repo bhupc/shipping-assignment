@@ -29,8 +29,9 @@ namespace Shipping
 
     public:
 
-		Fleet()
+		Fleet(const String& _name)
 		{
+		name_ = _name;
 		  speed_[0] = MPH(50); speed_[1] = MPH(500); speed_[2] = MPH(20);
       capacity_[0] = Capacity(100); capacity_[1] = Capacity(1000); capacity_[2] = Capacity(20);
       cost_[0] = Cost(2); cost_[1] = Cost(5); cost_[2] = Cost(1);
@@ -50,7 +51,23 @@ namespace Shipping
 		  capacity_[offset] = _capacity;
 		}
 
-	};
+		 Cost cost(uint32_t offset) { 
+		  return cost_[offset];   
+		}
+		
+		MPH speed(uint32_t offset)
+		{
+		  return speed_[offset];
+		}
+
+		Capacity capacity(uint32_t offset)
+		{
+		  return capacity_[offset];
+		}
+protected:
+	String name_;
+
+};
 }
 
 #endif
