@@ -1,6 +1,6 @@
 #include <vector>
 #include "Engine.h"
-
+#include "Stats.h"
 
 using namespace Shipping;
 
@@ -78,6 +78,20 @@ BoatTerminal::Ptr Engine::BoatTerminalNew(const String& name)
 	return m;
 }
 
+Fleet::Ptr Engine::FleetNew(const String& name)
+{
+  Fleet::Ptr m = Fleet::Ptr(new Fleet(name));
+        return m;
+}
+
+Stats::Ptr Engine::StatsNew(const String& name)
+{
+  Fwk::Ptr<Stats> m = Fwk::Ptr<Stats>(new Stats(name));
+        return m;
+}
+
+
+
 PlaneTerminal::Ptr Engine::PlaneTerminalNew(const String& name)
 {
   PlaneTerminal::Ptr m = PlaneTerminal::Ptr(new PlaneTerminal(name));
@@ -104,7 +118,6 @@ TruckTerminal::Ptr Engine::TruckTerminalNew(const String& name)
 
 	return m;
 }
-
 
 
 

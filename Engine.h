@@ -14,6 +14,7 @@
 using namespace std;
 namespace Shipping {
 
+	class Stats;
 // Create your rep/engine interface here.
   
  class Engine : public Fwk::PtrInterface<Engine>
@@ -24,8 +25,11 @@ namespace Shipping {
    
 	 public:
 
-	 
-	 class Notifiee: public Fwk::PtrInterface<Notifiee>
+   static Fwk::Ptr<Engine> EngineIs()
+	 {
+	   return Fwk::Ptr<Engine>(new Engine());
+	 }
+	 class Notifiee: virtual public Fwk::PtrInterface<Notifiee>
 	 {
 	   typedef Fwk::Ptr<Notifiee> NPtr;
 		 protected:
@@ -33,6 +37,7 @@ namespace Shipping {
 
 		 public:
      Notifiee(){}
+		 ~Notifiee(){}
      Engine::Ptr notifier() const { return notifier_; }
      void notifierIs(Engine::Ptr engine);
 		 static Notifiee::NPtr NotifieeIs()
@@ -40,7 +45,6 @@ namespace Shipping {
 			 NPtr m = new Notifiee();
 			 return m;
 		 }
-
 
 		 /*Events relevant here */
 
@@ -55,8 +59,8 @@ namespace Shipping {
 		 virtual void onPortNew(Port::Ptr){}
 		 virtual void onPortDel(Port::Ptr){}
 
-     virtual void onCustomerLocationNew(CustomerLocation::Ptr);
-     virtual void onCustomerLocationDel(CustomerLocation::Ptr);
+     virtual void onCustomerLocationNew(CustomerLocation::Ptr) {}
+     virtual void onCustomerLocationDel(CustomerLocation::Ptr) {}
 		 
 		 virtual void onSegmentNew(Segment::Ptr){}
 		 virtual void onSegmentDel(Segment::Ptr){}
@@ -66,18 +70,20 @@ namespace Shipping {
 	void newNotifiee(Engine::Notifiee*);
   protected:
 
-	vector<const Engine::Notifiee*> notifiee_;
+	vector<Engine::Notifiee*> notifiee_;
 
+	Engine(){}
   public:
 /* Call this to add a new segment to this shipping engine */
 	Segment::Ptr SegmentNew(const String& name);
 	/* invoke the following in order to created diff types of Locations in the shipping engine */
 	CustomerLocation::Ptr CustomerLocationNew(const String& name);
 	Port::Ptr PortNew(const String&);
+  	Fleet::Ptr FleetNew(const String&); 
 	TruckTerminal::Ptr TruckTerminalNew(const String&);
 	BoatTerminal::Ptr BoatTerminalNew(const String&);
 	PlaneTerminal::Ptr PlaneTerminalNew(const String&);
-  Fleet::Ptr FleetNew(const String&); 
+	Fwk::Ptr<Stats> StatsNew(const String&);
  };
   
 

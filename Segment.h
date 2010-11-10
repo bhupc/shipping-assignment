@@ -2,6 +2,7 @@
 #define __SEGMENT_H__
 
 #include <list>
+#include <vector>
 #include "PtrInterface.h"
 #include "Ptr.h"
 #include "Nominal.h"
@@ -22,7 +23,7 @@ namespace Shipping
 		  typedef Fwk::Ptr<Segment> Ptr;
       typedef Fwk::Ptr<Segment const> PtrConst;
 
-      class Notifiee: public Fwk::PtrInterface<Notifiee>
+      class Notifiee: virtual public Fwk::PtrInterface<Notifiee>
 	    {
 	      typedef Fwk::Ptr<Notifiee> NPtr;
 		    
@@ -68,7 +69,7 @@ namespace Shipping
 
       TransportType mode_;
 			/* This is the listof the notifiees to be notified on events */
-      vector<Segment::Notifiee* const> notifiee_;
+      vector<Segment::Notifiee*> notifiee_;
 
 			public:
         inline TransportType mode() const  { return mode_;}

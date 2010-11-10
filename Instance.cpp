@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include "Instance.h"
+#include "Stats.h"
 #include "Engine.h"
 
 namespace Shipping {
@@ -76,8 +77,8 @@ public:
     {
 			// Should we keep the same names
 			// Do TypeIS
-			LocationEng_ = manager_->engine()->TerminalNew(name); 
-			LocationEng_->typeIs(TransportType::truck());
+			LocationEng_ = manager_->engine()->TruckTerminalNew(name); 
+	//		LocationEng_->typeIs(TransportType::truck());
 	}
 
 };
@@ -95,8 +96,8 @@ public:
         LocationRep(name, manager)
     {
 		// Do Type IS
-        LocationEng_ = manager_->engine()->TerminalNew(name);
-		LocationEng_->typeIs(TransportType::plane());
+        LocationEng_ = manager_->engine()->PlaneTerminalNew(name);
+	//	LocationEng_->typeIs(TransportType::plane());
     }
 };
 
@@ -106,8 +107,8 @@ public:
     BoatTerminalRep(const string& name, ManagerImpl *manager) :
         LocationRep(name, manager)
     {
-        LocationEng_ = manager_->engine()->TerminalNew(name);
-		LocationEng_->typeIs(TransportType::boat());
+        LocationEng_ = manager_->engine()->BoatTerminalNew(name);
+		//LocationEng_->typeIs(TransportType::boat());
     }
 };
 
@@ -206,7 +207,7 @@ public:
     StatsRep(const string& name, ManagerImpl* manager) :
         Instance(name), manager_(manager)
     {
-        // Nothing else to do.
+       	StatsEng_ = manager_->engine()->StatsNew(name);
     }
 
     // Instance method
@@ -220,7 +221,8 @@ public:
 
 private:
     Ptr<ManagerImpl> manager_;
-
+		
+		Fwk::Ptr<Stats> StatsEng_;
 };
 
 // ------------------------------------------
@@ -231,20 +233,22 @@ public:
     FleetRep(const string& name, ManagerImpl* manager) :
         Instance(name), manager_(manager)
     {
-        // Nothing else to do.
+    	
+	FleetEng_ = manager_->engine()->FleetNew(name);
     }
 
     // Instance method
     string attribute(const string& name);
 
+    Fleet::Ptr fleetEng(){return FleetEng_;}
     // Instance method
     void attributeIs(const string& name, const string& v);
 	// We are in the instance
 	
 
-private:
-    Ptr<ManagerImpl> manager_;
-
+protected:
+    	Ptr<ManagerImpl> manager_;
+	Fleet::Ptr FleetEng_;
 };
 
 // -------------------------------------------------------
@@ -268,7 +272,7 @@ public:
 
 private:
     Ptr<ManagerImpl> manager_;
-
+	
 };
 
 
@@ -280,12 +284,18 @@ ManagerImpl::ManagerImpl() {
 	stats_ = NULL;
 	conn_ = NULL;
 	fleet_ = NULL;
-  engine_ = NULL;
+  //engine_ = NULL;
+	engine_ = Engine::EngineIs(); 
 }
 
 // ---------------------------------------------------------
 
 Ptr<Instance> ManagerImpl::instanceNew(const string& name, const string& type) {
+
+	//If this name already exist then return NULL
+	if(instance_.count(name)>0){
+		return NULL;	
+	}
 	//  This will have provision for every new instance possible
     if (type == "Truck terminal") {
         Ptr<TruckTerminalRep> t = new TruckTerminalRep(name, this);
@@ -399,6 +409,8 @@ string LocationRep::attribute(const string& name) {
 		//	return segments_[i];
 		return (LocationEng_->segment(i-1))->name();
     }
+
+    cerr << "Tried to Read Non-Existent Attribute";
     return "";
 }
 
@@ -435,7 +447,8 @@ string SegmentRep::attribute(const string& name) {
 	if (name == "difficulty"){
 		return (SegmentEng_->difficulty()).string();
 	}
-
+	
+	cerr << "Tried to Read non-existent attribute";
 	return "";
 
 }
@@ -456,14 +469,18 @@ void SegmentRep::attributeIs(const string& name, const string& v) {
 			SegmentEng_->expediteSupportIs(false);
 			return;
 		}
+		cerr << "Invalid attribute value for expedite support"<<endl;
 	}
 
 	if (name == "return segment"){
 		// Issue is Private
-		// Name-> RepLayerObject -> locationEng
+		// ** EMPTY STRING ??
      Ptr<SegmentRep>res = Ptr<SegmentRep>(dynamic_cast<SegmentRep*>(manager_->instance(v).ptr()));
 		 if(res){
 				SegmentEng_->returnSegmentIs(res->SegmentEng());				
+		 }
+		 else{
+			cerr << "No such Segment Found, Ignored" <<endl;
 		 }
 
 		return;
@@ -472,10 +489,14 @@ void SegmentRep::attributeIs(const string& name, const string& v) {
 	
 
 	if (name == "source"){
+		// ** EMPTY STRING ??
 		Ptr<LocationRep> src = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(v).ptr()));
 		if(src){
 			SegmentEng_->sourceIs(src->LocationEng());
-			}
+		}
+		else{
+			cerr << "No such Location exists, Ignored" << endl;
+		}
 		return;
 	}
 
@@ -483,14 +504,26 @@ void SegmentRep::attributeIs(const string& name, const string& v) {
 	double value = atof(v.c_str());
 
 	if (name == "length"){
-		SegmentEng_->lengthIs(Mile(value));
+		try{
+			SegmentEng_->lengthIs(Mile(value));
+		}
+		catch(...){
+			cerr << "Tried to set illegal value, ignored" << endl;
+		}
 		return;
 	}
 
 	if (name == "difficulty"){
+	try{
 		SegmentEng_->difficultyIs(Difficulty(value));
+		}
+	catch(...){
+		cerr << "Tried to set illegal value, ignored" << endl;
+	}
 		return;
 	}
+
+	cerr << "Tried to set Non Existent Attribute, Ignored" << endl;
 
 }
 
@@ -501,7 +534,7 @@ int LocationRep::segmentNumber(const string& name) {
     if (name.substr(0, segmentStrlen) == segmentStr) {
         const char* t = name.c_str() + segmentStrlen;
         return atoi(t);
-    }
+	}
     return 0;
 }
 
@@ -516,15 +549,79 @@ int LocationRep::segmentNumber(const string& name) {
  */
 
 void StatsRep::attributeIs(const string& name,const string& v){
+	//NOTHING TO BE DONE
 }
 
 void ConnRep::attributeIs(const string& name,const string& v){
+	// NOTHING TO BE DONE
 }
 
 void FleetRep::attributeIs(const string& name, const string& v){
+	double value = atof(v.c_str());
+
+	if(name=="Boat, speed"){
+		FleetEng_->speedIs(0,MPH(value));
+	}
+	if(name=="Plane, speed"){
+		FleetEng_->speedIs(1,MPH(value));
+	}
+	if(name=="Truck, speed"){
+		FleetEng_->speedIs(2,MPH(value));
+	}
+
+	if(name=="Boat, capacity"){
+		FleetEng_->capacityIs(0,Capacity(value));
+	}
+	if(name=="Plane, capacity"){
+		FleetEng_->capacityIs(1,Capacity(value));
+	}
+	if(name=="Truck, capacity"){
+		FleetEng_->capacityIs(2,Capacity(value));
+	}
+
+	if(name=="Boat, cost"){
+		FleetEng_->costIs(0,Cost(value));
+	}
+	if(name=="Plane, cost"){
+		FleetEng_->costIs(1,Cost(value));
+	}
+	if(name=="Truck, cost"){
+		FleetEng_->costIs(2,Cost(value));
+	}
 }
 
-string StatsRep::attribute(const string& name){
+string StatsRep::attribute(const string& type){
+	 if (type == "Truck terminal") {
+	 		//return String(StatsEng_->truckTerminalCount());
+	 }
+
+	if (type == "Plane terminal") {
+    }
+
+	if (type == "Boat terminal") {
+    }
+
+
+	if (type == "Customer") {
+    }
+
+	if (type == "Port") {
+    }
+
+	if (type == "Truck segment") {
+    }
+
+	if (type == "Boat segment") {
+    }
+
+	if (type == "Plane segment") {
+    }
+
+	if(type=="expedite percentage"){
+
+	}
+
+	cerr << "Invalid Stats Query" << endl;
 	return "";
 }
 
@@ -533,6 +630,36 @@ string ConnRep::attribute(const string& name){
 }
 
 string FleetRep::attribute(const string& name){
+	if(name=="Boat, speed"){
+		return FleetEng_->speed(0).string();
+	}
+	if(name=="Plane, speed"){
+		return FleetEng_->speed(1).string();
+	}
+	if(name=="Truck, speed"){
+		return FleetEng_->speed(2).string();
+	}
+
+	if(name=="Boat, capacity"){
+		return FleetEng_->capacity(0).string();
+	}
+	if(name=="Plane, capacity"){
+		return FleetEng_->capacity(1).string();
+	}
+	if(name=="Truck, capacity"){
+		return FleetEng_->capacity(2).string();
+	}
+
+	if(name=="Boat, cost"){
+		return	FleetEng_->cost(0).string();
+	}
+	if(name=="Plane, cost"){
+		return FleetEng_->cost(1).string();
+	}
+	if(name=="Truck, cost"){
+		return FleetEng_->cost(2).string();
+	}
+	cerr << "Try to read non-existent attribute, Ignored "<< endl;
 	return "";
 }
 
@@ -541,5 +668,3 @@ string FleetRep::attribute(const string& name){
 Ptr<Instance::Manager> shippingInstanceManager() {
     return new Shipping::ManagerImpl();
 }
-
-

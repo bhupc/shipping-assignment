@@ -19,7 +19,7 @@ namespace Shipping
   typedef Fwk::Ptr<Segment const> SegmentPtrConst;
 
 
-  class Location : public Fwk::PtrInterface<Location>
+  class Location : virtual public Fwk::PtrInterface<Location>
   {
     /* Declaring Engine as friend so as to invoke the private constructors*/
 

@@ -39,8 +39,5 @@ class IllegalSegmentException : public Exception
   IllegalSegmentException(String _what) : Exception(_what){}
 };
 
-
-
-
 #endif
 
