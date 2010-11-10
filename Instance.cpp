@@ -592,7 +592,6 @@ void FleetRep::attributeIs(const string& name, const string& v){
 
 string StatsRep::attribute(const string& type){
 	 if (type == "Truck terminal") {
-	 		//return String(StatsEng_->truckTerminalCount());
 	 }
 
 	if (type == "Plane terminal") {
