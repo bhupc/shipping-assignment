@@ -36,17 +36,17 @@ int main(int argc, char *argv[]) {
 
     b->attributeIs("source", "terminal1");
     c->attributeIs("source", "terminal1");
-  //  d->attributeIs("return segment", "terminal1");
+    d->attributeIs("return segment", "seg1");
 
-    cout << a->attribute("segment1") << endl;
-    cout << a->attribute("segment2") << endl;
-	cout << a->attribute("segment3") << endl;
+//    cout << a->attribute("segment1") << endl;
+ //   cout << a->attribute("segment2") << endl;
+	cout << b->attribute("return segment") << endl;
 	
     cout << "Done!" << endl;
 	cerr << "Now deleting the segment 2 from location" << endl;
 
-	c->attributeIs("source", "");
-	cout << a->attribute("segment5") << endl;
+	b->attributeIs("return segment", "");
+	cout << b->attribute("return segment") << endl;
 
     return 0;
 }
