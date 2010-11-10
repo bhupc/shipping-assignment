@@ -638,7 +638,7 @@ string StatsRep::attribute(const string& type){
 		
 		cerr << "** Segment Count is - "<<StatsEng_->segmentCount() << endl;
 		if(StatsEng_->segmentCount() >0){
-		out << (StatsEng_->expeditedSegmentCount()/StatsEng_->segmentCount()*100);
+		out << ((double)StatsEng_->expeditedSegmentCount()/(double)StatsEng_->segmentCount()*100.0);
 		}
 		else{
 			out << 0;

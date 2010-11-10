@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
     boatSeg1->attributeIs("expedite support", "yes");
     boatSeg2->attributeIs("expedite support", "yes");
     truckSeg1->attributeIs("expedite support", "yes");
-    truckSeg2->attributeIs("expedite support", "yes");
+	 truckSeg2->attributeIs("expedite support", "no");
 
     // -- Connectivity queries
     Ptr<Instance> conn = manager->instanceNew("myConn", "Conn");

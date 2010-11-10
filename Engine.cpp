@@ -4,10 +4,10 @@
 
 using namespace Shipping;
 
-void Engine::Engine()
+ Engine::Engine()
 {
   stats_ = Fwk::Ptr<Stats>(new Stats("stats"));  
-  this->notifieeIs(stats_);
+  this->notifieeIs(stats_.ptr());
 
 }
 
@@ -33,7 +33,7 @@ void Engine::newNotifiee(Engine::Notifiee* _notifiee)
 Segment::Ptr Engine::SegmentNew(const String& name)
 {
   Segment::Ptr m = Segment::Ptr(new Segment(name));
-  m->notifieeIs(stats_); 
+  m->notifieeIs(stats_.ptr()); 
   vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
 	for(; it != notifiee_.end(); it++)
 	{
