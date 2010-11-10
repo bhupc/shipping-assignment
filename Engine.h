@@ -27,7 +27,7 @@ namespace Shipping {
 	 
 	 class Notifiee: public Fwk::PtrInterface<Notifiee>
 	 {
-	   typedef Fwk::Ptr<Notifiee> Ptr;
+	   typedef Fwk::Ptr<Notifiee> NPtr;
 		 protected:
 		 Engine::Ptr notifier_;
 
@@ -35,18 +35,29 @@ namespace Shipping {
      Notifiee(){}
      Engine::Ptr notifier() const { return notifier_; }
      void notifierIs(Engine::Ptr engine);
-		 static Notifiee::Ptr NotifieeIs()
+		 static Notifiee::NPtr NotifieeIs()
 		 {
-			 Ptr m = new Notifiee();
+			 NPtr m = new Notifiee();
 			 return m;
 		 }
 
 
-		 /* Events relevant here */
+		 /*Events relevant here */
 
-		 virtual void onLocationNew(Location::Ptr){}
-		 virtual void onLocationDel(Location::Ptr){}
+		 virtual void onBoatTerminalNew(BoatTerminal::Ptr){}
+		 virtual void onPlaneTerminalNew(PlaneTerminal::Ptr){}
+		 virtual void onTruckTerminalNew(TruckTerminal::Ptr){}
+       
+     virtual void onBoatTerminalDel(BoatTerminal::Ptr){}
+		 virtual void onPlaneTerminalDel(PlaneTerminal::Ptr){}
+		 virtual void onTruckTerminalDel(TruckTerminal::Ptr){}
+     
+		 virtual void onPortNew(Port::Ptr){}
+		 virtual void onPortDel(Port::Ptr){}
 
+     virtual void onCustomerLocationNew(CustomerLocation::Ptr);
+     virtual void onCustomerLocationDel(CustomerLocation::Ptr);
+		 
 		 virtual void onSegmentNew(Segment::Ptr){}
 		 virtual void onSegmentDel(Segment::Ptr){}
 
@@ -63,7 +74,9 @@ namespace Shipping {
 	/* invoke the following in order to created diff types of Locations in the shipping engine */
 	CustomerLocation::Ptr CustomerLocationNew(const String& name);
 	Port::Ptr PortNew(const String&);
-	Terminal::Ptr TerminalNew(const String&);
+	TruckTerminal::Ptr TruckTerminalNew(const String&);
+	BoatTerminal::Ptr BoatTerminalNew(const String&);
+	PlaneTerminal::Ptr PlaneTerminalNew(const String&);
   Fleet::Ptr FleetNew(const String&); 
  };
   

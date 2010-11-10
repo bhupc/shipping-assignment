@@ -26,25 +26,86 @@ void Engine::newNotifiee(Engine::Notifiee* _notifiee)
 Segment::Ptr Engine::SegmentNew(const String& name)
 {
   Segment::Ptr m = Segment::Ptr(new Segment(name));
+ 
+  vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
+	for(; it != notifiee_.end(); it++)
+	{
+	  (*it)->onSegmentNew(m);
+	}
+
 	return m;
 }
 
 CustomerLocation::Ptr Engine::CustomerLocationNew(const String& name)
 {
   CustomerLocation::Ptr m = CustomerLocation::Ptr(new CustomerLocation(name));
+	
+	vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
+	for(; it != notifiee_.end(); it++)
+	{
+	  (*it)->onCustomerLocationNew(m);
+	}
+
+	
 	return m;
 }
 
 Port::Ptr Engine::PortNew(const String& name)
 {
   Port::Ptr m = Port::Ptr(new Port(name));
+  
+	vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
+	for(; it != notifiee_.end(); it++)
+	{
+	  (*it)->onPortNew(m);
+	}
+
+
 	return m;
 }
-Terminal::Ptr Engine::TerminalNew(const String& name)
+
+BoatTerminal::Ptr Engine::BoatTerminalNew(const String& name)
 {
-  Terminal::Ptr m = Terminal::Ptr(new Terminal(name));
+  BoatTerminal::Ptr m = BoatTerminal::Ptr(new BoatTerminal(name));
+  
+	vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
+	for(; it != notifiee_.end(); it++)
+	{
+	  (*it)->onBoatTerminalNew(m);
+	}
+
+ 
 	return m;
 }
+
+PlaneTerminal::Ptr Engine::PlaneTerminalNew(const String& name)
+{
+  PlaneTerminal::Ptr m = PlaneTerminal::Ptr(new PlaneTerminal(name));
+	
+	vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
+	for(; it != notifiee_.end(); it++)
+	{
+	  (*it)->onPlaneTerminalNew(m);
+	}
+	return m;
+}
+
+
+TruckTerminal::Ptr Engine::TruckTerminalNew(const String& name)
+{
+  TruckTerminal::Ptr m = TruckTerminal::Ptr(new TruckTerminal(name));
+ 	
+	vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
+	for(; it != notifiee_.end(); it++)
+	{
+	  (*it)->onTruckTerminalNew(m);
+	}
+
+
+	return m;
+}
+
+
 
 
 

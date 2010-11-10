@@ -22,6 +22,29 @@ namespace Shipping
 		  typedef Fwk::Ptr<Segment> Ptr;
       typedef Fwk::Ptr<Segment const> PtrConst;
 
+      class Notifiee: public Fwk::PtrInterface<Notifiee>
+	    {
+	      typedef Fwk::Ptr<Notifiee> NPtr;
+		    
+				protected:
+		    Segment::Ptr notifier_;
+
+		    public:
+        Notifiee(){}
+        Segment::Ptr notifier() const { return notifier_; }
+        void notifierIs(Segment::Ptr engine);
+		    static Notifiee::NPtr NotifieeIs()
+		    {
+			    NPtr m = new Notifiee();
+			    return m;
+		    }
+
+
+		     /*Events relevant here */
+         virtual void onSegmentExpeditedIs(Segment::Ptr _segment, bool _expedited) {}
+
+		 	 };
+
 			/* The notifiee class for the Segment */
 
 			  private:
@@ -45,7 +68,7 @@ namespace Shipping
 
       TransportType mode_;
 			/* This is the listof the notifiees to be notified on events */
-
+      vector<Segment::Notifiee* const> notifiee_;
 
 			public:
         inline TransportType mode() const  { return mode_;}
@@ -59,10 +82,22 @@ namespace Shipping
         Difficulty difficulty() const {return difficulty_;}
 				void difficultyIs(Difficulty _difficulty) { difficulty_ = _difficulty;}
         bool expediteSupport() const {return expediteSupport_; }
-				void expediteSupportIs(bool _expediteSupport) { expediteSupport_ = _expediteSupport;}
+				
+				void expediteSupportIs(bool _expediteSupport) { 
+				   if(_expediteSupport != expediteSupport_)
+					 {
+					   expediteSupport_ = _expediteSupport;
+						 vector<Segment::Notifiee*> ::iterator it = notifiee_.begin();
+						 for(; it != notifiee_.end(); it++)
+						 {
+						   (*it)->onSegmentExpeditedIs(Ptr(this), expediteSupport_);
+						 }
+					 }
+				}
 
         Segment::PtrConst returnSegment() const {return returnSegment_;}
         void returnSegmentIs(Segment::PtrConst _segment) { returnSegment_ = _segment;}
+				void notifieeIs(Notifiee* const _notifiee) { notifiee_.push_back(_notifiee);}
      public:
 		    Segment(const String& _name) : name_(_name) {}
 	};

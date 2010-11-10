@@ -13,8 +13,6 @@ void Shipping::Segment::sourceIs(Location::Ptr _source)
   source_->onSegmentSourceChanged(Segment::PtrConst(this));
 }
 
-
-
 }
 
 

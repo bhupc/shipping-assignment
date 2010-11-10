@@ -39,8 +39,9 @@ namespace Shipping
       String name() const {return name_;}
 
       virtual TransportType type() const { return type_;}
+			virtual uint32_t locType() const {return locType_;}
 			virtual void typeIs(TransportType _type) {type_ = TransportType::none();}
-		
+      		
 	 		virtual void segmentIs(unsigned int offset, SegmentPtrConst _segment) {}
       virtual void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException){}
 			
@@ -49,7 +50,7 @@ namespace Shipping
 	    String name_;
       TransportType type_;
 			vector<SegmentPtrConst> segment_;
-		  
+		  uint32_t locType_;
       
         
   };
@@ -67,7 +68,7 @@ namespace Shipping
 	    void segmentIs(unsigned int, SegmentPtrConst);
       void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException);
     public:
-	    CustomerLocation(const String& _name) { name_ = _name; type_ = TransportType::none(); }
+	    CustomerLocation(const String& _name) { name_ = _name; type_ = TransportType::none(); locType_ = 0;}
 
   };
 
@@ -83,7 +84,7 @@ namespace Shipping
 	    void segmentIs(unsigned int, SegmentPtrConst);
 	    void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException);
 		public:
-      Port(const String& _name) {name_= _name; type_ = TransportType::none();}
+      Port(const String& _name) {name_= _name; type_ = TransportType::none(); locType_ = 1;}
   };
 
   class Terminal : public Location
@@ -103,10 +104,48 @@ namespace Shipping
 			void onSegmentSourceChanged(SegmentPtrConst) throw (IllegalSegmentException);
 
 	  public:
-	    Terminal(const String& _name) {name_ = _name; type_ = TransportType::none();}
+	    Terminal(const String& _name) {name_ = _name; type_ = TransportType::none(); locType_ = 2;}
     
 
   };
+
+	class BoatTerminal : public Terminal
+	{
+	  friend class Engine;
+		public:
+		typedef Fwk::Ptr<BoatTerminal> Ptr;
+		typedef Fwk::Ptr<BoatTerminal const> PtrConst;
+
+		public:
+		BoatTerminal(const String& name) : Terminal(name) {type_ = TransportType::boat();}
+
+	};
+
+class PlaneTerminal : public Terminal
+	{
+	  friend class Engine;
+		public:
+		typedef Fwk::Ptr<PlaneTerminal> Ptr;
+		typedef Fwk::Ptr<PlaneTerminal const> PtrConst;
+
+		public:
+		PlaneTerminal(const String& name) : Terminal(name) {type_ = TransportType::plane();}
+
+	};
+
+class TruckTerminal : public Terminal
+	{
+	  friend class Engine;
+		public:
+		typedef Fwk::Ptr<TruckTerminal> Ptr;
+		typedef Fwk::Ptr<TruckTerminal const> PtrConst;
+
+		public:
+		TruckTerminal(const String& name) : Terminal(name) {type_ = TransportType::truck();}
+
+	};
+
+
 
 }
 #endif 

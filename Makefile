@@ -13,8 +13,8 @@ example:	example.o $(OBJECTS)
 clean:
 	rm -f test1 example test1.o example.o $(OBJECTS) *~
 
-Instance.o: Instance.cpp Instance.h PtrInterface.h Ptr.h Engine.h Location.h Segment.h 
+Instance.o: Instance.h Instance.cpp PtrInterface.h Ptr.h Engine.h Location.h Segment.h 
 Segment.o: Segment.h Segment.cpp
 Location.o: Location.h Segment.h Location.cpp Types.h Exceptions.h
-Engine.o: Engine.h Engine.cpp
+Engine.o: Engine.h Engine.cpp Stats.h
 test1.o: test1.cpp Instance.h PtrInterface.h Ptr.h
