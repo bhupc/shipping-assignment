@@ -44,6 +44,7 @@ namespace Shipping
 		     /*Events relevant here */
          virtual void onSegmentExpeditedIs(Segment::Ptr _segment, bool _expedited) {}
 
+         virtual void onSegmentModeIs(Segment::Ptr _segment) {}
 		 	 };
 
 			/* The notifiee class for the Segment */
@@ -73,7 +74,18 @@ namespace Shipping
 
 			public:
         inline TransportType mode() const  { return mode_;}
-				inline void modeIs(TransportType _mode) {mode_ = _mode;}
+
+				inline void modeIs(TransportType _mode) {
+				  if(_mode == mode_) { return;}
+				  mode_ = _mode;
+
+				  vector<Segment::Notifiee*> ::iterator it = notifiee_.begin();
+					for(; it != notifiee_.end(); it++)
+					{
+					  (*it)->onSegmentModeIs(Ptr(this));
+					}
+
+				}
 
         inline String  name() const {return name_; }
         inline LocationPtr source() const {return source_;}

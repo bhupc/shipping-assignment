@@ -115,10 +115,10 @@ class Cost : public Ordinal<Cost, double>
     
 		public:
     TransportType() : Nominal<TransportType, unsigned int>(0) {}		
-		static TransportType none(){ return TransportType(0) ;}
-		static TransportType truck(){ return TransportType(1) ;}
-		static TransportType boat(){ return TransportType(2) ;}
-		static TransportType plane(){ return TransportType(3) ;}
+		static const TransportType none(){ return TransportType(0) ;}
+		static const TransportType truck(){ return TransportType(1) ;}
+		static const TransportType boat(){ return TransportType(2) ;}
+		static const TransportType plane(){ return TransportType(3) ;}
 
 	};
   
