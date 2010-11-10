@@ -28,9 +28,15 @@ void Segment::returnSegmentIs(Segment::Ptr _segment)
 	{
 	  return;
 	}
+  if(_segment == NULL)
+	{
+	  returnSegment_->returnSegmentIs(NULL);
+		returnSegment_ = NULL;
+		return;
+	}
 
-	returnSegment_ = _segment;
-	_segment->returnSegmentIs(returnSegment_);
+   returnSegment_ = _segment;
+	 returnSegment_->returnSegmentIs(Segment::Ptr(this));
 
 }
 
