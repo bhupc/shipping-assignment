@@ -5,6 +5,7 @@
 #include "Instance.h"
 #include "Stats.h"
 #include "Engine.h"
+#include <sstream>
 
 namespace Shipping {
 
@@ -591,33 +592,56 @@ void FleetRep::attributeIs(const string& name, const string& v){
 }
 
 string StatsRep::attribute(const string& type){
+	std::stringstream out;
+
 	 if (type == "Truck terminal") {
+	 	out << StatsEng_->truckTerminalCount();
+		return out.str();
 	 }
 
 	if (type == "Plane terminal") {
+		out << StatsEng_->planeTerminalCount();
+		return out.str();
+
     }
 
 	if (type == "Boat terminal") {
+		out << StatsEng_->boatTerminalCount();
+		return out.str();
+
     }
 
 
 	if (type == "Customer") {
+		out << StatsEng_->customerLocationCount();
+		return out.str();
+
     }
 
 	if (type == "Port") {
+	 	out << StatsEng_->portCount();
+		return out.str();
+
     }
 
 	if (type == "Truck segment") {
-    }
-
+	}
 	if (type == "Boat segment") {
-    }
+    	}
 
 	if (type == "Plane segment") {
     }
 
 	if(type=="expedite percentage"){
-
+		
+		cerr << "** Segment Count is - "<<StatsEng_->segmentCount() << endl;
+		if(StatsEng_->segmentCount() >0){
+		out << (StatsEng_->expeditedSegmentCount()/StatsEng_->segmentCount()*100);
+		}
+		else{
+			out << 0;
+		}
+		return out.str();
 	}
 
 	cerr << "Invalid Stats Query" << endl;
