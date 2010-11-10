@@ -4,6 +4,13 @@
 
 using namespace Shipping;
 
+void Engine::Engine()
+{
+  stats_ = Fwk::Ptr<Stats>(new Stats("stats"));  
+  this->notifieeIs(stats_);
+
+}
+
 void Engine::Notifiee::notifierIs(Engine::Ptr _notifier)
 {
   if(notifier_ == _notifier)
@@ -26,7 +33,7 @@ void Engine::newNotifiee(Engine::Notifiee* _notifiee)
 Segment::Ptr Engine::SegmentNew(const String& name)
 {
   Segment::Ptr m = Segment::Ptr(new Segment(name));
- 
+  m->notifieeIs(stats_); 
   vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
 	for(; it != notifiee_.end(); it++)
 	{
@@ -39,7 +46,7 @@ Segment::Ptr Engine::SegmentNew(const String& name)
 CustomerLocation::Ptr Engine::CustomerLocationNew(const String& name)
 {
   CustomerLocation::Ptr m = CustomerLocation::Ptr(new CustomerLocation(name));
-	
+  	
 	vector<Engine::Notifiee*>::iterator it = notifiee_.begin();
 	for(; it != notifiee_.end(); it++)
 	{
@@ -86,8 +93,12 @@ Fleet::Ptr Engine::FleetNew(const String& name)
 
 Stats::Ptr Engine::StatsNew(const String& name)
 {
-  Fwk::Ptr<Stats> m = Fwk::Ptr<Stats>(new Stats(name));
+  
+	return stats_;
+ /*
+   Fwk::Ptr<Stats> m = Fwk::Ptr<Stats>(new Stats(name));
         return m;
+				*/
 }
 
 

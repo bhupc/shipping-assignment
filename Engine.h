@@ -29,6 +29,7 @@ namespace Shipping {
 	 {
 	   return Fwk::Ptr<Engine>(new Engine());
 	 }
+	 
 	 class Notifiee: virtual public Fwk::PtrInterface<Notifiee>
 	 {
 	   typedef Fwk::Ptr<Notifiee> NPtr;
@@ -45,6 +46,8 @@ namespace Shipping {
 			 NPtr m = new Notifiee();
 			 return m;
 		 }
+
+		 
 
 		 /*Events relevant here */
 
@@ -71,9 +74,10 @@ namespace Shipping {
   protected:
 
 	vector<Engine::Notifiee*> notifiee_;
-
-	Engine(){}
+  Fwk::Ptr<Stats> stats_;
+	Engine();
   public:
+	void notifieeIs(Engine::Notifiee* _notifiee) { notifiee_.push_back(_notifiee);}
 /* Call this to add a new segment to this shipping engine */
 	Segment::Ptr SegmentNew(const String& name);
 	/* invoke the following in order to created diff types of Locations in the shipping engine */

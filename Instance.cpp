@@ -143,7 +143,7 @@ public:
         Instance(name), manager_(manager)
     {
         // Nothing else to do.
-    }
+				    }
 
     // Instance method
     string attribute(const string& name);
@@ -180,6 +180,7 @@ public:
         SegmentRep(name, manager)
     {
 		SegmentEng_ = manager_->engine()->SegmentNew(name);
+    
 		SegmentEng_->modeIs(TransportType::boat());
     }
 };
@@ -208,7 +209,8 @@ public:
         Instance(name), manager_(manager)
     {
        	StatsEng_ = manager_->engine()->StatsNew(name);
-    }
+         
+		}
 
     // Instance method
     string attribute(const string& name);
