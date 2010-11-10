@@ -112,7 +112,9 @@ namespace Shipping
         void returnSegmentIs(Segment::PtrConst _segment) { returnSegment_ = _segment;}
 				void notifieeIs(Notifiee* const _notifiee) { notifiee_.push_back(_notifiee);}
      public:
-		    Segment(const String& _name) : name_(_name) {}
+		    Segment(const String& _name) : name_(_name) {
+					expediteSupport_ = false;
+				}
 	};
 
 }

@@ -597,6 +597,7 @@ string StatsRep::attribute(const string& type){
 	std::stringstream out;
 
 	 if (type == "Truck terminal") {
+	  cerr << "**Check Truck Terminal Count:" << StatsEng_->truckTerminalCount() << endl;
 	 	out << StatsEng_->truckTerminalCount();
 		return out.str();
 	 }
@@ -610,7 +611,6 @@ string StatsRep::attribute(const string& type){
 	if (type == "Boat terminal") {
 		out << StatsEng_->boatTerminalCount();
 		return out.str();
-
     }
 
 
@@ -627,11 +627,18 @@ string StatsRep::attribute(const string& type){
     }
 
 	if (type == "Truck segment") {
+		out << StatsEng_->truckSegmentCount();
+		return out.str();
 	}
 	if (type == "Boat segment") {
+				out << StatsEng_->boatSegmentCount();
+				return out.str();
+
     	}
 
 	if (type == "Plane segment") {
+					out << StatsEng_->planeSegmentCount();
+				return out.str();
     }
 
 	if(type=="expedite percentage"){

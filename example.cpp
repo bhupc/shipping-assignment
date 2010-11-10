@@ -78,11 +78,11 @@ int main(int argc, char *argv[]) {
     // -- Segment lengths
     boatSeg1->attributeIs("length", "400");
     boatSeg2->attributeIs("length", "400");
-    truckSeg1->attributeIs("length", "900");
+    truckSeg1->attributeIs("length", "-1");
     truckSeg2->attributeIs("length", "900");
 
     // -- Segment difficulties
-    boatSeg1->attributeIs("difficulty", "1");
+    boatSeg1->attributeIs("difficulty", "-2");
     boatSeg2->attributeIs("difficulty", "1");
     truckSeg1->attributeIs("difficulty", "1");
     truckSeg2->attributeIs("difficulty", "1");
@@ -113,6 +113,8 @@ int main(int argc, char *argv[]) {
     cout << "===== Stats attributes =====" << endl;
     cout << " --- Segments --- " << endl;
     cout << "# Truck segments : " << stats->attribute("Truck segment") << endl;
+    cout << "# PLane segments : " << stats->attribute("Plane segment") << endl;		
+    cout << "# Boat segments : " << stats->attribute("Boat segment") << endl;
     cout << "Expediting %     : " << stats->attribute("expedite percentage") << endl;
     cout << " --- Terminals --- " << endl;
     cout << "# Plane terminals: " << stats->attribute("Plane terminal") << endl;
