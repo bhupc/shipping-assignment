@@ -231,7 +231,8 @@ public:
     FleetRep(const string& name, ManagerImpl* manager) :
         Instance(name), manager_(manager)
     {
-        // Nothing else to do.
+    	
+	fleetEng_ = manager_->engine()->FleetNew();
     }
 
     // Instance method
@@ -242,9 +243,9 @@ public:
 	// We are in the instance
 	
 
-private:
-    Ptr<ManagerImpl> manager_;
-
+protected:
+    	Ptr<ManagerImpl> manager_;
+	Ptr<Fleet> fleetEng_;
 };
 
 // -------------------------------------------------------
@@ -268,7 +269,7 @@ public:
 
 private:
     Ptr<ManagerImpl> manager_;
-
+	
 };
 
 
@@ -286,6 +287,11 @@ ManagerImpl::ManagerImpl() {
 // ---------------------------------------------------------
 
 Ptr<Instance> ManagerImpl::instanceNew(const string& name, const string& type) {
+
+	//If this name already exist then return NULL
+	if(instance_.count(name)>0){
+		return NULL;	
+	}
 	//  This will have provision for every new instance possible
     if (type == "Truck terminal") {
         Ptr<TruckTerminalRep> t = new TruckTerminalRep(name, this);
@@ -399,6 +405,8 @@ string LocationRep::attribute(const string& name) {
 		//	return segments_[i];
 		return (LocationEng_->segment(i-1))->name();
     }
+
+    cerr << "Tried to Read Non-Existent Attribute";
     return "";
 }
 
@@ -435,7 +443,8 @@ string SegmentRep::attribute(const string& name) {
 	if (name == "difficulty"){
 		return (SegmentEng_->difficulty()).string();
 	}
-
+	
+	cerr << "Tried to Read non-existent attribute";
 	return "";
 
 }
@@ -456,14 +465,18 @@ void SegmentRep::attributeIs(const string& name, const string& v) {
 			SegmentEng_->expediteSupportIs(false);
 			return;
 		}
+		cerr << "Invalid attribute value for expedite support"<<endl;
 	}
 
 	if (name == "return segment"){
 		// Issue is Private
-		// Name-> RepLayerObject -> locationEng
+		// ** EMPTY STRING ??
      Ptr<SegmentRep>res = Ptr<SegmentRep>(dynamic_cast<SegmentRep*>(manager_->instance(v).ptr()));
 		 if(res){
 				SegmentEng_->returnSegmentIs(res->SegmentEng());				
+		 }
+		 else{
+			cerr << "No such Segment Found, Ignored" <<endl;
 		 }
 
 		return;
@@ -472,10 +485,14 @@ void SegmentRep::attributeIs(const string& name, const string& v) {
 	
 
 	if (name == "source"){
+		// ** EMPTY STRING ??
 		Ptr<LocationRep> src = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(v).ptr()));
 		if(src){
 			SegmentEng_->sourceIs(src->LocationEng());
-			}
+		}
+		else{
+			cerr << "No such Location exists, Ignored" << endl;
+		}
 		return;
 	}
 
@@ -483,14 +500,26 @@ void SegmentRep::attributeIs(const string& name, const string& v) {
 	double value = atof(v.c_str());
 
 	if (name == "length"){
-		SegmentEng_->lengthIs(Mile(value));
+		try{
+			SegmentEng_->lengthIs(Mile(value));
+		}
+		catch(...){
+			cerr << "Tried to set illegal value, ignored" << endl;
+		}
 		return;
 	}
 
 	if (name == "difficulty"){
+	try{
 		SegmentEng_->difficultyIs(Difficulty(value));
+		}
+	catch(...){
+		cerr << "Tried to set illegal value, ignored" << endl;
+	}
 		return;
 	}
+
+	cerr << "Tried to set Non Existent Attribute, Ignored" << endl;
 
 }
 
@@ -516,15 +545,48 @@ int LocationRep::segmentNumber(const string& name) {
  */
 
 void StatsRep::attributeIs(const string& name,const string& v){
+	//NOTHING TO BE DONE
 }
 
 void ConnRep::attributeIs(const string& name,const string& v){
+	// NOTHING TO BE DONE
 }
 
 void FleetRep::attributeIs(const string& name, const string& v){
+
 }
 
-string StatsRep::attribute(const string& name){
+string StatsRep::attribute(const string& type){
+	 if (type == "Truck terminal") {
+	 }
+
+	if (type == "Plane terminal") {
+    }
+
+	if (type == "Boat terminal") {
+    }
+
+
+	if (type == "Customer") {
+    }
+
+	if (type == "Port") {
+    }
+
+	if (type == "Truck segment") {
+    }
+
+	if (type == "Boat segment") {
+    }
+
+	if (type == "Plane segment") {
+    }
+
+	if(type=="expedite percentage"){
+
+	}
+
+	cerr << "Invalid Stats Query" << endl;
 	return "";
 }
 
@@ -541,5 +603,3 @@ string FleetRep::attribute(const string& name){
 Ptr<Instance::Manager> shippingInstanceManager() {
     return new Shipping::ManagerImpl();
 }
-
-
