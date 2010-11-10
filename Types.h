@@ -9,7 +9,7 @@
 using namespace std;
 
 typedef string String; 
-
+typedef unsigned int uint32_t;
 
 class Mile : public Ordinal<Mile, double>
   {
@@ -28,6 +28,62 @@ class Mile : public Ordinal<Mile, double>
 		String string() const {return string_; }
 	   	
   };
+
+class MPH : public Ordinal<MPH, double>
+  {
+    public:
+		String string_;
+    MPH() : Ordinal<MPH, double>(0.0){
+			
+			string_="0.0";
+		}	  
+	  MPH(double val) : Ordinal<MPH, double>(val) {
+		 char buf[10];
+		 sprintf(buf, "%.2f", val);
+		 string_.assign(buf);
+		}
+		
+		String string() const {return string_; }
+	   	
+  };
+
+
+class Capacity : public Ordinal<Capacity, double>
+  {
+    public:
+		String string_;
+    Capacity() : Ordinal<Capacity, double>(0.0){
+			
+			string_="0.0";
+		}	  
+	  Capacity(double val) : Ordinal<Capacity, double>(val) {
+		 char buf[10];
+		 sprintf(buf, "%.2f", val);
+		 string_.assign(buf);
+		}
+		
+		String string() const {return string_; }
+	   	
+  };
+
+class Cost : public Ordinal<Cost, double>
+  {
+    public:
+		String string_;
+    Cost() : Ordinal<Cost, double>(0.0){
+			
+			string_="0.0";
+		}	  
+	  Cost(double val) : Ordinal<Cost, double>(val) {
+		 char buf[10];
+		 sprintf(buf, "%.2f", val);
+		 string_.assign(buf);
+		}
+		
+		String string() const {return string_; }
+	   	
+  };
+
 
 
   class Difficulty : public Ordinal<Difficulty, double>

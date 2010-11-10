@@ -8,6 +8,7 @@
 #include "Instance.h"
 #include "Segment.h"
 #include "Location.h"
+#include "Fleet.h"
 #include <vector>
 
 using namespace std;
@@ -63,7 +64,7 @@ namespace Shipping {
 	CustomerLocation::Ptr CustomerLocationNew(const String& name);
 	Port::Ptr PortNew(const String&);
 	Terminal::Ptr TerminalNew(const String&);
- 
+  Fleet::Ptr FleetNew(const String&); 
  };
   
 
