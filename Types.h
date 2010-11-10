@@ -19,7 +19,8 @@ class Mile : public Ordinal<Mile, double>
 			
 			string_="0.0";
 		}	  
-	  Mile(double val) : Ordinal<Mile, double>(val) {
+	  Mile(double val) throw (RangeException) :  Ordinal<Mile, double>(val) {
+		 if(val < 0) { throw RangeException("Invalid value for type Mile");}
 		 char buf[10];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
@@ -37,7 +38,8 @@ class MPH : public Ordinal<MPH, double>
 			
 			string_="0.0";
 		}	  
-	  MPH(double val) : Ordinal<MPH, double>(val) {
+	  MPH(double val)  throw (RangeException) : Ordinal<MPH, double>(val) {
+		 if(val < 0) { throw RangeException("Invalid Value for Type MPH");}
 		 char buf[10];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
@@ -56,7 +58,8 @@ class Capacity : public Ordinal<Capacity, double>
 			
 			string_="0.0";
 		}	  
-	  Capacity(double val) : Ordinal<Capacity, double>(val) {
+	  Capacity(double val) throw (RangeException): Ordinal<Capacity, double>(val) {
+		 if(val < 0) { throw RangeException("Invalid Capacity Value");}
 		 char buf[10];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
@@ -74,7 +77,8 @@ class Cost : public Ordinal<Cost, double>
 			
 			string_="0.0";
 		}	  
-	  Cost(double val) : Ordinal<Cost, double>(val) {
+	  Cost(double val) throw (RangeException): Ordinal<Cost, double>(val){
+		if(val < 0){ throw RangeException("Invalid value for type Cost");}
 		 char buf[10];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
