@@ -22,6 +22,11 @@ void Shipping::Segment::sourceIs(Location::Ptr _source)
   source_->onSegmentSourceChanged(Segment::PtrConst(this));
 }
 
+void Segment::onReturnSegmentChange(Segment::Ptr _segment)
+{
+  returnSegment_ = _segment;  
+}
+
 void Segment::returnSegmentIs(Segment::Ptr _segment)
 {
   if(returnSegment_ == _segment)
@@ -30,13 +35,15 @@ void Segment::returnSegmentIs(Segment::Ptr _segment)
 	}
   if(_segment == NULL)
 	{
-	  returnSegment_->returnSegmentIs(NULL);
+	  //returnSegment_->returnSegmentIs(NULL);
+		returnSegment_->onReturnSegmentChange(NULL);
 		returnSegment_ = NULL;
 		return;
 	}
 
    returnSegment_ = _segment;
-	 returnSegment_->returnSegmentIs(Segment::Ptr(this));
+   returnSegment_->onReturnSegmentChange(Segment::Ptr(this));
+	 //returnSegment_->returnSegmentIs(Segment::Ptr(this));
 
 }
 
