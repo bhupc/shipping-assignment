@@ -28,19 +28,25 @@ int main(int argc, char *argv[]) {
 
     Ptr<Instance> b = manager->instanceNew("seg1", "Truck segment");
     Ptr<Instance> c = manager->instanceNew("seg2", "Truck segment");
-
-    if (b == NULL || c == NULL) {
+    Ptr<Instance> d = manager->instanceNew("seg3", "Truck segment");
+    if (b == NULL || c == NULL || d == NULL) {
         badTruckSegment();
 	return 1;
     }
 
     b->attributeIs("source", "terminal1");
     c->attributeIs("source", "terminal1");
+  //  d->attributeIs("return segment", "terminal1");
 
     cout << a->attribute("segment1") << endl;
     cout << a->attribute("segment2") << endl;
-
+	cout << a->attribute("segment3") << endl;
+	
     cout << "Done!" << endl;
+	cerr << "Now deleting the segment 2 from location" << endl;
+
+	c->attributeIs("source", "");
+	cout << a->attribute("segment5") << endl;
 
     return 0;
 }
