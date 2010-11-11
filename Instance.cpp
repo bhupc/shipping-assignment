@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <map>
+#include <set>
 #include <vector>
 #include "Instance.h"
 #include "Stats.h"
@@ -255,7 +256,7 @@ namespace Shipping {
 			ConnRep(const string& name, ManagerImpl* manager) :
 				Instance(name), manager_(manager)
 		{
-			// Nothing else to do.
+	//		ConnEng_ = manager_->engine()->ConnNew(name);
 		}
 
 			// Instance method
@@ -264,11 +265,10 @@ namespace Shipping {
 			// Instance method
 			void attributeIs(const string& name, const string& v);
 			// We are in the instance
-			// Read only attributes
-
+			
 		private:
 			Ptr<ManagerImpl> manager_;
-
+	//		Conn::Ptr ConnEng_;
 	};
 
 
@@ -549,10 +549,6 @@ namespace Shipping {
 		//NOTHING TO BE DONE
 	}
 
-	void ConnRep::attributeIs(const string& name,const string& v){
-		// NOTHING TO BE DONE
-	}
-
 	void FleetRep::attributeIs(const string& name, const string& v){
 		double value = atof(v.c_str());
 
@@ -650,9 +646,6 @@ namespace Shipping {
 		return "";
 	}
 
-	string ConnRep::attribute(const string& name){
-		return "";
-	}
 
 	string FleetRep::attribute(const string& name){
 		if(name=="Boat, speed"){
@@ -687,8 +680,134 @@ namespace Shipping {
 		cerr << "Try to read non-existent attribute, Ignored "<< endl;
 		return "";
 	}
+	
+	void ConnRep::attributeIs(const string& name, const string& value){
+		// Nothing to do
+		cerr << "Non mutable attributes for Conn, command Discarded" << endl;
+	}
 
-}
+	string ConnRep::attribute(const string& name){
+		stringstream input;
+		input.str(name);
+		bool error_flag = false;
+
+		string token;
+
+		input >> token;
+		if(token == "explore"){
+			string src;
+			if(!(input >> src && input >> token)){
+				error_flag = true;
+				cerr << "Wrong Syntax for explore query, Discarded." << endl;
+			}
+				
+			// Check here if Destination exists else exit	
+			Ptr<LocationRep> src_eng = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(src).ptr()));
+			if(!src_eng){
+				cerr << "No such Start Location exists, Ignored" << endl;
+				return "";
+			}
+
+
+			if(token!=":"){
+				cerr << "No : Separator in Connect query. ";
+				error_flag = true;
+				return "";
+			}
+
+			string attr[] = {"distance","cost","time","expedited"};
+			set<string> attr_set(attr,attr+4);
+			map<string,double> params;
+			int num_params = 0;
+
+			while(input >> token && num_params <= 4){
+				if(attr_set.count(token)>0){
+					if(token!="expedited"){
+						double value;
+						if((input >> value)){
+							params[token] = value;
+						}
+						else{
+							cerr << "Could not find a value for attribute: " << token << " Command Ignored"<<endl;
+							error_flag = true;
+							return "";
+						}
+					}
+					else{
+						params["expedited"]=1.0;
+					}
+				}
+				else{
+					cerr << "Unknown attribute restriction specified in explore, Discarded" << endl;
+					error_flag = true;
+					return "";
+				}
+				num_params++;
+			}
+
+			char c;
+			if(input >> c){
+				cerr << "More than 4 attrbutes or extra characters in explore command, Ignored. " << endl;
+				return "";
+			}
+
+			cout << "CORRECT EXPLORE QUERY" << endl;
+
+		}
+		else if(token == "connect"){
+			string src, dest;
+
+			if(!(input >> src && input >> token && input >> dest)){
+				cerr << "Not enough arguements. ";
+				error_flag = true;
+				return "";
+			}
+			if(token!=":"){
+				cerr << "No <:> Separator in Connect query. ";
+				error_flag = true;
+				return "";
+			}
+
+			char c;
+			if(input >> c){
+				cerr << "Extra characters in Connect query. " << endl;
+				error_flag = true;
+				return "";
+			}
+
+			Ptr<LocationRep> src_eng = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(src).ptr()));
+			if(!src_eng){
+				cerr << "No such Start Location exists, Ignored" << endl;
+				return "";
+			}
+	
+
+			Ptr<LocationRep> dest_eng = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(dest).ptr()));
+			if(!dest_eng){
+				cerr << "No such Destination Location exists, Ignored" << endl;
+				return "";
+			}
+
+			if(!error_flag){
+				
+				cout << "CORRECT connect QUERY" << endl;
+
+				// Call the Engine Layer functionality with two location engine objects src_eng and dest_eng
+			}
+		}
+		else{
+			cerr << "Only conn/explore queries allowed. " << endl;
+			error_flag = true;
+			return "";
+		}
+
+		if(error_flag){
+			cerr << "Not a valid query for Conn, Please refer to errors/specifications." << endl;	
+		}
+		return "";
+
+	}
+} // Namespace ends
 
 Ptr<Instance::Manager> shippingInstanceManager() {
 	return new Shipping::ManagerImpl();
