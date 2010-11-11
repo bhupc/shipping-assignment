@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Instance.h"
 
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -20,7 +21,8 @@ int main(int argc, char *argv[]) {
     }
 
     Ptr<Instance> a = manager->instanceNew("terminal1", "Truck terminal");
-
+    
+    Ptr<Instance> a2 = manager->instanceNew("terminal2", "Truck terminal");
     if (a == NULL) {
         badTruckTerminal();
         return 1;
@@ -28,15 +30,14 @@ int main(int argc, char *argv[]) {
 
     Ptr<Instance> b = manager->instanceNew("seg1", "Truck segment");
     Ptr<Instance> c = manager->instanceNew("seg2", "Truck segment");
-    Ptr<Instance> d = manager->instanceNew("seg3", "Truck segment");
-    if (b == NULL || c == NULL || d == NULL) {
+    if (b == NULL || c == NULL ) {
         badTruckSegment();
 	return 1;
     }
 
     b->attributeIs("source", "terminal1");
-    c->attributeIs("source", "terminal1");
-    d->attributeIs("return segment", "seg1");
+    c->attributeIs("source", "terminal2");
+    c->attributeIs("return segment", "seg1");
 
 //    cout << a->attribute("segment1") << endl;
  //   cout << a->attribute("segment2") << endl;

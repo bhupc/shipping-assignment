@@ -10,34 +10,33 @@ using namespace std;
 namespace Shipping
 {
 
-  SegmentPtrConst CustomerLocation::segment(unsigned int offset) const 
+  SegmentPtr CustomerLocation::segment(unsigned int offset) const 
   {
     return segment_[offset];  
   }
 
-  void CustomerLocation::segmentIs(unsigned int offset, SegmentPtrConst _segment)
-  {
-         
-  }
-  
-
-	void CustomerLocation::onSegmentSourceChanged(SegmentPtrConst _source) throw (IllegalSegmentException)
-	{
+  void CustomerLocation::segmentIs( unsigned int offset, SegmentPtr _segment ) {
+	  
+		// Not used now
 	}
 
 
-  SegmentPtrConst Port::segment( unsigned int offset ) const {
+	void CustomerLocation::onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException)
+	{
+	  segment_.push_back(_segment);
+	}
+
+
+  SegmentPtr Port::segment( unsigned int offset ) const {
 	  return segment_[offset];
 	}
 
-  
-
-  void Port::segmentIs(unsigned int offset, SegmentPtrConst _segment)
-  {
-	       
+  void Port::segmentIs( unsigned int offset, SegmentPtr _segment ) {
+	   // Not usednow
 	}
 
-	void Port::onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException)
+
+	void Port::onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException)
 	{
         
     segment_.push_back(_segment);             	
@@ -45,14 +44,14 @@ namespace Shipping
 	}
   
 
-  SegmentPtrConst Terminal::segment(unsigned int offset) const {
+  SegmentPtr Terminal::segment(unsigned int offset) const {
 	
 	  return segment_[offset];
 	}
   
   
 	
-	void Terminal::segmentIs(unsigned int offset, SegmentPtrConst _segment) {
+	void Terminal::segmentIs(unsigned int offset, SegmentPtr _segment) {
 	  /* Throw error in case the segment mode is not the same as the terminal type */
 		if( (this->type() != TransportType::none()) && (_segment->mode() != this->type()))
 		{
@@ -65,11 +64,11 @@ namespace Shipping
 		  type_ = _segment->mode();
 		}
     
-		vector<SegmentPtrConst>::iterator it;
+		vector<SegmentPtr>::iterator it;
 		segment_.insert(it + offset, _segment);
 	}
 
-	void Terminal::onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException)
+	void Terminal::onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException)
 	{
  	  if( (this->type() != TransportType::none()) && (_segment->mode() != this->type()))
 		{

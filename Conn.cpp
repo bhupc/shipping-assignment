@@ -6,25 +6,35 @@ namespace Shipping
 {
 
 
+
+Conn::PathList Conn::path(Location::Ptr _source, Cost _cost, Mile _distance, bool _expedite, Time _time )
+{
+   Conn::PathList paths;
+	 Conn::PathList results;
+
+	 return results;
+}
+
 Conn::PathList Conn::path(Location::Ptr _source, Location::Ptr _destination)
 {
 	  Conn::PathList paths;
 		Conn::PathList result;
 
     /* all the starting segmens */
-    vector<SegmentPtrConst> segments =  _source->segments();
-   	vector<SegmentPtrConst>::iterator it = segments.begin();
+    vector<SegmentPtr> segments =  _source->segments();
+   	vector<SegmentPtr>::iterator it = segments.begin();
     
 	  for(; it != segments.end(); it++)
 	  {
-		  SegmentPtrConst ret = (*it)->returnSegment();
+		  SegmentPtr ret = (*it)->returnSegment();
 		  if(ret)
 			{
 			  if(ret->source())
 				{
 				  Path p;
-			    p.push_back( GraphEdge::GraphEdgeNew(*it));
-          paths.push_back(p);
+			    //p.push_back( GraphEdge::GraphEdgeNew(*it ));
+			    p.push_back( (*it ).ptr());
+          paths.push(p);
           
 				}
 			}
@@ -34,64 +44,152 @@ Conn::PathList Conn::path(Location::Ptr _source, Location::Ptr _destination)
 		return result;
 }
 
-
-
-
 void Conn::pathInternal(Location::Ptr _destination, Conn::PathList& paths, Conn::PathList& result)
 {
 
 
-  PathList::iterator pit = paths.begin();
-
-	for(; pit != paths.end(); pit++)
+  while(!paths.empty())
 	{
-	  Path p = (*pit);
-		GraphEdge::Ptr last_edge = p.back();
-	  Location::Ptr dest = last_edge->segment()->returnSegment()->source();
+		Path p = paths.front();
+		paths.pop();
+		const Segment*& last_edge = p.back();
      
+	  
+	  Segment::Ptr ret = last_edge->returnSegment();
+
+		Location::Ptr dest = ret->source();
+		
+
 		if(dest == _destination)
 		{
-		  result.push_back(p);
-			paths.erase(pit);
+		  result.push(p);
 		  continue;
 		}
 
     if(nodeExistsInPath(dest, p))
 		{
-		  paths.erase(pit);
 			continue;
 		}
 
     
-    vector<SegmentPtrConst> segments =  dest->segments();
-   	vector<SegmentPtrConst>::iterator it = segments.begin();
+    vector<SegmentPtr> segments =  dest->segments();
+   	vector<SegmentPtr>::iterator it = segments.begin();
     
 	  for(; it != segments.end(); it++)
 	  {
-		  SegmentPtrConst ret = (*it)->returnSegment();
+		  SegmentPtr ret = (*it)->returnSegment();
 			if(!ret)
 			{
-			  paths.erase(pit);
 				continue;
 			}
 			else
 			{
 			  if(!ret->source())
 				{
-				  paths.erase(pit);
 					continue;
 				}
 				else
 				{
+				  
 				  Path p1(p);
-			    p1.push_back( GraphEdge::GraphEdgeNew(*it) );
+			    p1.push_back( (*it).ptr());
+          paths.push(p1);
+          
+				}
+			}
+		}
+
+	}
+	
+
+}
+
+/*
+void Conn::pathInternal(Location::Ptr _destination, Conn::PathList& paths, Conn::PathList& result)
+{
+
+
+  PathList::iterator pit = paths.begin();
+
+	for(; paths.size() > 0 && pit != paths.end(); pit++)
+	{
+	  //Path p = (*pit);
+		//GraphEdge::Ptr& last_edge = (*pit).back();
+	  //Location::Ptr dest = last_edge->segment()->returnSegment()->source();
+		const Segment*& last_edge = (*pit).back();
+     
+	  
+	  Segment::Ptr ret = last_edge->returnSegment();
+
+		Location::Ptr dest = ret->source();
+		
+
+		if(dest == _destination)
+		{
+		  result.push_back((*pit));
+			Conn::PathList new_paths;
+			shift(new_paths, paths, pit);
+			paths = new_paths;
+			//paths.erase(pit);
+		  continue;
+		}
+
+    if(nodeExistsInPath(dest, (*pit)))
+		{
+		  Conn::PathList new_paths;
+			shift(new_paths, paths, pit);
+			paths = new_paths;
+
+		  //paths.erase(pit);
+			continue;
+		}
+
+    
+    vector<SegmentPtr> segments =  dest->segments();
+   	vector<SegmentPtr>::iterator it = segments.begin();
+    
+	  for(; it != segments.end(); it++)
+	  {
+		  SegmentPtr ret = (*it)->returnSegment();
+			if(!ret)
+			{
+        Conn::PathList new_paths;
+			  shift(new_paths, paths, pit);
+			  paths = new_paths;
+
+
+			  //paths.erase(pit);
+				continue;
+			}
+			else
+			{
+			  if(!ret->source())
+				{
+          Conn::PathList new_paths;
+			    shift(new_paths, paths, pit);
+			    paths = new_paths;
+				  
+				  //paths.erase(pit);
+					continue;
+				}
+				else
+				{
+				  
+				  Path p1(*pit);
+					//copyPath(p1, *pit);
+					//p1.assign((*pit).begin(), (*pit).end());
+			    p1.push_back( (*it).ptr());
           paths.push_back(p1);
           
 				}
 			}
 		}
 
-		paths.erase(pit);
+    Conn::PathList new_paths;
+	  shift(new_paths, paths, pit);
+		paths = new_paths;
+	   
+		//paths.erase(pit);
 
 
 	}
@@ -99,15 +197,30 @@ void Conn::pathInternal(Location::Ptr _destination, Conn::PathList& paths, Conn:
 
   }
 
+	*/
+
+
+void Conn::copyPath(Path& p1, Path& p2)
+{/*
+  Path::iterator it = p2.begin();
+	for(; it != p2.end(); it++)
+	{
+	  p1.push_back(GraphEdge::GraphEdgeNew((*it)->segment()));
+	}
+	*/
+}
 
 bool Conn::nodeExistsInPath(Location::Ptr loc, Path p)
 {
+ 
   Conn::Path::iterator it = p.begin();
 	for(; it != p.end(); it++)
 	{
-	  if(loc == (*it)->segment()->source()) { return true;}
-	  Segment::Ptr ret = (*it)->segment()->returnSegment();
-		if(loc == ret->source()) {return true;}
+	 // if(loc == (*it)->segment()->source()) { return true;}
+	    if(loc == (*it)->source()) { return true;}
+
+	  //Segment::Ptr ret = (*it)->segment()->returnSegment();
+		//if(loc == ret->source()) {return true;}
 	}
 
 	return false;
@@ -115,12 +228,14 @@ bool Conn::nodeExistsInPath(Location::Ptr loc, Path p)
 
 void Conn::printPathList(PathList& paths)
 {
+
   cout << "\n\nPrinting path list \n\n";
-  PathList::iterator it = paths.begin();
-  for(; it != paths.end(); it++)
+  while(!paths.empty())
 	{
-	  Conn::printPath(*it);
+	  Conn::printPath(paths.front());
+	  paths.pop();
 	}
+	
 }
 
 void Conn::printPath(Path& p)
@@ -129,12 +244,14 @@ void Conn::printPath(Path& p)
 
 	for(; it != p.end(); it++)
 	{
-	  std::cout << (*it)->segment()->source()->name() << " ";
+	  std::cout << (*it)->source()->name() << " ";
 	}
 	
-	SegmentPtrConst last_segment = p.back()->segment();
-  std::cout << last_segment->returnSegment()->source()->name() << "\n";
+	//SegmentPtrConst last_segment = p.back()->segment();
+ // std::cout << last_segment->returnSegment()->source()->name() << "\n";
 
+	const Segment*& last_segment = p.back();
+  std::cout << last_segment->returnSegment()->source()->name() << "\n";
 }
 
 }
