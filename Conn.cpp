@@ -1,5 +1,7 @@
 #include "Conn.h"
+#include <iostream>
 
+using namespace std;
 namespace Shipping
 {
 
@@ -111,5 +113,28 @@ bool Conn::nodeExistsInPath(Location::Ptr loc, Path p)
 	return false;
 }
 
+void Conn::printPathList(PathList& paths)
+{
+  cout << "\n\nPrinting path list \n\n";
+  PathList::iterator it = paths.begin();
+  for(; it != paths.end(); it++)
+	{
+	  Conn::printPath(*it);
+	}
+}
+
+void Conn::printPath(Path& p)
+{
+  Conn::Path::iterator it = p.begin();
+
+	for(; it != p.end(); it++)
+	{
+	  std::cout << (*it)->segment()->source()->name() << " ";
+	}
+	
+	SegmentPtrConst last_segment = p.back()->segment();
+  std::cout << last_segment->returnSegment()->source()->name() << "\n";
+
+}
 
 }

@@ -39,7 +39,9 @@ namespace Shipping
 
 	void Port::onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException)
 	{
+        
     segment_.push_back(_segment);             	
+	
 	}
   
 
@@ -71,7 +73,7 @@ namespace Shipping
 	{
  	  if( (this->type() != TransportType::none()) && (_segment->mode() != this->type()))
 		{
-      //throw IncompatibleSegmentException("Got an incompatible Segment : TerminalType = " + this->type() + ", Segment Mode = " + _segment->mode());		
+      throw IllegalSegmentException("Got an incompatible Segment");		
 		}
 
 		/* If we never had a segment attached to this terminal */
