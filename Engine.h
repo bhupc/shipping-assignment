@@ -15,6 +15,7 @@ using namespace std;
 namespace Shipping {
 
 	class Stats;
+	class Conn;
 // Create your rep/engine interface here.
   
  class Engine : public Fwk::PtrInterface<Engine>
@@ -75,6 +76,8 @@ namespace Shipping {
 
 	vector<Engine::Notifiee*> notifiee_;
   Fwk::Ptr<Stats> stats_;
+	Fwk::Ptr<Conn> conn_;
+
 	Engine();
   public:
 	void notifieeIs(Engine::Notifiee* _notifiee) { notifiee_.push_back(_notifiee);}
@@ -88,6 +91,7 @@ namespace Shipping {
 	BoatTerminal::Ptr BoatTerminalNew(const String&);
 	PlaneTerminal::Ptr PlaneTerminalNew(const String&);
 	Fwk::Ptr<Stats> StatsNew(const String&);
+	Fwk::Ptr<Conn> ConnNew(const String&);
  };
   
 

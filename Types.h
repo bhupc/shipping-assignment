@@ -5,11 +5,15 @@
 #include <cstdlib>
 #include <cstdio>
 #include "Exceptions.h"
+#include "Ptr.h"
+#include "PtrInterface.h"
+
 
 using namespace std;
-
-typedef string String; 
+ 
 typedef unsigned int uint32_t;
+
+
 
 class Mile : public Ordinal<Mile, double>
   {

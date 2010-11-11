@@ -1,13 +1,17 @@
 #include <vector>
 #include "Engine.h"
 #include "Stats.h"
+#include "Conn.h"
 
 using namespace Shipping;
 
  Engine::Engine()
 {
-  stats_ = Fwk::Ptr<Stats>(new Stats("stats"));  
+  stats_ = Fwk::Ptr<Stats>(new Stats("_engine_stats_"));  
   this->notifieeIs(stats_.ptr());
+
+
+  conn_ = Fwk::Ptr<Conn>(new Conn("_engine_conn_"));
 
 }
 
@@ -99,6 +103,11 @@ Stats::Ptr Engine::StatsNew(const String& name)
    Fwk::Ptr<Stats> m = Fwk::Ptr<Stats>(new Stats(name));
         return m;
 				*/
+}
+
+Conn::Ptr Engine::ConnNew(const String& name)
+{
+  return conn_;
 }
 
 

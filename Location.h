@@ -35,7 +35,7 @@ namespace Shipping
 			/* get the segment at the offset */
 
 			virtual SegmentPtrConst segment(unsigned int offset) const {return NULL; }
-
+      vector<SegmentPtrConst> segments() const { return segment_;}
       String name() const {return name_;}
 
       virtual TransportType type() const { return type_;}
