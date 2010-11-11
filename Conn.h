@@ -8,6 +8,8 @@
 #include "Location.h"
 #include "Types.h"
 
+
+using namespace std;
 using namespace Fwk;
 
 namespace Shipping
@@ -66,7 +68,8 @@ class Conn : public PtrInterface<Conn>
 
  
   Conn::PathList path(Location::Ptr _source, Location::Ptr _destination);
-    	
+  static void printPathList(PathList&);
+	static void printPath(Path&);
 	private:
 	String name_;
 	void pathInternal(Location::Ptr, Conn::PathList&, Conn::PathList&);
