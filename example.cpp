@@ -42,9 +42,13 @@ int main(int argc, char *argv[]) {
     Ptr<Instance> customer1 = manager->instanceNew("customer1", "Customer");  
     Ptr<Instance> customer2 = manager->instanceNew("customer2", "Customer");  
     // ports
-    Ptr<Instance> port1 = manager->instanceNew("port1", "Port");  
+    Ptr<Instance> port1 = manager->instanceNew("port1", "Port");
 
-    if (customer1 == NULL || customer2 == NULL || port1 == NULL) {
+	// terminal
+     
+    Ptr<Instance> term1 = manager->instanceNew("term1", "Truck terminal");
+
+    if (customer1 == NULL || customer2 == NULL || port1 == NULL || term1== NULL) {
         cerr << "Unexpected NULL customer or port." << endl;
 	return 1;
     }
@@ -70,10 +74,11 @@ int main(int argc, char *argv[]) {
     cout << "truckSeg1->attribute('source'): " << truckSeg1->attribute("source") << endl;
     
     // customer2 <---> port1
-    boatSeg1->attributeIs("source", "customer2");
+    boatSeg1->attributeIs("source", "term1");
+	cout << "*****Did you see an Error ??"<< endl;
     boatSeg2->attributeIs("source", "port1");
     boatSeg1->attributeIs("return segment", "boatSeg2");
-    cout << "boatSeg1->attribute('return segment'): " << boatSeg1->attribute("return segment") << endl;
+    cout << "boatSeg1->attribute('source'): " << boatSeg1->attribute("source") << endl;
 
     // -- Segment lengths
     boatSeg1->attributeIs("length", "400");

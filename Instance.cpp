@@ -490,7 +490,12 @@ namespace Shipping {
 			}
 			Ptr<LocationRep> src = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(v).ptr()));
 			if(src){
+				try{
 				SegmentEng_->sourceIs(src->LocationEng());
+				}
+				catch(...){
+					cerr << "Incompatible Location Segment Pair, Command Discarded" << endl;
+				}
 			}
 			else{
 				cerr << "No such Location exists, Ignored" << endl;
