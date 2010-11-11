@@ -6,6 +6,7 @@
 #include "Instance.h"
 #include "Stats.h"
 #include "Engine.h"
+#include "Conn.h"
 #include <sstream>
 
 namespace Shipping {
@@ -256,7 +257,7 @@ namespace Shipping {
 			ConnRep(const string& name, ManagerImpl* manager) :
 				Instance(name), manager_(manager)
 		{
-	//		ConnEng_ = manager_->engine()->ConnNew(name);
+			ConnEng_ = manager_->engine()->ConnNew(name);
 		}
 
 			// Instance method
@@ -268,7 +269,7 @@ namespace Shipping {
 			
 		private:
 			Ptr<ManagerImpl> manager_;
-	//		Conn::Ptr ConnEng_;
+			Conn::Ptr ConnEng_;
 	};
 
 
@@ -702,8 +703,8 @@ namespace Shipping {
 			}
 				
 			// Check here if Destination exists else exit	
-			Ptr<LocationRep> src_eng = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(src).ptr()));
-			if(!src_eng){
+			Ptr<LocationRep> src_rep = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(src).ptr()));
+			if(!src_rep){
 				cerr << "No such Start Location exists, Ignored" << endl;
 				return "";
 			}
@@ -775,15 +776,15 @@ namespace Shipping {
 				return "";
 			}
 
-			Ptr<LocationRep> src_eng = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(src).ptr()));
-			if(!src_eng){
+			Ptr<LocationRep> src_rep = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(src).ptr()));
+			if(!src_rep){
 				cerr << "No such Start Location exists, Ignored" << endl;
 				return "";
 			}
 	
 
-			Ptr<LocationRep> dest_eng = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(dest).ptr()));
-			if(!dest_eng){
+			Ptr<LocationRep> dest_rep = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(dest).ptr()));
+			if(!dest_rep){
 				cerr << "No such Destination Location exists, Ignored" << endl;
 				return "";
 			}
@@ -791,7 +792,7 @@ namespace Shipping {
 			if(!error_flag){
 				
 				cout << "CORRECT connect QUERY" << endl;
-
+				Conn::PathList paths = ConnEng_->path(src_rep->LocationEng(),dest_rep->LocationEng());
 				// Call the Engine Layer functionality with two location engine objects src_eng and dest_eng
 			}
 		}
