@@ -34,23 +34,23 @@ namespace Shipping
       
 			/* get the segment at the offset */
 
-			virtual SegmentPtrConst segment(unsigned int offset) const {return NULL; }
-      vector<SegmentPtrConst> segments() const { return segment_;}
+			virtual SegmentPtr segment(unsigned int offset) const {return NULL; }
+      virtual vector<SegmentPtr> segments() const { return segment_;}
       String name() const {return name_;}
 
       virtual TransportType type() const { return type_;}
 			virtual uint32_t locType() const {return locType_;}
 			virtual void typeIs(TransportType _type) {type_ = TransportType::none();}
       		
-	 		virtual void segmentIs(unsigned int offset, SegmentPtrConst _segment) {}
-      virtual void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException){
+	 		virtual void segmentIs(unsigned int offset, SegmentPtr _segment) {}
+      virtual void onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException){
 			   
 			}
-			virtual void onSegmentSourceDel(SegmentPtrConst _segment)
+			virtual void onSegmentSourceDel(SegmentPtr _segment)
 			{
 
 			  // Find the segment and delete it
-			  vector<SegmentPtrConst> :: iterator it = segment_.begin();
+			  vector<SegmentPtr> :: iterator it = segment_.begin();
 				for(; it != segment_.end(); it++)
 				{
 				  if(_segment == (*it)) 
@@ -65,7 +65,7 @@ namespace Shipping
       /* This is the global name of this location */
 	    String name_;
       TransportType type_;
-			vector<SegmentPtrConst> segment_;
+			vector<SegmentPtr> segment_;
 		  uint32_t locType_;
       
         
@@ -80,9 +80,9 @@ namespace Shipping
       typedef Fwk::Ptr<CustomerLocation> Ptr;
 	    typedef Fwk::Ptr<CustomerLocation const> PtrConst;
     
-	    SegmentPtrConst segment(unsigned int) const ;
-	    void segmentIs(unsigned int, SegmentPtrConst);
-      void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException);
+	    SegmentPtr segment(unsigned int) const ;
+	    void segmentIs(unsigned int, SegmentPtr);
+      void onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException);
     public:
 	    CustomerLocation(const String& _name) { name_ = _name; type_ = TransportType::none(); locType_ = 0;}
 
@@ -96,9 +96,9 @@ namespace Shipping
       typedef Fwk::Ptr<Port> Ptr;
 	    typedef Fwk::Ptr<Port const> PtrConst;
   
-   	  SegmentPtrConst segment(unsigned int) const;
-	    void segmentIs(unsigned int, SegmentPtrConst);
-	    void onSegmentSourceChanged(SegmentPtrConst _segment) throw (IllegalSegmentException);
+   	  SegmentPtr segment(unsigned int) const;
+	    void segmentIs(unsigned int, SegmentPtr);
+	    void onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException);
 		public:
       Port(const String& _name) {name_= _name; type_ = TransportType::none(); locType_ = 1;}
   };
@@ -115,9 +115,9 @@ namespace Shipping
 			inline TransportType type() const {return type_;}
 	    inline void typeIs(TransportType _type)  {type_ = _type;}
 
-			SegmentPtrConst segment(unsigned int) const;
-	    void segmentIs(unsigned int, SegmentPtrConst);
-			void onSegmentSourceChanged(SegmentPtrConst) throw (IllegalSegmentException);
+			SegmentPtr segment(unsigned int) const;
+	    void segmentIs(unsigned int, SegmentPtr);
+			void onSegmentSourceChanged(SegmentPtr) throw (IllegalSegmentException);
 
 	  public:
 	    Terminal(const String& _name) {name_ = _name; type_ = TransportType::none(); locType_ = 2;}

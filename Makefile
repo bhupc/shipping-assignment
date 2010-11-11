@@ -19,3 +19,4 @@ Location.o: Location.h Segment.h Location.cpp Types.h Exceptions.h
 Engine.o: Engine.h Engine.cpp Stats.h 
 Conn.o: Conn.h Conn.cpp
 test1.o: test1.cpp Instance.h PtrInterface.h Ptr.h
+example.o: example.cpp

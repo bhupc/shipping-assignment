@@ -8,6 +8,7 @@
 #include "Location.h"
 #include "Types.h"
 
+#include <queue>
 
 using namespace std;
 using namespace Fwk;
@@ -27,13 +28,16 @@ class GraphEdge : public PtrInterface<GraphEdge>
   SegmentPtrConst segment() const {return segment_;}
 	static GraphEdge::Ptr GraphEdgeNew(SegmentPtrConst _segment)
 	{
-	  return Ptr(new GraphEdge(_segment));
+	  return GraphEdge::Ptr(new GraphEdge(_segment));
 	}
+  GraphEdge(SegmentPtrConst _segment) {
+	  segment_ = _segment;
+	}
+
 	private:
   Segment::PtrConst segment_;
-
-	GraphEdge(SegmentPtrConst _segment) : segment_(_segment) {}
-};
+  
+	};
 
 
 class GraphNode : public PtrInterface<GraphNode>
@@ -58,8 +62,8 @@ class Conn : public PtrInterface<Conn>
   public:
 	typedef Fwk::Ptr<Conn> Ptr;
 	typedef Fwk::Ptr<Conn const> PtrConst;
-  typedef vector<GraphEdge::Ptr> Path;
-  typedef vector<Path> PathList;
+  typedef vector<const Segment*> Path;
+  typedef queue<Path> PathList;
 
 
 	public:
@@ -68,12 +72,15 @@ class Conn : public PtrInterface<Conn>
 
  
   Conn::PathList path(Location::Ptr _source, Location::Ptr _destination);
+  Conn::PathList path(Location::Ptr _source, Cost, Mile, bool, Time);
   static void printPathList(PathList&);
 	static void printPath(Path&);
 	private:
 	String name_;
 	void pathInternal(Location::Ptr, Conn::PathList&, Conn::PathList&);
   bool nodeExistsInPath(Location::Ptr, Conn::Path);
+	void copyPath(Path&, Path&);
+	//void shift(PathList&, PathList&, PathList::iterator&);
 };
 
 }

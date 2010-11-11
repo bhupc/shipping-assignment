@@ -34,6 +34,25 @@ class Mile : public Ordinal<Mile, double>
 	   	
   };
 
+
+
+class Time : public Ordinal<Time, double>
+{
+  public:
+	String string_;
+  Time() : Ordinal<Time, double>(0.0){
+	 string_="0.0";
+  }	  
+  Time(double val)  throw (RangeException) : Ordinal<Time, double>(val) {
+		 if(val < 0) { throw RangeException("Invalid Value for Type MPH");}
+		 char buf[10];
+		 sprintf(buf, "%.2f", val);
+		 string_.assign(buf);
+  }
+		
+	String string() const {return string_; }
+};
+
 class MPH : public Ordinal<MPH, double>
   {
     public:

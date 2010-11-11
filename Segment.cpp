@@ -14,12 +14,12 @@ void Shipping::Segment::sourceIs(Location::Ptr _source)
 	}
 	if(_source == NULL)
 	{
-	  return source_->onSegmentSourceDel(Segment::PtrConst(this));
+	  return source_->onSegmentSourceDel(Segment::Ptr(this));
 	}
 
 	source_ = _source;
 
-  source_->onSegmentSourceChanged(Segment::PtrConst(this));
+  source_->onSegmentSourceChanged(Segment::Ptr(this));
 }
 
 void Segment::onReturnSegmentChange(Segment::Ptr _segment)
