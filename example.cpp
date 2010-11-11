@@ -71,6 +71,8 @@ int main(int argc, char *argv[]) {
     
     // customer2 <---> port1
     boatSeg1->attributeIs("source", "customer2");
+    boatSeg1->attributeIs("return segment", "boatSeg2");
+
     boatSeg2->attributeIs("source", "port1");
     boatSeg1->attributeIs("return segment", "boatSeg2");
     cout << "boatSeg1->attribute('return segment'): " << boatSeg1->attribute("return segment") << endl;

@@ -794,6 +794,7 @@ namespace Shipping {
 				cout << "CORRECT connect QUERY" << endl;
 				Conn::PathList paths = ConnEng_->path(src_rep->LocationEng(),dest_rep->LocationEng());
 				// Call the Engine Layer functionality with two location engine objects src_eng and dest_eng
+				Conn::printPathList(paths);
 			}
 		}
 		else{

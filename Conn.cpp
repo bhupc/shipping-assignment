@@ -115,6 +115,7 @@ bool Conn::nodeExistsInPath(Location::Ptr loc, Path p)
 
 void Conn::printPathList(PathList& paths)
 {
+  cout << "\n\nPrinting path list \n\n";
   PathList::iterator it = paths.begin();
   for(; it != paths.end(); it++)
 	{
