@@ -16,7 +16,7 @@ clean:
 Instance.o: Instance.h Instance.cpp PtrInterface.h Ptr.h Engine.h Location.h Segment.h 
 Segment.o: Segment.h Segment.cpp
 Location.o: Location.h Segment.h Location.cpp Types.h Exceptions.h
-Engine.o: Engine.h Engine.cpp Stats.h 
-Conn.o: Conn.h Conn.cpp
+Engine.o: Engine.h Engine.cpp Stats.h Fleet.h 
+Conn.o: Conn.h Conn.cpp Types.h
 test1.o: test1.cpp Instance.h PtrInterface.h Ptr.h
 example.o: example.cpp

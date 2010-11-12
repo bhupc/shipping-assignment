@@ -8,7 +8,7 @@
 #include "Nominal.h"
 #include "Types.h"
 #include "Exceptions.h"
-
+#include "Fleet.h"
 
 
 namespace Shipping
@@ -109,6 +109,46 @@ namespace Shipping
 					 }
 				}
 
+
+
+				inline Cost cost(Fleet::Ptr _fleet) { 
+				  if(mode_ == TransportType::boat())
+					{
+					  return length_*(_fleet->cost(0));
+					}
+					if(mode_ == TransportType::plane())
+					{
+					  return length_*(_fleet->cost(1));
+					}
+          if(mode_ == TransportType::truck())
+					{
+					  return length_*(_fleet->cost(2));
+					}
+
+          // assume that by default there is always a truck
+          return length_*(_fleet->cost(2));
+				}
+
+				inline Time time(Fleet::Ptr _fleet){
+				  if(mode_ == TransportType::boat())
+					{
+					  return length_/(_fleet->speed(0));
+					}
+          if(mode_ == TransportType::plane())
+					{
+					  return length_/(_fleet->speed(1));
+					}
+          if(mode_ == TransportType::truck())
+					{
+					  return length_/(_fleet->speed(2));
+					}
+          
+					return length_/(_fleet->speed(2));
+				}
+
+
+
+        
         Segment::Ptr returnSegment() const {return returnSegment_;}
 				void returnSegmentIs(Segment::Ptr);
 				void onReturnSegmentChange(Segment::Ptr);

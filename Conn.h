@@ -64,7 +64,35 @@ class Conn : public PtrInterface<Conn>
 	typedef Fwk::Ptr<Conn const> PtrConst;
   typedef vector<const Segment*> Path;
   typedef queue<Path> PathList;
+     
+	
+	class StatPath
+	{
+	  public:
+		StatPath(){}
+	  inline Conn::Path path() const{ return path_;}
+		inline Cost cost() const {return cost_;}
+		inline Mile distance() const {return distance_;}
+    inline bool expedite() const {return expedite_;}
+	  inline Time time() const {return time_;}	
+    
+		inline void pathIs(Conn::Path _path) {path_ = _path;}
+		inline void costIs(Cost _cost) {cost_ = _cost ;}
+		inline void distanceIs(Mile _distance) {distance_ =  _distance;}
+		inline void expediteIs(bool _expedite) {expedite_= _expedite;}
+		inline void timeIs(Time _time) {time_ = _time; }
 
+    private:
+	  Conn::Path path_;
+    Cost cost_;
+		Mile distance_;
+		bool expedite_;
+		Time time_;
+	
+	};
+  
+	typedef queue<StatPath> StatPathList;
+	
 
 	public:
 	Conn(string _name) : name_(_name){}
@@ -72,9 +100,10 @@ class Conn : public PtrInterface<Conn>
 
  
   Conn::PathList path(Location::Ptr _source, Location::Ptr _destination);
-  Conn::PathList path(Location::Ptr _source, Cost, Mile, bool, Time);
+  Conn::StatPathList path(Fleet::Ptr, Location::Ptr _source, Cost, Mile, bool, Time);
   static void printPathList(PathList&);
-	static void printPath(Path&);
+	static void printStatPathList(StatPathList&);
+	static void printPath(Path);
 	private:
 	String name_;
 	void pathInternal(Location::Ptr, Conn::PathList&, Conn::PathList&);

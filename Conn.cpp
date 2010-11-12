@@ -7,11 +7,110 @@ namespace Shipping
 
 
 
-Conn::PathList Conn::path(Location::Ptr _source, Cost _cost, Mile _distance, bool _expedite, Time _time )
+Conn::StatPathList Conn::path(Fleet::Ptr _fleet, Location::Ptr _source, Cost _cost, Mile _distance, bool _expedite, Time _time )
 {
-   Conn::PathList paths;
-	 Conn::PathList results;
+   Conn::StatPathList paths;
+	 Conn::StatPathList results;
 
+   vector<SegmentPtr> segments =  _source->segments();
+   vector<SegmentPtr>::iterator it = segments.begin();
+   
+	 // These are running variables
+	 Cost cost = 0;
+	 Mile distance = 0;
+   bool expedite = _expedite;
+	 Time time = 0;
+
+   for(; it != segments.end(); it++)
+	 {
+     SegmentPtr ret = (*it)->returnSegment();
+     if(ret)
+		 {
+		   if(ret->source())
+			 {
+				  
+			    Conn::StatPath p;
+					Segment* seg = (*it).ptr();
+			    if(_expedite == seg->expediteSupport())
+					{
+					  p.path().push_back( (*it ).ptr());
+					  p.costIs(seg->cost(_fleet));
+					  p.distanceIs(seg->length());
+					  p.expediteIs(expedite);
+						p.timeIs(time);
+            paths.push(p);
+
+				 }
+					
+			 }
+		 }
+	 }
+
+   while(!paths.empty())
+	 {
+		StatPath p = paths.front();
+		paths.pop();
+		results.push(p);
+		const Segment*& last_edge = p.path().back();
+     
+	  
+	  Segment::Ptr ret = last_edge->returnSegment();
+
+		Location::Ptr dest = ret->source();
+		
+
+		
+    if(nodeExistsInPath(dest, p.path()))
+		{
+			continue;
+		}
+
+    
+    vector<SegmentPtr> segments =  dest->segments();
+   	vector<SegmentPtr>::iterator it = segments.begin();
+    
+	  for(; it != segments.end(); it++)
+	  {
+		  SegmentPtr seg = *it;
+		  SegmentPtr ret = seg->returnSegment();
+			if(!ret)
+			{
+				continue;
+			}
+			else
+			{
+			  if(!ret->source())
+				{
+					continue;
+				}
+				else
+				{
+				  
+				  StatPath p1(p);
+          if(_expedite == expedite && 
+					     ( _cost != Cost::nil() && (( p.cost() + seg->cost(_fleet)) < _cost ) ) &&
+							 ( _distance != Mile::nil() && ( (p.distance() + seg->length()) < _distance) ) &&
+							 ( _time != Time::nil() && ( (p.time() + seg->time(_fleet)) < _time) )
+						)
+							
+					{
+					  p.path().push_back( (*it ).ptr());
+					  p.costIs(p.cost() + seg->cost(_fleet));
+					  p.distanceIs(p.distance() + seg->length());
+					  p.expediteIs(expedite);
+						p.timeIs(p.time() + seg->time(_fleet));
+
+            paths.push(p);
+
+          }
+
+          
+				}
+			}
+		}
+
+	}
+	
 	 return results;
 }
 
@@ -238,7 +337,7 @@ void Conn::printPathList(PathList& paths)
 	
 }
 
-void Conn::printPath(Path& p)
+void Conn::printPath(Path p)
 {
   Conn::Path::iterator it = p.begin();
 
@@ -252,6 +351,18 @@ void Conn::printPath(Path& p)
 
 	const Segment*& last_segment = p.back();
   std::cout << last_segment->returnSegment()->source()->name() << "\n";
+}
+
+void Conn::printStatPathList(StatPathList& paths)
+{
+  cout << "\n\nPrinting path list \n\n";
+  while(!paths.empty())
+	{
+	  Conn::printPath(paths.front().path());
+	  paths.pop();
+	}
+	
+
 }
 
 }
