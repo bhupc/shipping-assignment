@@ -14,17 +14,16 @@ using namespace std;
 typedef unsigned int uint32_t;
 
 
-
-class Mile : public Ordinal<Mile, double>
+class Cost : public Ordinal<Cost, double>
   {
     public:
 		String string_;
-    Mile() : Ordinal<Mile, double>(0.0){
+    Cost() : Ordinal<Cost, double>(0.0){
 			
 			string_="0.0";
 		}	  
-	  Mile(double val) throw (RangeException) :  Ordinal<Mile, double>(val) {
-		 if(val < 0) { throw RangeException("Invalid value for type Mile");}
+	  Cost(double val) throw (RangeException): Ordinal<Cost, double>(val){
+		if(val < 0){ throw RangeException("Invalid value for type Cost");}
 		 char buf[10];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
@@ -32,8 +31,9 @@ class Mile : public Ordinal<Mile, double>
 		
 		String string() const {return string_; }
 	   	
+	  static Cost nil() {  return Cost(0); }
+		Cost operator+(Cost _cost) { return Cost(value_ + _cost.value());}
   };
-
 
 
 class Time : public Ordinal<Time, double>
@@ -51,6 +51,8 @@ class Time : public Ordinal<Time, double>
   }
 		
 	String string() const {return string_; }
+  Time operator+(Time _time) { return Time(value_ + _time.value());}
+	static Time nil() {  return Time(0); }
 };
 
 class MPH : public Ordinal<MPH, double>
@@ -73,6 +75,33 @@ class MPH : public Ordinal<MPH, double>
   };
 
 
+
+class Mile : public Ordinal<Mile, double>
+  {
+    public:
+		String string_;
+    Mile() : Ordinal<Mile, double>(0.0){
+			
+			string_="0.0";
+		}	  
+	  Mile(double val) throw (RangeException) :  Ordinal<Mile, double>(val) {
+		 if(val < 0) { throw RangeException("Invalid value for type Mile");}
+		 char buf[10];
+		 sprintf(buf, "%.2f", val);
+		 string_.assign(buf);
+		}
+		
+		String string() const {return string_; }
+	   	
+	  static Mile nil() {  return Mile(0); }
+
+		Cost operator*(Cost _cost){ return Cost(_cost.value()*value_); } 
+		Time operator/(MPH _speed) {return Time(value_/_speed.value());}
+		Mile operator+(Mile _m){ return Mile(value_ + _m.value());}
+  };
+
+
+
 class Capacity : public Ordinal<Capacity, double>
   {
     public:
@@ -91,26 +120,6 @@ class Capacity : public Ordinal<Capacity, double>
 		String string() const {return string_; }
 	   	
   };
-
-class Cost : public Ordinal<Cost, double>
-  {
-    public:
-		String string_;
-    Cost() : Ordinal<Cost, double>(0.0){
-			
-			string_="0.0";
-		}	  
-	  Cost(double val) throw (RangeException): Ordinal<Cost, double>(val){
-		if(val < 0){ throw RangeException("Invalid value for type Cost");}
-		 char buf[10];
-		 sprintf(buf, "%.2f", val);
-		 string_.assign(buf);
-		}
-		
-		String string() const {return string_; }
-	   	
-  };
-
 
 
   class Difficulty : public Ordinal<Difficulty, double>

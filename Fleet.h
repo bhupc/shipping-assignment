@@ -22,7 +22,7 @@ namespace Shipping
 		
 		private:
 
-		MPH speed_[3];
+	  MPH speed_[3];
     Capacity capacity_[3];
     Cost cost_[3];
 
@@ -51,7 +51,7 @@ namespace Shipping
 		  capacity_[offset] = _capacity;
 		}
 
-		 Cost cost(uint32_t offset) { 
+		Cost cost(uint32_t offset) { 
 		  return cost_[offset];   
 		}
 		
@@ -68,6 +68,7 @@ protected:
 	String name_;
 
 };
+
 }
 
 #endif
