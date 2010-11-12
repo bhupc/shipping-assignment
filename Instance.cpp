@@ -30,6 +30,8 @@ namespace Shipping {
 
 			// Manager method
 			void instanceDel(const string& name);
+		
+			Ptr<Instance> fleet(return fleet_;)
 
 			Ptr<Engine> engine() const { return engine_;}
 		private:
@@ -758,6 +760,41 @@ namespace Shipping {
 			}
 
 			cout << "CORRECT EXPLORE QUERY" << endl;
+
+			Mile dist_limit;
+			Time time_limit;
+			bool is_expedited;
+			Cost cost_limit;
+
+			if(params.count("expedited")>0){
+				is_expedited= true;
+			}
+			else{
+				is_expedited = false;
+			}
+			if(params.count("distance")>0){
+				dist_limit = Mile(params["distance"]);
+			}
+			else{
+				dist_limit = NULL:
+			}
+			if(params.count("cost")>0){
+				time_limit = Time(params["cost"])
+			}
+			else{
+				time_limit = NULL;
+			}
+			if(params.count("time")>0){
+				cost_limit = Cost(params["time"]);
+			}
+			else{
+				cost_limit = NULL;
+			}
+	if(!manager_->fleet()){
+		cerr << "Initialize Fleet before Explore Query, Discarding" << endl;
+		return;
+	}
+	Conn::PathList paths = ConnEng_->path(manager_->fleet()->fleetEng(),src_rep->LocationEng(),cost_limit,dist_limit,is_expedited,time_limit);
 
 		}
 		else if(token == "connect"){

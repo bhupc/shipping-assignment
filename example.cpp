@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 
 	 boatSeg1->attributeIs("return segment", "boatSeg1r");
 	 boatSeg2->attributeIs("return segment", "boatSeg2r");
-   truckSeg1->attributeIs("return segment", "truckSeg1r");
+   	 truckSeg1->attributeIs("return segment", "truckSeg1r");
 	 truckSeg2->attributeIs("return segment", "truckSeg2r");
 
 
