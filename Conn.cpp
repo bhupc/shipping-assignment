@@ -87,20 +87,20 @@ Conn::StatPathList Conn::path(Fleet::Ptr _fleet, Location::Ptr _source, Cost _co
 				{
 				  
 				  StatPath p1(p);
-          if(_expedite == expedite && 
-					     ( _cost != Cost::nil() && (( p.cost() + seg->cost(_fleet)) < _cost ) ) &&
-							 ( _distance != Mile::nil() && ( (p.distance() + seg->length()) < _distance) ) &&
-							 ( _time != Time::nil() && ( (p.time() + seg->time(_fleet)) < _time) )
+          if(  ((_expedite == false )||  ( (_expedite == true) && (_expedite == p.expedite()) ) )&& 
+					     ( (_cost == Cost::nil()) ||  ( _cost != Cost::nil() && (( p.cost() + seg->cost(_fleet)) <= _cost ) ) )&&
+							 ( (_distance == Mile::nil()) || ( _distance != Mile::nil() && ( (p.distance() + seg->length()) <= _distance) ) )&&
+							 ( (_time == Time::nil() ) || ( _time != Time::nil() && ( (p.time() + seg->time(_fleet)) <= _time) ))
 						)
 							
 					{
-					  p.path().push_back( (*it ).ptr());
-					  p.costIs(p.cost() + seg->cost(_fleet));
-					  p.distanceIs(p.distance() + seg->length());
-					  p.expediteIs(expedite);
-						p.timeIs(p.time() + seg->time(_fleet));
+					  p1.path().push_back( (*it ).ptr());
+					  p1.costIs(p.cost() + seg->cost(_fleet));
+					  p1.distanceIs(p.distance() + seg->length());
+					  p1.expediteIs(_expedite);
+						p1.timeIs(p.time() + seg->time(_fleet));
 
-            paths.push(p);
+            paths.push(p1);
 
           }
 
