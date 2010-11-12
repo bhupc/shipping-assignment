@@ -31,7 +31,7 @@ namespace Shipping {
 			// Manager method
 			void instanceDel(const string& name);
 		
-			Ptr<Instance> fleet(return fleet_;)
+			Ptr<Instance> fleet(){return fleet_;}
 
 			Ptr<Engine> engine() const { return engine_;}
 		private:
@@ -776,25 +776,27 @@ namespace Shipping {
 				dist_limit = Mile(params["distance"]);
 			}
 			else{
-				dist_limit = NULL:
+				dist_limit = Mile::nil();
 			}
 			if(params.count("cost")>0){
-				time_limit = Time(params["cost"])
+				time_limit = Time(params["cost"]);
 			}
 			else{
-				time_limit = NULL;
+				time_limit =Time::nil();
 			}
 			if(params.count("time")>0){
 				cost_limit = Cost(params["time"]);
 			}
 			else{
-				cost_limit = NULL;
+				cost_limit = Cost::nil();
 			}
-	if(!manager_->fleet()){
+
+	// Ptr<SegmentRep>(dynamic_cast<SegmentRep*>(manager_->instance(v).ptr())
+	if(!Ptr<FleetRep>(dynamic_cast<FleetRep*>(manager_->fleet().ptr()))->fleetEng()){
 		cerr << "Initialize Fleet before Explore Query, Discarding" << endl;
-		return;
+		return "";
 	}
-	Conn::PathList paths = ConnEng_->path(manager_->fleet()->fleetEng(),src_rep->LocationEng(),cost_limit,dist_limit,is_expedited,time_limit);
+	Conn::StatPathList paths = ConnEng_->path(Ptr<FleetRep>(dynamic_cast<FleetRep*>(manager_->fleet().ptr()))->fleetEng(),src_rep->LocationEng(),cost_limit,dist_limit,is_expedited,time_limit);
 
 		}
 		else if(token == "connect"){
