@@ -9,7 +9,8 @@
 #include "Types.h"
 #include "Exceptions.h"
 #include "Fleet.h"
-
+#include <iostream>
+using namespace std;
 
 namespace Shipping
 {
@@ -112,21 +113,25 @@ namespace Shipping
 
 
 				inline Cost cost(Fleet::Ptr _fleet) { 
+				  Cost c(1.0);
 				  if(mode_ == TransportType::boat())
 					{
-					  return length_*(_fleet->cost(0));
+					  c = length_*(_fleet->cost(0));
 					}
 					if(mode_ == TransportType::plane())
 					{
-					  return length_*(_fleet->cost(1));
+					  c = length_*(_fleet->cost(1));
+						
 					}
           if(mode_ == TransportType::truck())
 					{
-					  return length_*(_fleet->cost(2));
+					  c = length_*(_fleet->cost(2));
 					}
 
           // assume that by default there is always a truck
-          return length_*(_fleet->cost(2));
+          else c = length_*(_fleet->cost(2));
+          cerr << "difficulty_.value = " << difficulty_.value() << "\n";
+          return Cost(c.value()*difficulty_.value());
 				}
 
 				inline Time time(Fleet::Ptr _fleet){
@@ -156,6 +161,8 @@ namespace Shipping
      public:
 		    Segment(const String& _name) : name_(_name) {
 					expediteSupport_ = false;
+					difficulty_ = Difficulty(1.0);
+				  length_ = Mile(1.0);	
 				}
 	};
 

@@ -70,7 +70,6 @@ class Conn : public PtrInterface<Conn>
 	{
 	  public:
 
-	  Conn::Path* path_;
 		StatPath(){ path_ = new Conn::Path(); }
 		StatPath(StatPath* p)
 		{
@@ -90,6 +89,7 @@ class Conn : public PtrInterface<Conn>
 		inline void timeIs(Time _time) {time_ = _time; }
 
     private:
+    Conn::Path* path_;
     Cost cost_;
 		Mile distance_;
 		bool expedite_;
@@ -107,7 +107,7 @@ class Conn : public PtrInterface<Conn>
  
   Conn::PathList path(Location::Ptr _source, Location::Ptr _destination);
   Conn::StatPathList path(Fleet::Ptr, Location::Ptr _source, Cost, Mile, bool, Time);
-  static void printPathList(PathList&);
+  static void printPathList(PathList&, Fleet::Ptr);
 	static void printStatPathList(StatPathList&);
 	static void printPath(Path);
 	private:

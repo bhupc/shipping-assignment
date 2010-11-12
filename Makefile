@@ -14,7 +14,7 @@ clean:
 	rm -f test1 example test1.o example.o $(OBJECTS) *~
 
 Instance.o: Instance.h Instance.cpp PtrInterface.h Ptr.h Engine.h Location.h Segment.h 
-Segment.o: Segment.h Segment.cpp
+Segment.o: Segment.h Segment.cpp Types.h
 Location.o: Location.h Segment.h Location.cpp Types.h Exceptions.h
 Engine.o: Engine.h Engine.cpp Stats.h Fleet.h 
 Conn.o: Conn.h Conn.cpp Types.h

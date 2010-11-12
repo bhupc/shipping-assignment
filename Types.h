@@ -18,9 +18,9 @@ class Cost : public Ordinal<Cost, double>
   {
     public:
 		String string_;
-    Cost() : Ordinal<Cost, double>(0.0){
+    Cost() : Ordinal<Cost, double>(1.0){
 			
-			string_="0.0";
+			string_="1.0";
 		}	  
 	  Cost(double val) throw (RangeException): Ordinal<Cost, double>(val){
 		if(val < 0){ throw RangeException("Invalid value for type Cost");}
@@ -40,8 +40,8 @@ class Time : public Ordinal<Time, double>
 {
   public:
 	String string_;
-  Time() : Ordinal<Time, double>(0.0){
-	 string_="0.0";
+  Time() : Ordinal<Time, double>(1.0){
+	 string_="1.0";
   }	  
   Time(double val)  throw (RangeException) : Ordinal<Time, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid Value for Type MPH");}
@@ -59,9 +59,9 @@ class MPH : public Ordinal<MPH, double>
   {
     public:
 		String string_;
-    MPH() : Ordinal<MPH, double>(0.0){
+    MPH() : Ordinal<MPH, double>(1.0){
 			
-			string_="0.0";
+			string_="1.0";
 		}	  
 	  MPH(double val)  throw (RangeException) : Ordinal<MPH, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid Value for Type MPH");}
@@ -80,9 +80,9 @@ class Mile : public Ordinal<Mile, double>
   {
     public:
 		String string_;
-    Mile() : Ordinal<Mile, double>(0.0){
+    Mile() : Ordinal<Mile, double>(1.0){
 			
-			string_="0.0";
+			string_="1.0";
 		}	  
 	  Mile(double val) throw (RangeException) :  Ordinal<Mile, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid value for type Mile");}
@@ -106,9 +106,9 @@ class Capacity : public Ordinal<Capacity, double>
   {
     public:
 		String string_;
-    Capacity() : Ordinal<Capacity, double>(0.0){
+    Capacity() : Ordinal<Capacity, double>(1.0){
 			
-			string_="0.0";
+			string_="1.0";
 		}	  
 	  Capacity(double val) throw (RangeException): Ordinal<Capacity, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid Capacity Value");}
@@ -125,7 +125,7 @@ class Capacity : public Ordinal<Capacity, double>
   class Difficulty : public Ordinal<Difficulty, double>
   {
   public:
-	  Difficulty(): Ordinal<Difficulty, double>(0.0) {string_ = "0.0"; }
+	  Difficulty(): Ordinal<Difficulty, double>(1.0) {/*value_ = 1.0;*/ string_ = "1.0"; }
     Difficulty(double val) throw (RangeException) : Ordinal<Difficulty, double>(val){
 		  if( (val < 1.0) ||  (val > 5.0) )
 	    {

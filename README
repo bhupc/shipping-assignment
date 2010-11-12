@@ -1,0 +1,15 @@
+user: bhupc
+user: shreyg
+
+Error Handling is done by a mix of exceptions which have been caught and silently ignored, with appropriate messages sent to "stderr".
+Some other logging too happens on the cerr. 
+
+Class Design/Implementation Highlights:
+
+- Each Rep Layer Class contains a corresponding engine Level Object and hence we have one to one mapping of objects from Rep Layer to Engine layer.
+- We use the names (which are constrained to be exclusive to each other) as identifier for objects in both Rep and Engine Layer. 
+- New types : Mile,Cost,MPH, Difficulty are defined in Types.h These are used for the various attributes types required in implementation. We have tried to work with these data types as the Ordinal and Nominal data types. 
+- Rep Layer Implementation is contained solely in Instance.cpp . Instance.h remains unmodified as desired.
+- Engine Layer Implementation is spread across - Location.h/cpp Stats.h/cpp Conn.h/cpp Fleet.h Engine.h/cpp Segment.h/cpp
+- Smart Pointers are employed in the implementation. This was really challenging as we faced various problems ( the diamond problem in Stats.h for stats ).  
+- 

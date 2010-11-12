@@ -32,9 +32,9 @@ namespace Shipping
 		Fleet(const String& _name)
 		{
 		name_ = _name;
-		  speed_[0] = MPH(50); speed_[1] = MPH(500); speed_[2] = MPH(20);
-      capacity_[0] = Capacity(100); capacity_[1] = Capacity(1000); capacity_[2] = Capacity(20);
-      cost_[0] = Cost(2); cost_[1] = Cost(5); cost_[2] = Cost(1);
+		  speed_[0] = MPH(1); speed_[1] = MPH(1); speed_[2] = MPH(1);
+      capacity_[0] = Capacity(1); capacity_[1] = Capacity(1); capacity_[2] = Capacity(1);
+      cost_[0] = Cost(1); cost_[1] = Cost(1); cost_[2] = Cost(1);
 		}
     
 	  void costIs(uint32_t offset, Cost _cost) { 

@@ -8,7 +8,7 @@
 #include "Engine.h"
 #include "Conn.h"
 #include <sstream>
-
+#include <cstring>
 namespace Shipping {
 
 	using namespace std;
@@ -593,7 +593,7 @@ namespace Shipping {
 
 	string StatsRep::attribute(const string& type){
 		std::stringstream out;
-
+    //out.precision(2);
 		if (type == "Truck terminal") {
 			out << StatsEng_->truckTerminalCount();
 			return out.str();
@@ -641,13 +641,20 @@ namespace Shipping {
 		if(type=="expedite percentage"){
 
 			cerr << "** Segment Count is - "<<StatsEng_->segmentCount() << endl;
+			double temp;
+			char buff[20];
+			memset(buff,0,20);
 			if(StatsEng_->segmentCount() >0){
-				out << ((double)StatsEng_->expeditedSegmentCount()/(double)StatsEng_->segmentCount()*100.0);
+				//out << ( (double)StatsEng_->expeditedSegmentCount()/(double)StatsEng_->segmentCount()  *100.0);
+				
+				temp = 100.0* ((double)StatsEng_->expeditedSegmentCount())/((double)StatsEng_->segmentCount()); 
 			}
 			else{
-				out << 0;
+        temp = 0.00;
 			}
-			return out.str();
+			sprintf(buff, "%.2f", temp);
+
+			return String(buff);
 		}
 
 		cerr << "Invalid Stats Query" << endl;
@@ -759,7 +766,6 @@ namespace Shipping {
 				return "";
 			}
 
-			cout << "CORRECT EXPLORE QUERY" << endl;
 
 			Mile dist_limit;
 			Time time_limit;
@@ -835,10 +841,10 @@ Conn::printStatPathList(paths);
 
 			if(!error_flag){
 				
-				cout << "CORRECT connect QUERY" << endl;
 				Conn::PathList paths = ConnEng_->path(src_rep->LocationEng(),dest_rep->LocationEng());
 				// Call the Engine Layer functionality with two location engine objects src_eng and dest_eng
-				Conn::printPathList(paths);
+
+				Conn::printPathList(paths, Ptr<FleetRep>(dynamic_cast<FleetRep*>(manager_->fleet().ptr()))->fleetEng());
 			}
 		}
 		else{
