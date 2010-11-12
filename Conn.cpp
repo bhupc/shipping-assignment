@@ -1,6 +1,6 @@
 #include "Conn.h"
 #include <iostream>
-
+#include <cassert>
 using namespace std;
 namespace Shipping
 {
@@ -29,15 +29,15 @@ Conn::StatPathList Conn::path(Fleet::Ptr _fleet, Location::Ptr _source, Cost _co
 		   if(ret->source())
 			 {
 				  
-			    Conn::StatPath p;
 					Segment* seg = (*it).ptr();
 			    if(_expedite == seg->expediteSupport())
 					{
-					  p.path().push_back( (*it ).ptr());
-					  p.costIs(seg->cost(_fleet));
-					  p.distanceIs(seg->length());
-					  p.expediteIs(expedite);
-						p.timeIs(time);
+					  Conn::StatPath* p = new StatPath();
+					  p->path()->push_back( (*it ).ptr());
+					  p->costIs(seg->cost(_fleet));
+					  p->distanceIs(seg->length());
+					  p->expediteIs(expedite);
+						p->timeIs(time);
             paths.push(p);
 
 				 }
@@ -46,69 +46,88 @@ Conn::StatPathList Conn::path(Fleet::Ptr _fleet, Location::Ptr _source, Cost _co
 		 }
 	 }
 
+   int i = 0;
+	 cerr << "Before entering size is: " << paths.size() << "\n";
    while(!paths.empty())
 	 {
-		StatPath p = paths.front();
-		paths.pop();
-		results.push(p);
-		const Segment*& last_edge = p.path().back();
-     
-	  
+	  std::cout << "called " << i++ << "\n"; 
+		StatPath*& p = paths.front();
+		StatPath* rp = new StatPath();
+		rp->path_ = new Path(*(p->path()));
+		results.push(rp);
+		Segment*& last_edge = p->path()->back();
 	  Segment::Ptr ret = last_edge->returnSegment();
-
+    cerr << "Return Segment offront segment is: " << ret->name() << "\n";
 		Location::Ptr dest = ret->source();
+		cerr << "Its destination: " << dest->name() << "\n";
 		
 
 		
-    if(nodeExistsInPath(dest, p.path()))
+    if(nodeExistsInPath(dest, *(p->path())))
 		{
+		  cerr << "Dest already Exists" << endl;
+		  paths.pop();
 			continue;
 		}
 
     
     vector<SegmentPtr> segments =  dest->segments();
    	vector<SegmentPtr>::iterator it = segments.begin();
-    
+    cerr << "No of new segments considered: " << segments.size() << endl;
+
 	  for(; it != segments.end(); it++)
 	  {
 		  SegmentPtr seg = *it;
 		  SegmentPtr ret = seg->returnSegment();
 			if(!ret)
 			{
+			  //paths.pop();
 				continue;
 			}
 			else
 			{
 			  if(!ret->source())
 				{
+				  //paths.pop();
 					continue;
 				}
 				else
 				{
+
+					    if(nodeExistsInPath(ret->source(), *(p->path())))
+							{
+		  					//paths.pop();
+								continue;
+							}
+
+
 				  
-				  StatPath p1(p);
-          if(  ((_expedite == false )||  ( (_expedite == true) && (_expedite == p.expedite()) ) )&& 
-					     ( (_cost == Cost::nil()) ||  ( _cost != Cost::nil() && (( p.cost() + seg->cost(_fleet)) <= _cost ) ) )&&
-							 ( (_distance == Mile::nil()) || ( _distance != Mile::nil() && ( (p.distance() + seg->length()) <= _distance) ) )&&
-							 ( (_time == Time::nil() ) || ( _time != Time::nil() && ( (p.time() + seg->time(_fleet)) <= _time) ))
+				  StatPath* p1 = new StatPath(*p);
+					std::cout<< "JUST BEFORE \n" ;
+          if(  ((_expedite == false )||  ( (_expedite == true) && (_expedite == p->expedite()) ) )&& 
+					     ( (_cost == Cost::nil()) ||  ( _cost != Cost::nil() && (( p->cost() + seg->cost(_fleet)) <= _cost ) ) )&&
+							 ( (_distance == Mile::nil()) || ( _distance != Mile::nil() && ( (p->distance() + seg->length()) <= _distance) ) )&&
+							 ( (_time == Time::nil() ) || ( _time != Time::nil() && ( (p->time() + seg->time(_fleet)) <= _time) ))
 						)
 							
 					{
-					  p1.path().push_back( (*it ).ptr());
-					  p1.costIs(p.cost() + seg->cost(_fleet));
-					  p1.distanceIs(p.distance() + seg->length());
-					  p1.expediteIs(_expedite);
-						p1.timeIs(p.time() + seg->time(_fleet));
+					  p1->path()->push_back( (*it ).ptr());
+					  p1->costIs(p->cost() + seg->cost(_fleet));
+					  p1->distanceIs(p->distance() + seg->length());
+					  p1->expediteIs(_expedite);
+						p1->timeIs(p->time() + seg->time(_fleet));
 
             paths.push(p1);
+						std::cout << "PUSHING PUSHING " << std::endl;
 
           }
 
           
 				}
 			}
-		}
-
+			
+		}// End of consideration of all new segments
+		paths.pop();
 	}
 	
 	 return results;
@@ -151,7 +170,7 @@ void Conn::pathInternal(Location::Ptr _destination, Conn::PathList& paths, Conn:
 	{
 		Path p = paths.front();
 		paths.pop();
-		const Segment*& last_edge = p.back();
+		Segment*& last_edge = p.back();
      
 	  
 	  Segment::Ptr ret = last_edge->returnSegment();
@@ -349,7 +368,7 @@ void Conn::printPath(Path p)
 	//SegmentPtrConst last_segment = p.back()->segment();
  // std::cout << last_segment->returnSegment()->source()->name() << "\n";
 
-	const Segment*& last_segment = p.back();
+	Segment*& last_segment = p.back();
   std::cout << last_segment->returnSegment()->source()->name() << "\n";
 }
 
@@ -358,7 +377,7 @@ void Conn::printStatPathList(StatPathList& paths)
   cout << "\n\nPrinting path list \n\n";
   while(!paths.empty())
 	{
-	  Conn::printPath(paths.front().path());
+	  Conn::printPath( *(paths.front()->path()));
 	  paths.pop();
 	}
 	

@@ -62,28 +62,34 @@ class Conn : public PtrInterface<Conn>
   public:
 	typedef Fwk::Ptr<Conn> Ptr;
 	typedef Fwk::Ptr<Conn const> PtrConst;
-  typedef vector<const Segment*> Path;
+  typedef vector<Segment*> Path;
   typedef queue<Path> PathList;
      
 	
 	class StatPath
 	{
 	  public:
-		StatPath(){}
-	  inline Conn::Path path() const{ return path_;}
+
+	  Conn::Path* path_;
+		StatPath(){ path_ = new Conn::Path(); }
+		StatPath(StatPath* p)
+		{
+		  StatPath* n = new StatPath(*p);
+			n->path_ = new Path( *(p->path()) );
+		}
+	  Conn::Path* path() const{ return path_;}
 		inline Cost cost() const {return cost_;}
 		inline Mile distance() const {return distance_;}
     inline bool expedite() const {return expedite_;}
 	  inline Time time() const {return time_;}	
     
-		inline void pathIs(Conn::Path _path) {path_ = _path;}
+		inline void pathIs(Conn::Path* _path) {path_ = _path;}
 		inline void costIs(Cost _cost) {cost_ = _cost ;}
 		inline void distanceIs(Mile _distance) {distance_ =  _distance;}
 		inline void expediteIs(bool _expedite) {expedite_= _expedite;}
 		inline void timeIs(Time _time) {time_ = _time; }
 
     private:
-	  Conn::Path path_;
     Cost cost_;
 		Mile distance_;
 		bool expedite_;
@@ -91,7 +97,7 @@ class Conn : public PtrInterface<Conn>
 	
 	};
   
-	typedef queue<StatPath> StatPathList;
+	typedef queue<StatPath*> StatPathList;
 	
 
 	public:

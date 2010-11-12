@@ -797,7 +797,7 @@ namespace Shipping {
 		return "";
 	}
 	Conn::StatPathList paths = ConnEng_->path(Ptr<FleetRep>(dynamic_cast<FleetRep*>(manager_->fleet().ptr()))->fleetEng(),src_rep->LocationEng(),cost_limit,dist_limit,is_expedited,time_limit);
-
+Conn::printStatPathList(paths);
 		}
 		else if(token == "connect"){
 			string src, dest;

@@ -102,13 +102,19 @@ int main(int argc, char *argv[]) {
 		boatSeg2->attributeIs("source", "port1");
     boatSeg1->attributeIs("return segment", "boatSeg2");
     cout << "boatSeg1->attribute('return segment'): " << boatSeg1->attribute("return segment") << endl;
-
+*/
     // -- Segment lengths
-    boatSeg1->attributeIs("length", "400");
-    boatSeg2->attributeIs("length", "400");
-    truckSeg1->attributeIs("length", "-1");
-    truckSeg2->attributeIs("length", "900");
+    boatSeg1->attributeIs("length", "100");
+    boatSeg2->attributeIs("length", "100");
+    truckSeg1->attributeIs("length", "100");
+    truckSeg2->attributeIs("length", "100");
+    boatSeg1r->attributeIs("length", "100");
+    boatSeg2r->attributeIs("length", "100");
+    truckSeg1r->attributeIs("length", "100");
+    truckSeg2r->attributeIs("length", "100");
 
+
+/*
     // -- Segment difficulties
     boatSeg1->attributeIs("difficulty", "-2");
     boatSeg2->attributeIs("difficulty", "1");
