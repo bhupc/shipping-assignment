@@ -24,7 +24,7 @@ class Cost : public Ordinal<Cost, double>
 		}	  
 	  Cost(double val) throw (RangeException): Ordinal<Cost, double>(val){
 		if(val < 0){ throw RangeException("Invalid value for type Cost");}
-		 char buf[10];
+		 char buf[100];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
 		}
@@ -45,7 +45,7 @@ class Time : public Ordinal<Time, double>
   }	  
   Time(double val)  throw (RangeException) : Ordinal<Time, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid Value for Type MPH");}
-		 char buf[10];
+		 char buf[100];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
   }
@@ -65,7 +65,7 @@ class MPH : public Ordinal<MPH, double>
 		}	  
 	  MPH(double val)  throw (RangeException) : Ordinal<MPH, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid Value for Type MPH");}
-		 char buf[10];
+		 char buf[100];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
 		}
@@ -86,7 +86,7 @@ class Mile : public Ordinal<Mile, double>
 		}	  
 	  Mile(double val) throw (RangeException) :  Ordinal<Mile, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid value for type Mile");}
-		 char buf[10];
+		 char buf[100];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
 		}
@@ -112,7 +112,7 @@ class Capacity : public Ordinal<Capacity, double>
 		}	  
 	  Capacity(double val) throw (RangeException): Ordinal<Capacity, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid Capacity Value");}
-		 char buf[10];
+		 char buf[100];
 		 sprintf(buf, "%.2f", val);
 		 string_.assign(buf);
 		}
@@ -132,7 +132,7 @@ class Capacity : public Ordinal<Capacity, double>
 	      throw RangeException("Difficulty Value out of range");
 	    }
 
-			char buf[10];
+			char buf[100];
 			sprintf(buf, "%.2f", val);
       string_.assign(buf);
 		}
@@ -142,6 +142,29 @@ class Capacity : public Ordinal<Capacity, double>
 
 	  String string_;
   };
+
+class PackageCount : public Ordinal<PackageCount, unsigned int>
+  {
+    public:
+		String string_;
+    PackageCount() : Ordinal<PackageCount, unsigned int>(1){
+			
+			string_="1";
+		}	
+		
+	  PackageCount(unsigned int val) :  Ordinal<PackageCount, unsigned int>(val) {
+		char buf[100];
+		 sprintf(buf, "%d", val);
+		 string_.assign(buf);
+		}
+		
+		String string() const {return string_; }
+	   	
+	  static PackageCount nil() {  return PackageCount(0); }
+
+  };
+
+
 
 	class TransportType : public Nominal<TransportType, unsigned int>
 	{

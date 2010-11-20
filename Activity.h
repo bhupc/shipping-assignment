@@ -8,15 +8,9 @@
 
 #include "Nominal.h"
 #include "Notifiee.h"
+#include "Types.h"
 
 using std::string;
-
-/* Define the type 'Time' */
-class Time : public Ordinal<Time,double> {
-public:
-    Time(double time) : Ordinal<Time,double>(time)
-    {}
-};
 
 class Activity : public Fwk::PtrInterface<Activity> {
  public:
