@@ -1,8 +1,8 @@
 CXXFLAGS = -Wall -g
 
-OBJECTS = Instance.o Segment.o Location.o Engine.o Conn.o
+OBJECTS = Instance.o Segment.o Location.o Engine.o Conn.o ActivityImpl.o ActivityReactor.o
 
-default:	test1 example
+default:	untar test1 example
 
 test1:	test1.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
@@ -10,6 +10,8 @@ test1:	test1.o $(OBJECTS)
 example:	example.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
+untar:	ActivityExample.tar.gz
+	tar xvzf ActivityExample.tar.gz
 clean:
 	rm -f test1 example test1.o example.o $(OBJECTS) *~
 
@@ -18,5 +20,7 @@ Segment.o: Segment.h Segment.cpp Types.h
 Location.o: Location.h Segment.h Location.cpp Types.h Exceptions.h
 Engine.o: Engine.h Engine.cpp Stats.h Fleet.h 
 Conn.o: Conn.h Conn.cpp Types.h
+ActivityImpl.o: ActivityImpl.cpp ActivityImpl.h Activity.h	
+ActivityReactor.o: Activity.h ActivityReactor.h ActivityReactor.cpp
 test1.o: test1.cpp Instance.h PtrInterface.h Ptr.h
 example.o: example.cpp

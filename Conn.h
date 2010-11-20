@@ -107,9 +107,9 @@ class Conn : public PtrInterface<Conn>
  
   Conn::PathList path(Location::Ptr _source, Location::Ptr _destination);
   Conn::StatPathList path(Fleet::Ptr, Location::Ptr _source, Cost, Mile, bool, Time);
-  static void printPathList(PathList&, Fleet::Ptr);
-	static void printStatPathList(StatPathList&);
-	static void printPath(Path);
+  static string printPathList(PathList&, Fleet::Ptr);
+	static string printStatPathList(StatPathList&);
+	static string printPath(Path);
 	private:
 	String name_;
 	void pathInternal(Location::Ptr, Conn::PathList&, Conn::PathList&);

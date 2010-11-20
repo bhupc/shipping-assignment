@@ -191,7 +191,7 @@ namespace Shipping {
 		{
 			// Nothing else to do.
 			SegmentEng_ = manager_->engine()->SegmentNew(name);
-			SegmentEng_->modeIs(TransportType::boat());
+			SegmentEng_->modeIs(TransportType::plane());
 		}
 	};
 
