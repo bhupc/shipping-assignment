@@ -12,7 +12,7 @@ using namespace std;
 
 Fwk::Ptr<Activity::Manager> activityManagerInstance();
 
-namespace ActivityImpl {
+namespace Shipping {
     
     //Comparison class for activities   
  class ActivityComp : public binary_function<Activity::Ptr, Activity::Ptr, bool> {

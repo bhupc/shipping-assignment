@@ -9,6 +9,18 @@ using namespace std;
 
 namespace Shipping
 {
+  
+	void Location::packageCountInc(PackageCount _packageCount)
+	{
+    packageCount_ += _packageCount;
+    // inform the notifieeIs
+
+		for(unsigned int i = 0; i < notifiee_.size() ; i++)
+		{
+		  notifiee_[i]->onPackageCountInc(_packageCount);
+		}
+	}
+
 
   SegmentPtr CustomerLocation::segment(unsigned int offset) const 
   {

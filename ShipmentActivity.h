@@ -4,17 +4,18 @@
 
 #include "ActivityImpl.h"
 
-class ShipmentActivity : public ActivityImpl::ActivityImpl
+namespace Shipping
 {
-  public:
-	typedef Fwk::Ptr<ShipmentActivity> Ptr;
-  PackageCount packageCount() { return packageCount_;}
-	void packageCountIs(PackageCount _packageCount) { packageCount_ = _packageCount;}
+  class ShipmentActivity : public Shipping::ActivityImpl
+  {
+    public:
+	  typedef Fwk::Ptr<ShipmentActivity> Ptr;
+    PackageCount packageCount() { return packageCount_;}
+	  void packageCountIs(PackageCount _packageCount) { packageCount_ = _packageCount;}
 	
-	private:
-  PackageCount packageCount_;
- 
-  
-};
+	  private:
+    PackageCount packageCount_;
+  };
 
+}
 #endif

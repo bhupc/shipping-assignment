@@ -7,7 +7,7 @@
 #include "Exceptions.h"
 #include "Ptr.h"
 #include "PtrInterface.h"
-
+#include "Nominal.h"
 
 using namespace std;
  
@@ -161,6 +161,12 @@ class PackageCount : public Ordinal<PackageCount, unsigned int>
 		String string() const {return string_; }
 	   	
 	  static PackageCount nil() {  return PackageCount(0); }
+
+		PackageCount operator+(PackageCount _count) { return PackageCount(value_ + _count.value());}
+		PackageCount operator-(PackageCount _count) { return PackageCount(value_ - _count.value());}
+
+		PackageCount operator+=(PackageCount _count) { return PackageCount(value_ + _count.value());}
+		PackageCount operator-=(PackageCount _count) { return PackageCount(value_ - _count.value());}
 
   };
 

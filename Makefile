@@ -1,6 +1,6 @@
 CXXFLAGS = -Wall -g
 
-OBJECTS = Instance.o Segment.o Location.o Engine.o Conn.o ActivityImpl.o ActivityReactor.o ShipmentActivity.o
+OBJECTS = Instance.o Segment.o Location.o Engine.o Conn.o ActivityImpl.o ShipmentActivityReactor.o LocationReactor.o 
 
 default:	untar test1 example
 
@@ -21,7 +21,7 @@ Location.o: Location.h Segment.h Location.cpp Types.h Exceptions.h
 Engine.o: Engine.h Engine.cpp Stats.h Fleet.h 
 Conn.o: Conn.h Conn.cpp Types.h
 ActivityImpl.o: ActivityImpl.cpp ActivityImpl.h Activity.h	
-ActivityReactor.o: Activity.h ActivityReactor.h ActivityReactor.cpp
-ShipmentActivity.o: ShipmentActivity.h ShipmentActivity.cpp
+ShipmentActivityReactor.o: Segment.h Location.h Activity.h ShipmentActivityReactor.h ShipmentActivityReactor.cpp
+LocationReactor.o:	LocationReactor.h LocationReactor.cpp
 test1.o: test1.cpp Instance.h PtrInterface.h Ptr.h
 example.o: example.cpp

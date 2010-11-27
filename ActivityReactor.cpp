@@ -4,7 +4,7 @@ static int num = 0;
 
 void ProducerActivityReactor::onStatus() {
     Queue::Ptr q = NULL;
-    ActivityImpl::ManagerImpl::Ptr managerImpl = Fwk::ptr_cast<ActivityImpl::ManagerImpl>(manager_);
+    Shipping::ManagerImpl::Ptr managerImpl = Fwk::ptr_cast<ActivityImpl::ManagerImpl>(manager_);
     switch (activity_->status()) {
 	
     case Activity::executing:

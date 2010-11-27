@@ -48,6 +48,7 @@ namespace Shipping
          virtual void onSegmentModeIs(Segment::Ptr _segment) {}
 		 	 };
 
+
 			/* The notifiee class for the Segment */
 
 			  private:
@@ -73,7 +74,10 @@ namespace Shipping
 			/* This is the listof the notifiees to be notified on events */
       vector<Segment::Notifiee*> notifiee_;
       
+		  PackageCount packageCount_;
+      Capacity capacity_;
 			
+
 			public:
         inline TransportType mode() const  { return mode_;}
 
@@ -158,12 +162,18 @@ namespace Shipping
 				void returnSegmentIs(Segment::Ptr);
 				void onReturnSegmentChange(Segment::Ptr);
 				void notifieeIs(Notifiee* const _notifiee) { notifiee_.push_back(_notifiee);}
-     public:
+        void packageCountInc(PackageCount _count) { packageCount_ += _count;} 
+				Capacity capacity() const { return capacity_; }
+				void capacityIs(Capacity _capacity) { capacity_=_capacity;}
+        Time transferTime(PackageCount _count) const { return Time::nil(); }
+        public:
 		    Segment(const String& _name) : name_(_name) {
 					expediteSupport_ = false;
 					difficulty_ = Difficulty(1.0);
 				  length_ = Mile(1.0);	
 				}
+
+
 	};
 
 }

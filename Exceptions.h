@@ -39,5 +39,11 @@ class IllegalSegmentException : public Exception
   IllegalSegmentException(String _what) : Exception(_what){}
 };
 
+class DestinationUnreachableException : public Exception
+{
+  public:
+	DestinationUnreachableException(String _what) : Exception(_what) {}
+};
+
 #endif
 

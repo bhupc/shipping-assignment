@@ -28,8 +28,19 @@ namespace Shipping
 
       typedef Fwk::Ptr<Location> Ptr;
       typedef Fwk::Ptr<Location const> PtrConst;
-
+     
 		public:
+
+		  class Notifiee
+			{
+			  public:
+        Notifiee(Location::Ptr _location) : location_(_location) {}
+
+				virtual void onPackageCountInc(PackageCount _count) {}
+			  
+				protected:
+				Location::Ptr location_;
+			};
   		/* put the segment at the offset */
       
 			/* get the segment at the offset */
@@ -60,15 +71,28 @@ namespace Shipping
 					}
 				}
 			}
+      
+			void notifieeIs(Notifiee* _notifiee)
+			{
+			  notifiee_.push_back(_notifiee);
+			}
 			
+			PackageCount packageCount() { return packageCount_;}
+			void packageCountIs(PackageCount _count) { packageCount_ = _count;}
+			void packageCountInc(PackageCount);
+			void packageCountDec(PackageCount _count) {packageCount_ -= _count;}
+			Location::Ptr destination() const { return destination_;}
+			void destinationIs(Location::Ptr _destination) { destination_=_destination;}
 			protected:
       /* This is the global name of this location */
 	    String name_;
       TransportType type_;
 			vector<SegmentPtr> segment_;
 		  uint32_t locType_;
+			vector<Notifiee*> notifiee_;
       
-        
+			PackageCount packageCount_; 
+      Location::Ptr destination_;        
   };
 
 

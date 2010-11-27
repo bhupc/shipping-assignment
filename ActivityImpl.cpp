@@ -5,10 +5,10 @@
 
 
 Fwk::Ptr<Activity::Manager> activityManagerInstance() {
-    return ActivityImpl::ManagerImpl::activityManagerInstance();
+    return Shipping::ManagerImpl::activityManagerInstance();
 }
 
-namespace ActivityImpl {
+namespace Shipping {
     //Definition of static member
     Fwk::Ptr<Activity::Manager> ManagerImpl::activityInstance_ = NULL;
     
