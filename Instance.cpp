@@ -803,7 +803,7 @@ namespace Shipping {
 		return "";
 	}
 	Conn::StatPathList paths = ConnEng_->path(Ptr<FleetRep>(dynamic_cast<FleetRep*>(manager_->fleet().ptr()))->fleetEng(),src_rep->LocationEng(),cost_limit,dist_limit,is_expedited,time_limit);
-Conn::printStatPathList(paths);
+return Conn::printStatPathList(paths);
 		}
 		else if(token == "connect"){
 			string src, dest;
@@ -844,7 +844,7 @@ Conn::printStatPathList(paths);
 				Conn::PathList paths = ConnEng_->path(src_rep->LocationEng(),dest_rep->LocationEng());
 				// Call the Engine Layer functionality with two location engine objects src_eng and dest_eng
 
-				Conn::printPathList(paths, Ptr<FleetRep>(dynamic_cast<FleetRep*>(manager_->fleet().ptr()))->fleetEng());
+				return Conn::printPathList(paths, Ptr<FleetRep>(dynamic_cast<FleetRep*>(manager_->fleet().ptr()))->fleetEng());
 			}
 		}
 		else{

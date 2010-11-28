@@ -134,7 +134,7 @@ namespace Shipping
 
           // assume that by default there is always a truck
           else c = length_*(_fleet->cost(2));
-          cerr << "difficulty_.value = " << difficulty_.value() << "\n";
+          //cerr << "difficulty_.value = " << difficulty_.value() << "\n";
           return Cost(c.value()*difficulty_.value());
 				}
 

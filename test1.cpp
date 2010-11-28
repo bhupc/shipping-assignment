@@ -896,7 +896,8 @@ void sigsegv(int signal) {
 int main(int argc, char *argv[]) {
     signal(SIGSEGV, sigsegv);
 
-    TEST(testLocationAttributes, 1);
+ 
+   TEST(testLocationAttributes, 1);
     TEST(testSegmentAttributes, 1);
     TEST(testStatsAttributes, 1);
     TEST(testStatsAttributes2, 1);

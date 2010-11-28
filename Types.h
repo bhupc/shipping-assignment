@@ -52,6 +52,7 @@ class Time : public Ordinal<Time, double>
 		
 	String string() const {return string_; }
   Time operator+(Time _time) { return Time(value_ + _time.value());}
+	Time operator/(double _t) { return Time(value_ / _t);}
 	static Time nil() {  return Time(0); }
 };
 

@@ -248,6 +248,7 @@ string Conn::printPathList(PathList& paths, Fleet::Ptr _fleet)
 	{
 
     Cost cost(0);
+		Time time_exp(0);
   	Time time(0);
     bool exp = true;
     Path p = paths.front();
@@ -258,8 +259,14 @@ string Conn::printPathList(PathList& paths, Fleet::Ptr _fleet)
 		  Segment* seg = *it;
 			cost = cost + seg->cost(_fleet);
       time = time + seg->time(_fleet);
+			time_exp = time_exp + seg->time(_fleet)/1.30;		
 			if(!seg->expediteSupport()) exp = false;
 		}
+		if(exp){
+		cost = Cost(cost.value()*1.5);
+		time = time_exp;
+		}
+		
     strstream << cost.string() << " " << time.string() << " " << (exp?"yes; ":"no; ");
 	  strstream << Conn::printPath(paths.front());
 		strstream << "\n";
