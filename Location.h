@@ -60,17 +60,17 @@ namespace Shipping
 		virtual void shipmentSizeIs(){}
 		virtual void destinationIs(){}
 
-		virtual string transferRate(){ return "";}
-		virtual string shipmentSize(){ return "";}
-		virtual string destination(){ return "";}
-		virtual string shipmentsReceived(){ return "";}
-		virtual string averageLatency(){ return "";}
-		virtual string totalCost(){ return "";}
+		virtual string transferRate(){ return "";} //ShipmentCount
+		virtual string shipmentSize(){ return "";} //packagecount
+		virtual string destination(){ return "";} //
+
+		virtual string shipmentsReceived(){ return "";} //ShipemntCount
+		virtual string averageLatency(){ return "";} //Time
+		virtual string totalCost(){ return "";} //Cost
 
 
 		virtual void onSegmentSourceDel(SegmentPtr _segment)
 		{
-
 			// Find the segment and delete it
 			vector<SegmentPtr> :: iterator it = segment_.begin();
 			for(; it != segment_.end(); it++)

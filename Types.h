@@ -188,8 +188,32 @@ class PackageCount : public Ordinal<PackageCount, unsigned int>
 
 	};
   
+class PackageCount : public Ordinal<PackageCount, unsigned int>
+  {
+    public:
+		String string_;
+    PackageCount() : Ordinal<PackageCount, unsigned int>(1){
+			
+			string_="1";
+		}	
+		
+	  PackageCount(unsigned int val) :  Ordinal<PackageCount, unsigned int>(val) {
+		char buf[100];
+		 sprintf(buf, "%d", val);
+		 string_.assign(buf);
+		}
+		
+		String string() const {return string_; }
+	   	
+	  static PackageCount nil() {  return PackageCount(0); }
 
+		PackageCount operator+(PackageCount _count) { return PackageCount(value_ + _count.value());}
+		PackageCount operator-(PackageCount _count) { return PackageCount(value_ - _count.value());}
 
+		PackageCount operator+=(PackageCount _count) { return PackageCount(value_ + _count.value());}
+		PackageCount operator-=(PackageCount _count) { return PackageCount(value_ - _count.value());}
+
+  };
 
 
 #endif
