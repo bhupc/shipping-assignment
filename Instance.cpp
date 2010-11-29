@@ -283,6 +283,7 @@ namespace Shipping {
 		stats_ = NULL;
 		conn_ = NULL;
 		fleet_ = NULL;
+
 		engine_ = Engine::EngineIs(); 
 	}
 
@@ -391,11 +392,45 @@ namespace Shipping {
 	}
 
 	void ManagerImpl::instanceDel(const string& name) {
-	}
-
+                if(instance(name)){
+                        Ptr<Instance> ptr =  instance(name);
+                        if(ptr == conn_ || ptr == fleet_ || ptr == stats_){
+                                cerr << "Not deleting conn, Fleet and Stats objects" << endl;
+                        }
+                        else{
+                                // It as to be either location or segment
+                                if(dynamic_cast<SegmentRep*>(ptr.ptr())){
+                                        cerr << "Deleting Segment" << endl;
+					(Ptr<SegmentRep>(dynamic_cast<SegmentRep*>(ptr.ptr()))->SegmentEng())->sourceIs(NULL);
+                                        (Ptr<SegmentRep>(dynamic_cast<SegmentRep*>(ptr.ptr()))->SegmentEng())->deleteRef();
+                                         ptr->deleteRef();
+                                }
+                                else if(dynamic_cast<LocationRep*>(ptr.ptr())){
+                                        cerr << "Deleting Location" <<endl;
+                                        (Ptr<LocationRep>(dynamic_cast<LocationRep*>(ptr.ptr()))->LocationEng())->deleteRef();
+                                        ptr->deleteRef();
+                                }
+                                instance_.erase(name);
+                        }
+                }
+                else{
+                        cerr << "No such instance to delete"<< endl;
+                }
+        }
 
 
 	string LocationRep::attribute(const string& name) {
+		if(dynamic_cast<CustomerRep*>(this)){
+
+		if(name=="Tranfer Rate"){}
+		else if(name == "Shipment Size"){}
+		else if(name == "Destination"){}
+		// Read Only attributes
+		else if(name == "Shipments Received"){}
+		else if(name == "Average Latency"){}
+		else if(name == "Total Cost"){}
+		}
+
 		int i = segmentNumber(name);
 		if (i != 0) {
 			if(LocationEng_->segment(i-1)){
@@ -409,7 +444,18 @@ namespace Shipping {
 
 
 	void LocationRep::attributeIs(const string& name, const string& v) {
-		//nothing to do
+		if(dynamic_cast<CustomerRep*>(this)){
+			if(name == "Transfer Rate"){	
+			}
+			else if(name == "Shipment Size"){
+
+			}
+			else if(name == "Destination"){
+
+			}
+		}
+		else
+			cerr << "Not a customer Location" << endl;
 	}
 
 	string SegmentRep::attribute(const string& name) {
@@ -443,6 +489,17 @@ namespace Shipping {
 			return (SegmentEng_->difficulty()).string();
 		}
 
+		// Read Only
+		if(name == "Shipments Received"){}
+		
+		// Read Only
+		if(name == "Shipments Refused"){}
+
+		
+		if(name == "Capacity"){
+			return (SegmentEng_->capacity()).string();
+		}
+
 		cerr << "Tried to Read non-existent attribute";
 		return "";
 
@@ -455,6 +512,13 @@ namespace Shipping {
 		///    "return segment"
 		///    "difficulty"
 		///    "expedite support"
+		/// 	"capacity"
+
+		if(name == "Capacity"){
+			int value = atoi(v.c_str());
+			SegmentEng_->capacityIs(Capacity(value));
+			return;
+		}
 		if (name == "expedite support"){
 			if(v=="yes"){
 				SegmentEng_->expediteSupportIs(true);
@@ -493,7 +557,7 @@ namespace Shipping {
 			Ptr<LocationRep> src = Ptr<LocationRep> (dynamic_cast<LocationRep*>(manager_->instance(v).ptr()));
 			if(src){
 				try{
-				SegmentEng_->sourceIs(src->LocationEng());
+					SegmentEng_->sourceIs(src->LocationEng());
 				}
 				catch(...){
 					cerr << "Incompatible Location Segment Pair, Command Discarded" << endl;
@@ -559,6 +623,7 @@ namespace Shipping {
 
 	void FleetRep::attributeIs(const string& name, const string& v){
 		double value = atof(v.c_str());
+	        int value_int = atoi(v.c_str());
 
 		if(name=="Boat, speed"){
 			FleetEng_->speedIs(0,MPH(value));
@@ -571,13 +636,13 @@ namespace Shipping {
 		}
 
 		if(name=="Boat, capacity"){
-			FleetEng_->capacityIs(0,Capacity(value));
+			FleetEng_->capacityIs(0,Capacity(value_int));
 		}
 		if(name=="Plane, capacity"){
-			FleetEng_->capacityIs(1,Capacity(value));
+			FleetEng_->capacityIs(1,Capacity(value_int));
 		}
 		if(name=="Truck, capacity"){
-			FleetEng_->capacityIs(2,Capacity(value));
+			FleetEng_->capacityIs(2,Capacity(value_int));
 		}
 
 		if(name=="Boat, cost"){
@@ -697,8 +762,19 @@ namespace Shipping {
 	}
 	
 	void ConnRep::attributeIs(const string& name, const string& value){
-		// Nothing to do
-		cerr << "Non mutable attributes for Conn, command Discarded" << endl;
+		// We have the routing algo
+		if(name.compare("routing")== 0){
+			
+			if(value.compare("1")==0){
+				ConnEng_->routingAlgoIs(value);
+			}
+			else if(value.compare("2")==0){
+				ConnEng_->routingAlgoIs(value);
+			}
+			else{
+				cerr << "Only available algorithms are 1. Dijkstra 2. BFS. Select appropriate number for the same" << endl;
+			}
+		}
 	}
 
 	string ConnRep::attribute(const string& name){
@@ -709,6 +785,9 @@ namespace Shipping {
 		string token;
 
 		input >> token;
+		if(token == "routing"){
+			return ConnEng_->routingAlgo();
+		}
 		if(token == "explore"){
 			string src;
 			if(!(input >> src && input >> token)){

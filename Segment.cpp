@@ -17,9 +17,12 @@ void Shipping::Segment::sourceIs(Location::Ptr _source)
 	  return source_->onSegmentSourceDel(Segment::Ptr(this));
 	}
 
+	/* To be Changed ??*/
+	if(source_){
+		source_->onSegmentSourceDel(Segment::Ptr(this));
+	}
 	source_ = _source;
-
-  source_->onSegmentSourceChanged(Segment::Ptr(this));
+  	source_->onSegmentSourceChanged(Segment::Ptr(this));
 }
 
 void Segment::onReturnSegmentChange(Segment::Ptr _segment)

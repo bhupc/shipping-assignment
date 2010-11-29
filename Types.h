@@ -103,18 +103,18 @@ class Mile : public Ordinal<Mile, double>
 
 
 
-class Capacity : public Ordinal<Capacity, double>
+class Capacity : public Ordinal<Capacity, int>
   {
     public:
 		String string_;
-    Capacity() : Ordinal<Capacity, double>(1.0){
+    Capacity() : Ordinal<Capacity, int>(1){
 			
-			string_="1.0";
+			string_="1";
 		}	  
-	  Capacity(double val) throw (RangeException): Ordinal<Capacity, double>(val) {
+	  Capacity(int val) throw (RangeException): Ordinal<Capacity, int>(val) {
 		 if(val < 0) { throw RangeException("Invalid Capacity Value");}
 		 char buf[100];
-		 sprintf(buf, "%.2f", val);
+		 sprintf(buf, "%d", val);
 		 string_.assign(buf);
 		}
 		
