@@ -16,6 +16,29 @@ void LocationReactor::onPackageCountInc(PackageCount _count)
 }
 
 
+void LocationReactor::scheduleInjectActivity()
+{
+  
+  if(!injectActivity_)
+	{
+	  // Create a new inject activity
+		// FIXME append the location name with this activity name
+		injectActivity_ = manager_->activityNew("InjectActivity");
+		injectActivity_->lastNotifieeIs(this);
+	}
+  // Time is always in hours
+  injectActivity_->nextTime(manager_->now() + Time(24));
+	manager_->lastActivityIs(injectActivity_);
+}
+
+void LocationReactor::onStatus()
+{
+  scheduleInjectActivity();
+	// FIXME increment the packet count here
+
+}
+
+
 void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount _count, Location::Ptr _dest)
 {
 
@@ -26,7 +49,14 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 	sar->destinationIs(_dest);
 	//Assuming that we are transfering package size <= segment capacity
 	Time transferTime = _segment->transferTime(_count);
-  act->nextTimeIs(manager_->now() + transferTime); 
+  Time t = lastScheduled_ + transferTime;
+	if(t >= manager_->now())
+	{
+	  // Increase the refuse count for this segment to be this activity 
+    // FIXME
+	}
+	act->nextTimeIs(t);
+	lastScheduled_ = t;
 	act->lastNotifieeIs(sar.ptr());
 
 	manager_->lastActivityIs(act);
@@ -47,7 +77,7 @@ void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr des
 	Conn::Path p = getBestPath(location_, destination, pathList);
   
   // What if there is no path from this location to the destination
-	if(p.empty())
+	if(pathList.empty())
 	{
 	  stringstream strstream;
 		strstream << "Could not fine path from " << location_->name() << " to " << destination->name() << std::endl;
