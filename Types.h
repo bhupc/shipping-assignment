@@ -144,6 +144,8 @@ class Capacity : public Ordinal<Capacity, int>
 	  String string_;
   };
 
+
+class ShipmentCount;
 class PackageCount : public Ordinal<PackageCount, unsigned int>
   {
     public:
@@ -169,6 +171,7 @@ class PackageCount : public Ordinal<PackageCount, unsigned int>
 		PackageCount operator+=(PackageCount _count) { return PackageCount(value_ + _count.value());}
 		PackageCount operator-=(PackageCount _count) { return PackageCount(value_ - _count.value());}
 
+   //PackageCount operator*=(ShipmentCount _count); 
   };
 
 
@@ -188,16 +191,16 @@ class PackageCount : public Ordinal<PackageCount, unsigned int>
 
 	};
   
-class PackageCount : public Ordinal<PackageCount, unsigned int>
+class ShipmentCount : public Ordinal<ShipmentCount, unsigned int>
   {
     public:
 		String string_;
-    PackageCount() : Ordinal<PackageCount, unsigned int>(1){
+    ShipmentCount() : Ordinal<ShipmentCount, unsigned int>(1){
 			
 			string_="1";
 		}	
 		
-	  PackageCount(unsigned int val) :  Ordinal<PackageCount, unsigned int>(val) {
+	  ShipmentCount(unsigned int val) :  Ordinal<ShipmentCount, unsigned int>(val) {
 		char buf[100];
 		 sprintf(buf, "%d", val);
 		 string_.assign(buf);
@@ -205,15 +208,19 @@ class PackageCount : public Ordinal<PackageCount, unsigned int>
 		
 		String string() const {return string_; }
 	   	
-	  static PackageCount nil() {  return PackageCount(0); }
+	  static ShipmentCount nil() {  return ShipmentCount(0); }
 
-		PackageCount operator+(PackageCount _count) { return PackageCount(value_ + _count.value());}
-		PackageCount operator-(PackageCount _count) { return PackageCount(value_ - _count.value());}
+		ShipmentCount operator+(ShipmentCount _count) { return ShipmentCount(value_ + _count.value());}
+		ShipmentCount operator-(ShipmentCount _count) { return ShipmentCount(value_ - _count.value());}
 
-		PackageCount operator+=(PackageCount _count) { return PackageCount(value_ + _count.value());}
-		PackageCount operator-=(PackageCount _count) { return PackageCount(value_ - _count.value());}
+		ShipmentCount operator+=(ShipmentCount _count) { return ShipmentCount(value_ + _count.value());}
+		ShipmentCount operator-=(ShipmentCount _count) { return ShipmentCount(value_ - _count.value());}
+		PackageCount operator*=(PackageCount _count) { return PackageCount(value_ * _count.value());}
 
   };
+
+
+//PackageCount PackageCount::operator*=(ShipmentCount _count) { return PackageCount(value_ * _count.value());}
 
 
 #endif

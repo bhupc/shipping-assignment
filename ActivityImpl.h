@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 Fwk::Ptr<Activity::Manager> activityManagerInstance();
 
 namespace Shipping {
@@ -99,6 +100,7 @@ namespace Shipping {
     };
     
 }
+
 
 #endif /* __ACTIVITY_IMPL_H__ */
 

@@ -17,10 +17,10 @@ namespace Shipping {
 	// Rep layer classes
 	//
 
-	class ManagerImpl : public Instance::Manager {
+	class ManagerRepImpl : public Instance::Manager {
 
 		public:
-			ManagerImpl();
+			ManagerRepImpl();
 
 			// Manager method
 			Ptr<Instance> instanceNew(const string& name, const string& type);
@@ -46,7 +46,7 @@ namespace Shipping {
 	class LocationRep : public Instance {
 		public:
 
-			LocationRep(const string& name, ManagerImpl* manager) :
+			LocationRep(const string& name, ManagerRepImpl* manager) :
 				Instance(name), manager_(manager)
 		{
 			// Nothing else to do.
@@ -62,7 +62,7 @@ namespace Shipping {
 			Location::Ptr LocationEng(){return LocationEng_ ;}
 
 		protected:
-			Ptr<ManagerImpl> manager_;
+			Ptr<ManagerRepImpl> manager_;
 			Location::Ptr LocationEng_;
 			int segmentNumber(const string& name);
 	};
@@ -70,7 +70,7 @@ namespace Shipping {
 	class TruckTerminalRep : public LocationRep {
 		public:
 
-			TruckTerminalRep(const string& name, ManagerImpl *manager) :
+			TruckTerminalRep(const string& name, ManagerRepImpl *manager) :
 				LocationRep(name, manager)
 		{
 			// Should we keep the same names
@@ -90,7 +90,7 @@ namespace Shipping {
 	class PlaneTerminalRep : public LocationRep {
 		public:
 
-			PlaneTerminalRep(const string& name, ManagerImpl *manager) :
+			PlaneTerminalRep(const string& name, ManagerRepImpl *manager) :
 				LocationRep(name, manager)
 		{
 			// Do Type IS
@@ -102,7 +102,7 @@ namespace Shipping {
 	class BoatTerminalRep : public LocationRep {
 		public:
 
-			BoatTerminalRep(const string& name, ManagerImpl *manager) :
+			BoatTerminalRep(const string& name, ManagerRepImpl *manager) :
 				LocationRep(name, manager)
 		{
 			LocationEng_ = manager_->engine()->BoatTerminalNew(name);
@@ -113,7 +113,7 @@ namespace Shipping {
 	class CustomerRep : public LocationRep {
 		public:
 
-			CustomerRep(const string& name, ManagerImpl *manager) :
+			CustomerRep(const string& name, ManagerRepImpl *manager) :
 				LocationRep(name, manager)
 		{
 			// Nothing else to do.
@@ -124,7 +124,7 @@ namespace Shipping {
 	class PortRep : public LocationRep {
 		public:
 
-			PortRep(const string& name, ManagerImpl *manager) :
+			PortRep(const string& name, ManagerRepImpl *manager) :
 				LocationRep(name, manager)
 		{
 			LocationEng_ = manager_->engine()->PortNew(name);
@@ -137,7 +137,7 @@ namespace Shipping {
 	class SegmentRep : public Instance {
 		public:
 
-			SegmentRep(const string& name, ManagerImpl* manager) :
+			SegmentRep(const string& name, ManagerRepImpl* manager) :
 				Instance(name), manager_(manager)
 		{
 			// Nothing else to do.
@@ -154,7 +154,7 @@ namespace Shipping {
 			// SEGMENT ATTRIBUTES ARE source, length, return segment, difficuly, expidite support,(YES/NO)
 
 		protected:
-			Ptr<ManagerImpl> manager_;
+			Ptr<ManagerRepImpl> manager_;
 			Segment::Ptr SegmentEng_;
 
 	};
@@ -162,7 +162,7 @@ namespace Shipping {
 	class TruckSegmentRep : public SegmentRep {
 		public:
 
-			TruckSegmentRep(const string& name, ManagerImpl *manager) :
+			TruckSegmentRep(const string& name, ManagerRepImpl *manager) :
 				SegmentRep(name, manager)
 		{
 			// Nothing else to do.
@@ -174,7 +174,7 @@ namespace Shipping {
 	class BoatSegmentRep : public SegmentRep {
 		public:
 
-			BoatSegmentRep(const string& name, ManagerImpl *manager) :
+			BoatSegmentRep(const string& name, ManagerRepImpl *manager) :
 				SegmentRep(name, manager)
 		{
 			SegmentEng_ = manager_->engine()->SegmentNew(name);
@@ -186,7 +186,7 @@ namespace Shipping {
 	class PlaneSegmentRep : public SegmentRep {
 		public:
 
-			PlaneSegmentRep(const string& name, ManagerImpl *manager) :
+			PlaneSegmentRep(const string& name, ManagerRepImpl *manager) :
 				SegmentRep(name, manager)
 		{
 			// Nothing else to do.
@@ -203,7 +203,7 @@ namespace Shipping {
 	class StatsRep : public Instance {
 		public:
 
-			StatsRep(const string& name, ManagerImpl* manager) :
+			StatsRep(const string& name, ManagerRepImpl* manager) :
 				Instance(name), manager_(manager)
 		{
 			StatsEng_ = manager_->engine()->StatsNew(name);
@@ -220,7 +220,7 @@ namespace Shipping {
 
 
 		private:
-			Ptr<ManagerImpl> manager_;
+			Ptr<ManagerRepImpl> manager_;
 
 			Fwk::Ptr<Stats> StatsEng_;
 	};
@@ -230,7 +230,7 @@ namespace Shipping {
 	class FleetRep : public Instance {
 		public:
 
-			FleetRep(const string& name, ManagerImpl* manager) :
+			FleetRep(const string& name, ManagerRepImpl* manager) :
 				Instance(name), manager_(manager)
 		{
 
@@ -247,7 +247,7 @@ namespace Shipping {
 
 
 		protected:
-			Ptr<ManagerImpl> manager_;
+			Ptr<ManagerRepImpl> manager_;
 			Fleet::Ptr FleetEng_;
 	};
 
@@ -256,7 +256,7 @@ namespace Shipping {
 	class ConnRep : public Instance {
 		public:
 
-			ConnRep(const string& name, ManagerImpl* manager) :
+			ConnRep(const string& name, ManagerRepImpl* manager) :
 				Instance(name), manager_(manager)
 		{
 			ConnEng_ = manager_->engine()->ConnNew(name);
@@ -270,7 +270,7 @@ namespace Shipping {
 			// We are in the instance
 			
 		private:
-			Ptr<ManagerImpl> manager_;
+			Ptr<ManagerRepImpl> manager_;
 			Conn::Ptr ConnEng_;
 	};
 
@@ -279,7 +279,7 @@ namespace Shipping {
 
 	//-------------------------------------------------------
 
-	ManagerImpl::ManagerImpl() {
+	ManagerRepImpl::ManagerRepImpl() {
 		stats_ = NULL;
 		conn_ = NULL;
 		fleet_ = NULL;
@@ -289,7 +289,7 @@ namespace Shipping {
 
 	// ---------------------------------------------------------
 
-	Ptr<Instance> ManagerImpl::instanceNew(const string& name, const string& type) {
+	Ptr<Instance> ManagerRepImpl::instanceNew(const string& name, const string& type) {
 
 		//If this name already exist then return NULL
 		if(instance_.count(name)>0){
@@ -385,13 +385,13 @@ namespace Shipping {
 		return NULL;
 	}
 
-	Ptr<Instance> ManagerImpl::instance(const string& name) {
+	Ptr<Instance> ManagerRepImpl::instance(const string& name) {
 		map<string,Ptr<Instance> >::const_iterator t = instance_.find(name);
 
 		return t == instance_.end() ? NULL : (*t).second;
 	}
 
-	void ManagerImpl::instanceDel(const string& name) {
+	void ManagerRepImpl::instanceDel(const string& name) {
                 if(instance(name)){
                         Ptr<Instance> ptr =  instance(name);
                         if(ptr == conn_ || ptr == fleet_ || ptr == stats_){
@@ -422,13 +422,19 @@ namespace Shipping {
 	string LocationRep::attribute(const string& name) {
 		if(dynamic_cast<CustomerRep*>(this)){
 
-		if(name=="Tranfer Rate"){}
-		else if(name == "Shipment Size"){}
-		else if(name == "Destination"){}
+		if(name=="Tranfer Rate"){
+			return LocationEng_->transferRate().string();
+		}
+		else if(name == "Shipment Size"){		return LocationEng_->shipmentSize().string();
+}
+		else if(name == "Destination"){		return LocationEng_->destination()->name();
+}
 		// Read Only attributes
-		else if(name == "Shipments Received"){}
-		else if(name == "Average Latency"){}
-		else if(name == "Total Cost"){}
+		else if(name == "Shipments Received"){	return LocationEng_->shipmentsReceived().string();}
+		else if(name == "Average Latency"){	return LocationEng_->averageLatency().string();
+}
+		else if(name == "Total Cost"){ 	return LocationEng_->totalCost().string();
+ }
 		}
 
 		int i = segmentNumber(name);
@@ -445,13 +451,17 @@ namespace Shipping {
 
 	void LocationRep::attributeIs(const string& name, const string& v) {
 		if(dynamic_cast<CustomerRep*>(this)){
+			int value = atoi(v.c_str());
 			if(name == "Transfer Rate"){	
+				LocationEng_->transferRateIs(ShipmentCount(value));
 			}
 			else if(name == "Shipment Size"){
-
-			}
+				LocationEng_->shipmentSizeIs(PackageCount(value));			}
 			else if(name == "Destination"){
-
+				LocationEng_->destinationIs( Ptr<LocationRep>(dynamic_cast<LocationRep*>(manager_->instance(v).ptr()))->LocationEng());
+				if(!LocationEng_->destination()){
+					cerr << "NULL Destination" << endl;
+				}
 			}
 		}
 		else
@@ -941,5 +951,5 @@ return Conn::printStatPathList(paths);
 } // Namespace ends
 
 Ptr<Instance::Manager> shippingInstanceManager() {
-	return new Shipping::ManagerImpl();
+	return new Shipping::ManagerRepImpl();
 }

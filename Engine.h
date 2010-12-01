@@ -92,6 +92,8 @@ namespace Shipping {
 			PlaneTerminal::Ptr PlaneTerminalNew(const String&);
 			Fwk::Ptr<Stats> StatsNew(const String&);
 			Fwk::Ptr<Conn> ConnNew(const String&);
+			
+			
 	};
 
 

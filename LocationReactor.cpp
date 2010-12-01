@@ -18,6 +18,7 @@ void LocationReactor::onPackageCountInc(PackageCount _count)
 
 void LocationReactor::scheduleInjectActivity()
 {
+  std::cerr << "In LocationReactor::scheduleInjectActivity()" << std::endl;
   
   if(!injectActivity_)
 	{
@@ -27,15 +28,29 @@ void LocationReactor::scheduleInjectActivity()
 		injectActivity_->lastNotifieeIs(this);
 	}
   // Time is always in hours
-  injectActivity_->nextTime(manager_->now() + Time(24));
+  injectActivity_->nextTimeIs(manager_->now() + Time(24));
 	manager_->lastActivityIs(injectActivity_);
+
+	std::cerr << "Inject Activity scheduled to finish at time = " << (manager_->now() + Time(24)).value() << " "  << std::endl;
+  
 }
 
 void LocationReactor::onStatus()
 {
-  scheduleInjectActivity();
-	// FIXME increment the packet count here
+  std::cerr << "In LocationReactor::onStatus()" << std::endl;
+  if(injectActivity_->status() != 0) return;
 
+  scheduleInjectActivity();
+
+	// FIXME increment the packet count here
+  // Shipment transfer rate has to be taken into account
+  
+  //location_->packageCountInc( (location_->transferRate())*(location_->shipmentSize()) );
+  PackageCount p = PackageCount( (location_->transferRate().value())*(location_->shipmentSize().value())) ;
+
+  std::cerr << "Injected " << p.value() << " packets into the location " << location_->name() << " " << std::endl;
+
+  location_->packageCountInc(p);
 }
 
 
@@ -61,8 +76,10 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 
 	manager_->lastActivityIs(act);
 
+	std::cerr << "Scheduling new activity called " << name << "at the location " << location_->name() << " " << std::endl;
+
 	totalActivities_++;
-}
+} 
 
 
 void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr destination) throw (DestinationUnreachableException)
@@ -71,18 +88,21 @@ void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr des
 	{
 	  return;
 	}
+  
+
 	Conn::PathList pathList = conn_->path(location_, destination);
-  
-	//Get the best path from the path list for the given source and diestina
-	Conn::Path p = getBestPath(location_, destination, pathList);
-  
-  // What if there is no path from this location to the destination
-	if(pathList.empty())
+	
+  	if(pathList.empty())
 	{
 	  stringstream strstream;
 		strstream << "Could not fine path from " << location_->name() << " to " << destination->name() << std::endl;
 	  throw DestinationUnreachableException(strstream.str());
 	}
+
+	//Get the best path from the path list for the given source and diestina
+	Conn::Path p = getBestPath(location_, destination, pathList);
+  
+  // What if there is no path from this location to the destination
 	//Now take the first segment in the best path
   	
 	Segment::Ptr nextSeg = p[0];
@@ -128,6 +148,7 @@ const string LocationReactor::getNewActivityName()
 
 Conn::Path LocationReactor::getBestPath(Location::Ptr _src, Location::Ptr _dest, Conn::PathList _pathList)
 {
+  
   return _pathList.front();
 }
 

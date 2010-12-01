@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "Stats.h"
 #include "Conn.h"
+#include "Activity.h"
+#include "LocationReactor.h"
 
 using namespace Shipping;
 
@@ -56,6 +58,9 @@ CustomerLocation::Ptr Engine::CustomerLocationNew(const String& name)
 	{
 	  (*it)->onCustomerLocationNew(m);
 	}
+  
+	Activity::Manager::Ptr manager = activityManagerInstance();
+	m->notifieeIs(new LocationReactor(m, manager, conn_));
 
 	
 	return m;
@@ -70,6 +75,10 @@ Port::Ptr Engine::PortNew(const String& name)
 	{
 	  (*it)->onPortNew(m);
 	}
+  
+	Activity::Manager::Ptr manager = activityManagerInstance();
+	m->notifieeIs(new LocationReactor(m, manager, conn_));
+
 
 
 	return m;
@@ -84,6 +93,10 @@ BoatTerminal::Ptr Engine::BoatTerminalNew(const String& name)
 	{
 	  (*it)->onBoatTerminalNew(m);
 	}
+  
+	Activity::Manager::Ptr manager = activityManagerInstance();
+	m->notifieeIs(new LocationReactor(m, manager, conn_));
+
 
  
 	return m;
@@ -121,6 +134,11 @@ PlaneTerminal::Ptr Engine::PlaneTerminalNew(const String& name)
 	{
 	  (*it)->onPlaneTerminalNew(m);
 	}
+  
+	Activity::Manager::Ptr manager = activityManagerInstance();
+	m->notifieeIs(new LocationReactor(m, manager, conn_));
+
+
 	return m;
 }
 
@@ -134,6 +152,10 @@ TruckTerminal::Ptr Engine::TruckTerminalNew(const String& name)
 	{
 	  (*it)->onTruckTerminalNew(m);
 	}
+  
+	Activity::Manager::Ptr manager = activityManagerInstance();
+	m->notifieeIs(new LocationReactor(m, manager, conn_));
+
 
 
 	return m;

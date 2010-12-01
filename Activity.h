@@ -12,6 +12,8 @@
 
 using std::string;
 
+
+
 class Activity : public Fwk::PtrInterface<Activity> {
  public:
     typedef Fwk::Ptr<Activity> Ptr;
@@ -22,6 +24,7 @@ class Activity : public Fwk::PtrInterface<Activity> {
 	typedef Fwk::Ptr<Notifiee> Ptr;
 
         Notifiee(Activity* act) : Fwk::BaseNotifiee<Activity>(act) {}
+        Notifiee() : Fwk::BaseNotifiee<Activity>() {}
 
         virtual void onNextTime() {}
 	virtual void onStatus() {}
@@ -77,5 +80,6 @@ private:
 };
 
 extern Fwk::Ptr<Activity::Manager> activityManagerInstance();
+
 
 #endif

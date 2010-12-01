@@ -35,6 +35,7 @@ namespace Shipping
 		{
 			public:
 				Notifiee(Location::Ptr _location) : location_(_location) {}
+				Notifiee(){}
 
 				virtual void onPackageCountInc(PackageCount _count) {}
 
@@ -56,17 +57,39 @@ namespace Shipping
 		virtual void segmentIs(unsigned int offset, SegmentPtr _segment) {}
 		virtual void onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException){}
 
-		virtual void transferRateIs(){}
-		virtual void shipmentSizeIs(){}
-		virtual void destinationIs(){}
+		void activate()
+		{
+		  if 
+			       (
+			        (transferRate_ != ShipmentCount::nil()) &&
+							(shipmentSize_ != PackageCount::nil()) &&
+							destination_
+			      )
 
-		virtual string transferRate(){ return "";} //ShipmentCount
-		virtual string shipmentSize(){ return "";} //packagecount
-		virtual string destination(){ return "";} //
+			{
+			  for(unsigned int i = 0; i < notifiee_.size(); i++)
+				{
+				  notifiee_[i]->onPackageCountInc( PackageCount(shipmentSize_.value() * transferRate_.value()) );
+				}
 
-		virtual string shipmentsReceived(){ return "";} //ShipemntCount
-		virtual string averageLatency(){ return "";} //Time
-		virtual string totalCost(){ return "";} //Cost
+			}
+
+			
+					     
+		}
+		virtual void transferRateIs(ShipmentCount _transferRate){
+		
+		  transferRate_ = _transferRate;
+			activate();
+		 }
+		virtual void shipmentSizeIs(PackageCount _shipmentSize){shipmentSize_ = _shipmentSize; activate() ; }
+
+		virtual ShipmentCount transferRate(){ return transferRate_;} //ShipmentCount
+		virtual PackageCount shipmentSize(){ return shipmentSize_;} //packagecount
+
+		virtual ShipmentCount shipmentsReceived(){ return ShipmentCount::nil();} //ShipemntCount
+		virtual Time averageLatency(){ return Time::nil();} //Time
+		virtual Cost totalCost(){ return Cost::nil();} //Cost
 
 
 		virtual void onSegmentSourceDel(SegmentPtr _segment)
@@ -93,7 +116,9 @@ namespace Shipping
 		void packageCountInc(PackageCount);
 		void packageCountDec(PackageCount _count) {packageCount_ -= _count;}
 		Location::Ptr destination() const { return destination_;}
-		void destinationIs(Location::Ptr _destination) { destination_=_destination;}
+		void destinationIs(Location::Ptr _destination) { destination_=_destination; activate(); }
+
+
 		protected:
 		/* This is the global name of this location */
 		String name_;
@@ -104,6 +129,17 @@ namespace Shipping
 
 		PackageCount packageCount_; 
 		Location::Ptr destination_;        
+    ShipmentCount transferRate_;
+		PackageCount shipmentSize_;
+
+		Location() { 
+		
+		  transferRate_ = ShipmentCount::nil();
+		  shipmentSize_ = PackageCount::nil();
+			destination_ = NULL;
+
+			// Create the reactor here
+		}
 	};
 
 

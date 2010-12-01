@@ -2,13 +2,19 @@ CXXFLAGS = -Wall -g
 
 OBJECTS = Instance.o Segment.o Location.o Engine.o Conn.o ActivityImpl.o ShipmentActivityReactor.o LocationReactor.o 
 
-default:	untar test1 example test3
+default:	untar test1 example test3 test2 test4
 
 
 test1:	test1.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 test3:	test3.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+test2:	test2.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+test4:	test4.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 
@@ -31,3 +37,5 @@ LocationReactor.o:	LocationReactor.h LocationReactor.cpp
 test1.o: test1.cpp Instance.h PtrInterface.h Ptr.h
 example.o: example.cpp
 test3.o: test3.cpp
+test2.o: test2.cpp
+test4.o: test4.cpp
