@@ -15,6 +15,11 @@ using namespace Shipping;
 
   conn_ = Fwk::Ptr<Conn>(new Conn("_engine_conn_"));
 
+
+  fleet_ = Fleet::Ptr(new Fleet("_engine_fleet_"));
+
+
+
 }
 
 void Engine::Notifiee::notifierIs(Engine::Ptr _notifier)
@@ -60,7 +65,7 @@ CustomerLocation::Ptr Engine::CustomerLocationNew(const String& name)
 	}
   
 	Activity::Manager::Ptr manager = activityManagerInstance();
-	m->notifieeIs(new LocationReactor(m, manager, conn_));
+	m->notifieeIs(new LocationReactor(m, manager, conn_, fleet_));
 
 	
 	return m;
@@ -77,7 +82,7 @@ Port::Ptr Engine::PortNew(const String& name)
 	}
   
 	Activity::Manager::Ptr manager = activityManagerInstance();
-	m->notifieeIs(new LocationReactor(m, manager, conn_));
+	m->notifieeIs(new LocationReactor(m, manager, conn_, fleet_));
 
 
 
@@ -95,7 +100,7 @@ BoatTerminal::Ptr Engine::BoatTerminalNew(const String& name)
 	}
   
 	Activity::Manager::Ptr manager = activityManagerInstance();
-	m->notifieeIs(new LocationReactor(m, manager, conn_));
+	m->notifieeIs(new LocationReactor(m, manager, conn_, fleet_));
 
 
  
@@ -104,8 +109,8 @@ BoatTerminal::Ptr Engine::BoatTerminalNew(const String& name)
 
 Fleet::Ptr Engine::FleetNew(const String& name)
 {
-  Fleet::Ptr m = Fleet::Ptr(new Fleet(name));
-        return m;
+  
+	return fleet_;
 }
 
 Stats::Ptr Engine::StatsNew(const String& name)
@@ -136,7 +141,7 @@ PlaneTerminal::Ptr Engine::PlaneTerminalNew(const String& name)
 	}
   
 	Activity::Manager::Ptr manager = activityManagerInstance();
-	m->notifieeIs(new LocationReactor(m, manager, conn_));
+	m->notifieeIs(new LocationReactor(m, manager, conn_, fleet_));
 
 
 	return m;
@@ -154,7 +159,7 @@ TruckTerminal::Ptr Engine::TruckTerminalNew(const String& name)
 	}
   
 	Activity::Manager::Ptr manager = activityManagerInstance();
-	m->notifieeIs(new LocationReactor(m, manager, conn_));
+	m->notifieeIs(new LocationReactor(m, manager, conn_, fleet_));
 
 
 

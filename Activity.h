@@ -2,6 +2,7 @@
 #define __ACTIVITY_H__
 
 #include <string>
+#include <iostream>
 
 #include "PtrInterface.h"
 #include "Ptr.h"
@@ -10,8 +11,10 @@
 #include "Notifiee.h"
 #include "Types.h"
 
-using std::string;
 
+
+using std::string;
+using namespace std;
 
 
 class Activity : public Fwk::PtrInterface<Activity> {
@@ -27,7 +30,7 @@ class Activity : public Fwk::PtrInterface<Activity> {
         Notifiee() : Fwk::BaseNotifiee<Activity>() {}
 
         virtual void onNextTime() {}
-	virtual void onStatus() {}
+	virtual void onStatus() {  std::cerr << "I am called here " << std::endl; }
     };
 
     class Manager;

@@ -56,16 +56,23 @@ namespace Shipping {
     }
 
     void ManagerImpl::nowIs(Time t) {
-	//find the most recent activites to run and run them in order
-	while (!scheduledActivities_.empty()) {
+	    //find the most recent activites to run and run them in order
+     
+	   cout << "size of queue: " << scheduledActivities_.size() << endl;
+	   while (!scheduledActivities_.empty()) {
 	    
 	    //figure out the next activity to run
 	    Activity::Ptr nextToRun = scheduledActivities_.top();
 
 	    //if the next time is greater than the specified time, break
 	    //the loop
+
+      std::cerr << "Got an activity with nextTime = " << nextToRun->nextTime().value() << " "<< std::endl;
+
+
 	    if (nextToRun->nextTime() > t) {
-		break;
+			  now_ = t;
+		    break;
 	    }
 	    
 	    //calculate amount of time to sleep
@@ -77,18 +84,15 @@ namespace Shipping {
 	    now_ = nextToRun->nextTime();
 
 	    //print out size of queue
-	    cout << "size of queue: " << queue_->size() << endl;
 
 	    //run the minimum time activity and remove it from the queue
 	    scheduledActivities_.pop();
 
-	    nextToRun->statusIs(Activity::executing);
+	    //nextToRun->statusIs(Activity::executing);
 	    nextToRun->statusIs(Activity::free);
 
-	}
+	  }
 
-	//syncrhonize the time
-	now_ = t;
-    }
+  }
 
 } //end namespace ActivityImpl

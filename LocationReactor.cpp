@@ -10,11 +10,32 @@ namespace Shipping
 
 void LocationReactor::onPackageCountInc(PackageCount _count)
 {
+  if(location_->locType() == 0 && first_)
+	{
+	  scheduleInjectActivity();
+		
+		first_ = false;
+	}
+  
+	if(lastScheduled_ < manager_->now())
+	{
+	  lastScheduled_ = manager_->now();
+	}
+
+
   PackageCount newPackageCount = _count;
   Location::Ptr destination = location_->destination(); 
   scheduleNewActivity(newPackageCount, destination);
 }
 
+
+void LocationReactor::onPackageCountDelivered(PackageCount _count)
+{
+  if(location_->locType() == 0)
+	{
+	  //do something
+	}
+}
 
 void LocationReactor::scheduleInjectActivity()
 {
@@ -24,11 +45,13 @@ void LocationReactor::scheduleInjectActivity()
 	{
 	  // Create a new inject activity
 		// FIXME append the location name with this activity name
-		injectActivity_ = manager_->activityNew("InjectActivity");
+		string s = location_->name() + ": InjectActivity";
+		injectActivity_ = manager_->activityNew(s);
 		injectActivity_->lastNotifieeIs(this);
 	}
   // Time is always in hours
-  injectActivity_->nextTimeIs(manager_->now() + Time(24));
+	Time t = manager_->now() + Time(24.0);
+  injectActivity_->nextTimeIs(t);
 	manager_->lastActivityIs(injectActivity_);
 
 	std::cerr << "Inject Activity scheduled to finish at time = " << (manager_->now() + Time(24)).value() << " "  << std::endl;
@@ -38,7 +61,12 @@ void LocationReactor::scheduleInjectActivity()
 void LocationReactor::onStatus()
 {
   std::cerr << "In LocationReactor::onStatus()" << std::endl;
-  if(injectActivity_->status() != 0) return;
+
+	if(lastScheduled_ < manager_->now())
+	{
+	  lastScheduled_ = manager_->now();
+	}
+  if(injectActivity_->status() != Activity::free) return;
 
   scheduleInjectActivity();
 
@@ -59,11 +87,15 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 
   const string name = getNewActivityName();
 	Activity::Ptr act = manager_->activityNew(name);
-  ShipmentActivityReactor::Ptr sar = ShipmentActivityReactor::ShipmentActivityReactorNew(manager_, act, _segment);
+  //ShipmentActivityReactor::Ptr sar = ShipmentActivityReactor::ShipmentActivityReactorNew(manager_, act, _segment);
+  ShipmentActivityReactor*  sar = new ShipmentActivityReactor(manager_, act, _segment);
 	sar->packageCountIs(_count);
 	sar->destinationIs(_dest);
 	//Assuming that we are transfering package size <= segment capacity
-	Time transferTime = _segment->transferTime(_count);
+	Time transferTime = _segment->transferTime(_count, fleet_);
+  
+	std::cerr << "Transfer time of the segment is " << transferTime.value() << " " << std::endl;
+
   Time t = lastScheduled_ + transferTime;
 	if(t >= manager_->now())
 	{
@@ -72,11 +104,12 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 	}
 	act->nextTimeIs(t);
 	lastScheduled_ = t;
-	act->lastNotifieeIs(sar.ptr());
+	act->lastNotifieeIs(sar);
+	//sar->notifierIs(act);
 
 	manager_->lastActivityIs(act);
 
-	std::cerr << "Scheduling new activity called " << name << "at the location " << location_->name() << " " << std::endl;
+	std::cerr << "Scheduling new activity called " << name << "at the location " << location_->name() << " on segment " << _segment->name() << " with next_time =  " << t.value() << " "  << std::endl;
 
 	totalActivities_++;
 } 

@@ -120,7 +120,7 @@ namespace Shipping
 
 
 
-			inline Cost cost(Fleet::Ptr _fleet) { 
+			 Cost cost(Fleet::Ptr _fleet) { 
 				Cost c(1.0);
 				if(mode_ == TransportType::boat())
 				{
@@ -142,7 +142,7 @@ namespace Shipping
 				return Cost(c.value()*difficulty_.value());
 			}
 
-			inline Time time(Fleet::Ptr _fleet){
+			 Time time(Fleet::Ptr _fleet) {
 				if(mode_ == TransportType::boat())
 				{
 					return length_/(_fleet->speed(0));
@@ -159,7 +159,26 @@ namespace Shipping
 				return length_/(_fleet->speed(2));
 			}
 
+      Capacity totalCapacity(Fleet::Ptr _fleet)
+			{
+			  
+				if(mode_ == TransportType::boat())
+				{
+				  return capacity_*_fleet->capacity(0);
+				}
+	      
+				if(mode_ == TransportType::plane())
+				{
+				  return capacity_*_fleet->capacity(1);
+				}
+	      
+				if(mode_ == TransportType::truck())
+				{
+				  return capacity_*_fleet->capacity(2);
+				}
 
+				  return capacity_*_fleet->capacity(2);
+			}
 
 
 			Segment::Ptr returnSegment() const {return returnSegment_;}
@@ -169,13 +188,19 @@ namespace Shipping
 			void packageCountInc(PackageCount _count) { packageCount_ += _count;} 
 			Capacity capacity() const { return capacity_; }
 			void capacityIs(Capacity _capacity) { capacity_=_capacity;}
-			Time transferTime(PackageCount _count) const { return Time::nil(); }
+			Time transferTime(PackageCount _count, Fleet::Ptr _fleet)  { 
+			  // Segment Capacity is number of packets 
+        int capacity = totalCapacity(_fleet).value();
+				int count = _count.value();
+			  unsigned int times = (count%capacity) ? ( (count/capacity) + 1):(count/capacity);
+				return Time( times*(time(_fleet)).value());
+			}
 			  public:
 			Segment(const String& _name) : name_(_name) {
 				expediteSupport_ = false;
 				difficulty_ = Difficulty(1.0);
 				length_ = Mile(1.0);
-				capacity_ = Capacity(10);	
+				capacity_ = Capacity(1);	
 			}
 
 

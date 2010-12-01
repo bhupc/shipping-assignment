@@ -105,7 +105,7 @@ int main(){
     /* Set up default values */
     Ptr<Instance> fleet = m->instanceNew("fleet", "Fleet");
     fleet->attributeIs("Truck, speed", "1");
-    fleet->attributeIs("Truck, capacity", "20");
+    fleet->attributeIs("Truck, capacity", "10");
     fleet->attributeIs("Truck, cost", "30");
 
      
@@ -116,7 +116,7 @@ int main(){
 	
     		
     Activity::Manager::Ptr activityManager = activityManagerInstance();
-    activityManager->nowIs(24.0);
+    activityManager->nowIs(10.00);
     
 
 return 0;

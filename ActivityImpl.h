@@ -82,7 +82,7 @@ namespace Shipping {
 	//specific to this example
 	Queue::Ptr queue() const { return queue_; }
     protected:
-        ManagerImpl() : now_(0) {
+        ManagerImpl() : now_(Time::nil()) {
 	    queue_ = new Queue();
 	}
 	

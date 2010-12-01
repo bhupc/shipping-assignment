@@ -53,7 +53,9 @@ class Time : public Ordinal<Time, double>
 	String string() const {return string_; }
   Time operator+(Time _time) { return Time(value_ + _time.value());}
 	Time operator/(double _t) { return Time(value_ / _t);}
+	Time operator*(unsigned int _t) { return Time(value_*_t);}
 	static Time nil() {  return Time(0); }
+
 };
 
 class MPH : public Ordinal<MPH, double>
@@ -120,6 +122,7 @@ class Capacity : public Ordinal<Capacity, int>
 		
 		String string() const {return string_; }
 	   	
+		Capacity operator*(Capacity _capacity){ return Capacity(_capacity.value()*value_); } 
   };
 
 

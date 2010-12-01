@@ -77,7 +77,7 @@ namespace Shipping {
 			vector<Engine::Notifiee*> notifiee_;
 			Fwk::Ptr<Stats> stats_;
 			Fwk::Ptr<Conn> conn_;
-
+      Fwk::Ptr<Fleet> fleet_;
 			Engine();
 		public:
 			void notifieeIs(Engine::Notifiee* _notifiee) { notifiee_.push_back(_notifiee);}

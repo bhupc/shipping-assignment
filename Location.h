@@ -38,6 +38,7 @@ namespace Shipping
 				Notifiee(){}
 
 				virtual void onPackageCountInc(PackageCount _count) {}
+				virtual void onPackageCountDelivered(PackageCount _count) {}
 
 			protected:
 				Location::Ptr location_;
@@ -114,6 +115,7 @@ namespace Shipping
 		PackageCount packageCount() { return packageCount_;}
 		void packageCountIs(PackageCount _count) { packageCount_ = _count;}
 		void packageCountInc(PackageCount);
+		void packageCountDelivered(PackageCount);
 		void packageCountDec(PackageCount _count) {packageCount_ -= _count;}
 		Location::Ptr destination() const { return destination_;}
 		void destinationIs(Location::Ptr _destination) { destination_=_destination; activate(); }
