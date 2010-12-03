@@ -32,7 +32,7 @@ int main(){
     s->attributeIs("source", "a");
     s->attributeIs("length", "1");
     s->attributeIs("difficulty", "1");
-    s->attributeIs("expedite support", "no");
+    s->attributeIs("expedite support", "yes");
     s = m->instanceNew("1r", "Truck segment");
     s->attributeIs("source", "b");
     s->attributeIs("length", "1");

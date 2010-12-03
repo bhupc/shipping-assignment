@@ -143,20 +143,22 @@ namespace Shipping
 			}
 
 			 Time time(Fleet::Ptr _fleet) {
+				double factor  = 1;
+				if(expediteSupport_) {factor= 1.5;}
 				if(mode_ == TransportType::boat())
 				{
-					return length_/(_fleet->speed(0));
+					return length_/(_fleet->speed(0))/factor;
 				}
 				if(mode_ == TransportType::plane())
 				{
-					return length_/(_fleet->speed(1));
+					return length_/(_fleet->speed(1))/factor;
 				}
 				if(mode_ == TransportType::truck())
 				{
-					return length_/(_fleet->speed(2));
+					return length_/(_fleet->speed(2))/factor;
 				}
 
-				return length_/(_fleet->speed(2));
+				return length_/(_fleet->speed(2))/factor;
 			}
 
       Capacity totalCapacity(Fleet::Ptr _fleet)
@@ -188,6 +190,14 @@ namespace Shipping
 			void packageCountInc(PackageCount _count) { packageCount_ += _count;} 
 			Capacity capacity() const { return capacity_; }
 			void capacityIs(Capacity _capacity) { capacity_=_capacity;}
+			Cost transferCost(PackageCount _count, Fleet::Ptr _fleet)
+			{
+		          int capacity = totalCapacity(_fleet).value();
+			  int count = _count.value();
+			  unsigned int times = (count%capacity) ? ( (count/capacity) + 1):(count/capacity);
+                          return Cost( times*(cost(_fleet)).value()); 
+		          	      
+			}
 			Time transferTime(PackageCount _count, Fleet::Ptr _fleet)  { 
 			  // Segment Capacity is number of packets 
         int capacity = totalCapacity(_fleet).value();

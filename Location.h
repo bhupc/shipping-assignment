@@ -37,8 +37,8 @@ namespace Shipping
 				Notifiee(Location::Ptr _location) : location_(_location) {}
 				Notifiee(){}
 
-				virtual void onPackageCountInc(PackageCount _count) {}
-				virtual void onPackageCountDelivered(PackageCount _count) {}
+				virtual void onPackageCountInc(PackageCount _count, Cost _c) {}
+				virtual void onPackageCountDelivered(PackageCount _count, Cost _cost) {}
 
 			protected:
 				Location::Ptr location_;
@@ -70,7 +70,7 @@ namespace Shipping
 			{
 			  for(unsigned int i = 0; i < notifiee_.size(); i++)
 				{
-				  notifiee_[i]->onPackageCountInc( PackageCount(shipmentSize_.value() * transferRate_.value()) );
+				  notifiee_[i]->onPackageCountInc( PackageCount(shipmentSize_.value() * transferRate_.value()), Cost::nil());
 				}
 
 			}
@@ -90,7 +90,8 @@ namespace Shipping
 
 		virtual ShipmentCount shipmentsReceived(){ return ShipmentCount::nil();} //ShipemntCount
 		virtual Time averageLatency(){ return Time::nil();} //Time
-		virtual Cost totalCost(){ return Cost::nil();} //Cost
+		virtual Cost totalCost(){ return totalCost_;} //Cost
+                virtual void totalCostIs(Cost _totalCost) { totalCost_ = _totalCost; }
 
 
 		virtual void onSegmentSourceDel(SegmentPtr _segment)
@@ -114,8 +115,8 @@ namespace Shipping
 
 		PackageCount packageCount() { return packageCount_;}
 		void packageCountIs(PackageCount _count) { packageCount_ = _count;}
-		void packageCountInc(PackageCount);
-		void packageCountDelivered(PackageCount);
+		void packageCountInc(PackageCount, Cost _cost);
+		void packageCountDelivered(PackageCount, Cost);
 		void packageCountDec(PackageCount _count) {packageCount_ -= _count;}
 		Location::Ptr destination() const { return destination_;}
 		void destinationIs(Location::Ptr _destination) { destination_=_destination; activate(); }
@@ -133,12 +134,13 @@ namespace Shipping
 		Location::Ptr destination_;        
     ShipmentCount transferRate_;
 		PackageCount shipmentSize_;
-
+                Cost totalCost_;
 		Location() { 
 		
 		  transferRate_ = ShipmentCount::nil();
 		  shipmentSize_ = PackageCount::nil();
-			destination_ = NULL;
+		  destination_ = NULL;
+                  totalCost_ = Cost::nil();
 
 			// Create the reactor here
 		}

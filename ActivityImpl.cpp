@@ -79,8 +79,8 @@ namespace Shipping {
 	    Time diff = Time(nextToRun->nextTime().value() - now_.value());
 	    
 	    //sleep 100ms (100,000 microseconds) for every unit of time
-	    usleep(( ((int)diff.value()) * 100000));
-	    
+	   // usleep(( ((int)diff.value()) * 100000));
+	    usleep(( ((int)diff.value()) * 100000 * (int)scaleFactor()));
 	    now_ = nextToRun->nextTime();
 
 	    //print out size of queue

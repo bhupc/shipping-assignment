@@ -24,8 +24,8 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	}
 
 
-  void onPackageCountInc(PackageCount);
-  void onPackageCountDelivered(PackageCount);
+  void onPackageCountInc(PackageCount, Cost);
+  void onPackageCountDelivered(PackageCount, Cost);
   
 	private:
 	Activity::Ptr injectActivity_;
@@ -36,8 +36,8 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	Time lastScheduled_;
 	bool first_;
   const string getNewActivityName(); 
-	void scheduleNewActivity(PackageCount, Location::Ptr) throw (DestinationUnreachableException);
-	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr);
+	void scheduleNewActivity(PackageCount, Location::Ptr, Cost) throw (DestinationUnreachableException);
+	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr, Cost);
 	void scheduleInjectActivity();
 	void onStatus();
   Conn::Path getBestPath(Location::Ptr src, Location::Ptr dest, Conn::PathList pathList);

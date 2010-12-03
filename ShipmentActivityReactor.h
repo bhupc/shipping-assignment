@@ -29,6 +29,8 @@ namespace Shipping
 		ShipmentActivityReactor(Fwk::Ptr<Activity::Manager> _manager, Activity::Ptr _activity, Fwk::Ptr<Segment> _segment)
 	  :Activity::Notifiee(_activity.ptr()), segment_(_segment), activity_(_activity), manager_(_manager) 
 	  {
+                  
+                  cummulativeCost_ = Cost::nil();
 		  std::cerr << "Created a new Shipment Activity Reactor " << std::endl;
 		}
     
@@ -40,6 +42,9 @@ namespace Shipping
     void packageCountIs(PackageCount _packageCount) { packageCount_=_packageCount;}
 		Location::Ptr destination() const { return destination_;}
 		void destinationIs(Location::Ptr _destination) {  destination_=_destination;}
+    Cost cummulativeCost() { return cummulativeCost_;}
+    void cummulativeCostIs( Cost _cummulativeCost) { cummulativeCost_ = _cummulativeCost;}
+
 		void onStatus();
 
 	  protected:
@@ -50,7 +55,8 @@ namespace Shipping
 		PackageCount packageCount_;
 		Fwk::Ptr<Location> destination_;
    
-	 
+           Cost cummulativeCost_;
+    	 
 
  };
 

@@ -79,11 +79,20 @@ namespace Shipping {
 	
         virtual void lastActivityIs(Activity::Ptr activity);
 	
+	void scaleFactorIs(double _scaleFactor){
+		scaleFactor_ = _scaleFactor;
+	}
+
+	double scaleFactor(){
+		return scaleFactor_;
+	}
+	
 	//specific to this example
 	Queue::Ptr queue() const { return queue_; }
     protected:
         ManagerImpl() : now_(Time::nil()) {
 	    queue_ = new Queue();
+	    scaleFactor_  = 1.0;
 	}
 	
         //Data members

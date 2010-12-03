@@ -10,25 +10,25 @@ using namespace std;
 namespace Shipping
 {
   
-	void Location::packageCountInc(PackageCount _packageCount)
+	void Location::packageCountInc(PackageCount _packageCount, Cost _cost)
 	{
     packageCount_ += _packageCount;
     // inform the notifieeIs
 
 		for(unsigned int i = 0; i < notifiee_.size() ; i++)
 		{
-		  notifiee_[i]->onPackageCountInc(_packageCount);
+		  notifiee_[i]->onPackageCountInc(_packageCount, _cost);
 		}
 	}
   
-	void Location::packageCountDelivered(PackageCount _packageCount)
+	void Location::packageCountDelivered(PackageCount _packageCount, Cost _cumulativeCost)
 	{
     //packageCount_ += _packageCount;
     // inform the notifieeIs
 
 		for(unsigned int i = 0; i < notifiee_.size() ; i++)
 		{
-		  notifiee_[i]->onPackageCountDelivered(_packageCount);
+		  notifiee_[i]->onPackageCountDelivered(_packageCount, _cumulativeCost);
 		}
 	}
 

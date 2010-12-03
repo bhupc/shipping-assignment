@@ -75,11 +75,12 @@ public:
 
     virtual Time now() const = 0;
     virtual void nowIs(Time) = 0;
-
-
+    virtual void scaleFactorIs(double) = 0;
+    virtual double scaleFactor() = 0;
 private:
     /* Up to you */
-
+protected:
+	double scaleFactor_;
 };
 
 extern Fwk::Ptr<Activity::Manager> activityManagerInstance();
