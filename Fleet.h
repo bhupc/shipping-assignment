@@ -22,48 +22,84 @@ namespace Shipping
 		
 		private:
 
-	  MPH speed_[3];
-    Capacity capacity_[3];
-    Cost cost_[3];
+	  MPH speed_[2][3];
+    Capacity capacity_[2][3];
+    Cost cost_[2][3];
 
 
     public:
 
 		Fleet(const String& _name)
 		{
-		name_ = _name;
-		  speed_[0] = MPH(1); speed_[1] = MPH(1); speed_[2] = MPH(1);
-      capacity_[0] = Capacity(1); capacity_[1] = Capacity(1); capacity_[2] = Capacity(1);
-      cost_[0] = Cost(1); cost_[1] = Cost(1); cost_[2] = Cost(1);
+		  name_ = _name;
+		  for(int i = 0; i < 2; i++)
+			{
+			  for(int j = 0; j < 3; j++)
+				{
+					speed_[i][j] = MPH(1);
+          capacity_[i][j] = Capacity(1);
+          cost_[i][j] = Cost(1); 
+
+				}
+			}
 		}
     
 	  void costIs(uint32_t offset, Cost _cost) { 
-		  cost_[offset] =  _cost;   
+		  cost_[0][offset] =  _cost;   
 		}
 		
 		void speedIs(uint32_t offset, MPH _speed)
 		{
-		  speed_[offset] = _speed;
+		  speed_[0][offset] = _speed;
 		}
 
 		void capacityIs(uint32_t offset, Capacity _capacity)
 		{
-		  capacity_[offset] = _capacity;
+		  capacity_[0][offset] = _capacity;
 		}
 
 		Cost cost(uint32_t offset) { 
-		  return cost_[offset];   
+		  return cost_[0][offset];   
 		}
 		
 		MPH speed(uint32_t offset)
 		{
-		  return speed_[offset];
+		  return speed_[0][offset];
 		}
 
 		Capacity capacity(uint32_t offset)
 		{
-		  return capacity_[offset];
+		  return capacity_[0][offset];
 		}
+    
+		void costIs(uint32_t slot, uint32_t offset, Cost _cost) { 
+		  cost_[slot][offset] =  _cost;   
+		}
+		
+		void speedIs(uint32_t slot, uint32_t offset, MPH _speed)
+		{
+		  speed_[slot][offset] = _speed;
+		}
+
+		void capacityIs(uint32_t slot, uint32_t offset, Capacity _capacity)
+		{
+		  capacity_[slot][offset] = _capacity;
+		}
+
+		Cost cost(uint32_t slot, uint32_t offset) { 
+		  return cost_[slot][offset];   
+		}
+		
+		MPH speed(uint32_t slot, uint32_t offset)
+		{
+		  return speed_[slot][offset];
+		}
+
+		Capacity capacity(uint32_t slot, uint32_t offset)
+		{
+		  return capacity_[slot][offset];
+		}
+
 protected:
 	String name_;
 

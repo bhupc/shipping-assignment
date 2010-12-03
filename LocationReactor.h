@@ -25,8 +25,8 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	}
 
 
-  void onPackageCountInc(PackageCount, Cost);
-  void onPackageCountDelivered(PackageCount, Cost);
+  void onPackageCountInc(PackageCount, Cost, Time);
+  void onPackageCountDelivered(PackageCount, Cost, Time);
   Time averageLatency() { return manager_->now().value()/packageDelivered_.value();}  
 	PackageCount packageCountDelivered() { return packageDelivered_;}
 	private:
@@ -39,8 +39,8 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	bool first_;
 	PackageCount packageDelivered_;
   const string getNewActivityName(); 
-	void scheduleNewActivity(PackageCount, Location::Ptr, Cost) throw (DestinationUnreachableException);
-	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr, Cost);
+	void scheduleNewActivity(PackageCount, Location::Ptr, Cost, Time) throw (DestinationUnreachableException);
+	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr, Cost, Time);
 	void scheduleInjectActivity();
 	void onStatus();
   Conn::Path getBestPath(Location::Ptr src, Location::Ptr dest, Conn::PathList pathList);

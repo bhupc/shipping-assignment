@@ -8,7 +8,7 @@ using namespace std;
 namespace Shipping
 {
 
-void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCost)
+void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCost, Time _cummulativeTime)
 {
   if(location_->locType() == 0 && first_)
 	{
@@ -25,17 +25,19 @@ void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCo
 
   PackageCount newPackageCount = _count;
   Location::Ptr destination = location_->destination(); 
-  scheduleNewActivity(newPackageCount, destination, _cummulativeCost);
+  scheduleNewActivity(newPackageCount, destination, _cummulativeCost, _cummulativeTime);
 }
 
 
-void LocationReactor::onPackageCountDelivered(PackageCount _count, Cost _cummulativeCost)
+void LocationReactor::onPackageCountDelivered(PackageCount _count, Cost _cummulativeCost, Time _cummulativeTime)
 {
   if(location_->locType() == 0)
   {
 	  
     // increment the totalCost
     location_->totalCostIs(location_->totalCost() +  _cummulativeCost);
+    location_->totalTimeIs(location_->totalTime() +  _cummulativeTime);
+		
 		packageDelivered_ += _count;
 		std::cerr << "delivered " << _count.value() << "packets " << std::endl; 
 		std::cerr << "Total packets delivered " << packageDelivered_.value() << "packets " << std::endl; 
@@ -88,11 +90,11 @@ void LocationReactor::onStatus()
 
   std::cerr << "Injected " << p.value() << " packets into the location " << location_->name() << " " << std::endl;
 
-  location_->packageCountInc(p, Cost(0));
+  location_->packageCountInc(p, Cost(0), Time(0));
 }
 
 
-void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount _count, Location::Ptr _dest, Cost _cost)
+void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount _count, Location::Ptr _dest, Cost _cost, Time _cummulativeTime)
 {
 
   const string name = getNewActivityName();
@@ -104,7 +106,7 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 	
 
 	//Assuming that we are transfering package size <= segment capacity
-	Time transferTime = _segment->transferTime(_count, fleet_);
+	Time transferTime = _segment->transferTime(_count, fleet_, manager_->now());
   
 	std::cerr << "Transfer time of the segment is " << transferTime.value() << " " << std::endl;
 
@@ -117,9 +119,9 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 	act->nextTimeIs(t);
 	lastScheduled_ = t;
 
-        Cost transferCost = _segment->transferCost(_count, fleet_);
-        sar->cummulativeCostIs(_cost + transferCost);	
-
+   Cost transferCost = _segment->transferCost(_count, fleet_, manager_->now());
+   sar->cummulativeCostIs(_cost + transferCost);	
+   sar->cummulativeTimeIs(_cummulativeTime + transferTime);
 	act->lastNotifieeIs(sar);
 	//sar->notifierIs(act);
 
@@ -131,7 +133,7 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 } 
 
 
-void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr destination, Cost _cost) throw (DestinationUnreachableException)
+void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr destination, Cost _cost, Time _time) throw (DestinationUnreachableException)
 {
   if(_count == 0)
 	{
@@ -157,7 +159,7 @@ void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr des
 	Segment::Ptr nextSeg = p[0];
   
   
-	scheduleNewActivityInt(nextSeg, _count, destination, _cost);        
+	scheduleNewActivityInt(nextSeg, _count, destination, _cost, _time);        
 
   //unsigned int capacity = (unsigned int)(nextSeg->capacity().value());	
   

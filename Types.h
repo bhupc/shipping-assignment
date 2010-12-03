@@ -40,8 +40,8 @@ class Time : public Ordinal<Time, double>
 {
   public:
 	String string_;
-  Time() : Ordinal<Time, double>(1.0){
-	 string_="1.0";
+  Time() : Ordinal<Time, double>(0){
+	 string_="0";
   }	  
   Time(double val)  throw (RangeException) : Ordinal<Time, double>(val) {
 		 if(val < 0) { throw RangeException("Invalid Value for Type MPH");}
@@ -123,6 +123,7 @@ class Capacity : public Ordinal<Capacity, int>
 		String string() const {return string_; }
 	   	
 		Capacity operator*(Capacity _capacity){ return Capacity(_capacity.value()*value_); } 
+		Capacity operator/(int value){ return Capacity(value_/value); } 
   };
 
 

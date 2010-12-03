@@ -104,9 +104,20 @@ int main(){
 
     /* Set up default values */
     Ptr<Instance> fleet = m->instanceNew("fleet", "Fleet");
-    fleet->attributeIs("Truck, speed", "1");
-    fleet->attributeIs("Truck, capacity", "10");
-    fleet->attributeIs("Truck, cost", "30");
+
+    // attributes of the fleet between 8AM -8PM
+
+    fleet->attributeIs("Truck, speed, slot 1", "1");
+    fleet->attributeIs("Truck, capacity, slot 1", "10");
+    fleet->attributeIs("Truck, cost, slot 1", "30");
+    
+    // attributes of the fleet between 8PM-8AM
+
+		fleet->attributeIs("Truck, speed, slot 2", "2");
+    fleet->attributeIs("Truck, capacity, slot 2", "10");
+    fleet->attributeIs("Truck, cost, slot 2", "30");
+
+
 
      
     Ptr<Instance> a = m->instance("a"); 

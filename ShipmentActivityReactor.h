@@ -31,6 +31,7 @@ namespace Shipping
 	  {
                   
                   cummulativeCost_ = Cost::nil();
+									cummulativeTime_ = Time::nil();
 		  std::cerr << "Created a new Shipment Activity Reactor " << std::endl;
 		}
     
@@ -44,6 +45,7 @@ namespace Shipping
 		void destinationIs(Location::Ptr _destination) {  destination_=_destination;}
     Cost cummulativeCost() { return cummulativeCost_;}
     void cummulativeCostIs( Cost _cummulativeCost) { cummulativeCost_ = _cummulativeCost;}
+    void cummulativeTimeIs( Time _cummulativeTime) { cummulativeTime_ = _cummulativeTime;}
 
 		void onStatus();
 
@@ -54,9 +56,8 @@ namespace Shipping
 
 		PackageCount packageCount_;
 		Fwk::Ptr<Location> destination_;
-   
-           Cost cummulativeCost_;
-    	 
+    Cost cummulativeCost_;
+    Time cummulativeTime_;	 
 
  };
 

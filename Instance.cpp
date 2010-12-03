@@ -639,34 +639,74 @@ namespace Shipping {
 		double value = atof(v.c_str());
 	        int value_int = atoi(v.c_str());
 
-		if(name=="Boat, speed"){
-			FleetEng_->speedIs(0,MPH(value));
+		if(name=="Boat, speed, slot 1"){
+			FleetEng_->speedIs(0, 0,MPH(value));
 		}
-		if(name=="Plane, speed"){
-			FleetEng_->speedIs(1,MPH(value));
-		}
-		if(name=="Truck, speed"){
-			FleetEng_->speedIs(2,MPH(value));
+    if(name=="Boat, speed, slot 2"){
+			FleetEng_->speedIs(1, 0,MPH(value));
 		}
 
-		if(name=="Boat, capacity"){
-			FleetEng_->capacityIs(0,Capacity(value_int));
-		}
-		if(name=="Plane, capacity"){
-			FleetEng_->capacityIs(1,Capacity(value_int));
-		}
-		if(name=="Truck, capacity"){
-			FleetEng_->capacityIs(2,Capacity(value_int));
+		if(name=="Plane, speed, slot 1"){
+			FleetEng_->speedIs(0, 1,MPH(value));
 		}
 
-		if(name=="Boat, cost"){
-			FleetEng_->costIs(0,Cost(value));
+    if(name=="Plane, speed, slot 2"){
+			FleetEng_->speedIs(1, 1,MPH(value));
 		}
-		if(name=="Plane, cost"){
-			FleetEng_->costIs(1,Cost(value));
+
+		if(name=="Truck, speed, slot 1"){
+			FleetEng_->speedIs(0, 2,MPH(value));
 		}
-		if(name=="Truck, cost"){
-			FleetEng_->costIs(2,Cost(value));
+    
+		if(name=="Truck, speed, slot 2"){
+			FleetEng_->speedIs(1, 2,MPH(value));
+		}
+
+
+		if(name=="Boat, capacity, slot 1"){
+			FleetEng_->capacityIs(0, 0,Capacity(value_int));
+		}
+    
+		if(name=="Boat, capacity, slot 2"){
+			FleetEng_->capacityIs(1, 0,Capacity(value_int));
+		}
+
+		if(name=="Plane, capacity, slot 1"){
+			FleetEng_->capacityIs(0, 1,Capacity(value_int));
+		}
+    if(name=="Plane, capacity, slot 2"){
+			FleetEng_->capacityIs(1, 1,Capacity(value_int));
+		}
+
+		if(name=="Truck, capacity, slot 1"){
+			FleetEng_->capacityIs(0, 2,Capacity(value_int));
+		}
+
+    if(name=="Truck, capacity, slot 2"){
+			FleetEng_->capacityIs(1, 2,Capacity(value_int));
+		}
+
+		if(name=="Boat, cost, slot 1"){
+			FleetEng_->costIs(0, 0,Cost(value));
+		}
+    
+		if(name=="Boat, cost, slot 2"){
+			FleetEng_->costIs(1, 0,Cost(value));
+		}
+
+		if(name=="Plane, cost, slot 1"){
+			FleetEng_->costIs(0, 1,Cost(value));
+		}
+   	if(name=="Plane, cost, slot 2"){
+			FleetEng_->costIs(1, 1,Cost(value));
+		}
+
+		if(name=="Truck, cost, slot 1"){
+			FleetEng_->costIs(0, 2,Cost(value));
+		}
+    
+		if(name=="Truck, cost, slot 2"){
+			FleetEng_->costIs(1, 2,Cost(value));
 		}
 	}
 

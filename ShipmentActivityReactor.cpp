@@ -21,12 +21,12 @@ namespace Shipping
 		{
 		  std::cerr << "DESTINATION " << destination_->name() << " REACHED!!!" << std::endl;
 			std::cerr << "Delivered " << packageCount_.value() << "packets. " << std::endl;
-			nextSrc->packageCountDelivered(packageCount_, cummulativeCost_);
+			nextSrc->packageCountDelivered(packageCount_, cummulativeCost_, cummulativeTime_);
 			return;
 		}
 		std::cerr << "The destiination for this segment is " << nextSrc->name() << std::endl;
 		nextSrc->destinationIs(destination_);
-		nextSrc->packageCountInc(packageCount_, cummulativeCost_);
+		nextSrc->packageCountInc(packageCount_, cummulativeCost_, cummulativeTime_);
 
 	}
 }

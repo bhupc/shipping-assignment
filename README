@@ -8,3 +8,25 @@ Shipment Transfer Implementation:
 
 The shipment transfer is implemented through the LocationReactor and ShipmentActivityReactor classes. Te 
  
+
+
+
+
+
+ Scheduled changes to the fleet object's attributes.
+
+ 
+ fleet->attribute("Truck, speed, slot 1", "1");  // slot 1 =  8AM-8PM
+ fleet->attribute("Truck, speed, slot 2", "2");  // slot 2 = 8PM-8AM
+
+ fleet->attribute("Truck, capacity, slot 1", "10");  // slot 1 =  8AM-8PM
+ fleet->attribute("Truck, capacity, slot 2", "7");  // slot 2 = 8PM-8AM
+
+ fleet->attribute("Truck, cost, slot 1", "10");  // slot 1 =  8AM-8PM
+ fleet->attribute("Truck, cost, slot 2", "10");  // slot 2 = 8PM-8AM
+
+
+
+
+
+

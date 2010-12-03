@@ -10,6 +10,8 @@
 #include "Exceptions.h"
 #include "Fleet.h"
 #include <iostream>
+#include <cmath>
+
 using namespace std;
 
 namespace Shipping
@@ -141,6 +143,33 @@ namespace Shipping
 				//cerr << "difficulty_.value = " << difficulty_.value() << "\n";
 				return Cost(c.value()*difficulty_.value());
 			}
+      
+			Cost cost(Fleet::Ptr _fleet, Time _time) {
+
+				Cost c(1.0);
+        uint32_t  mod = ((uint32_t)(_time.value()))%24;
+			  uint32_t slot = ( mod >= 8 && mod <= 20) ? 0 : 1;
+
+
+				if(mode_ == TransportType::boat())
+				{
+					c = length_*(_fleet->cost(slot, 0));
+				}
+				if(mode_ == TransportType::plane())
+				{
+					c = length_*(_fleet->cost(slot, 1));
+
+				}
+				if(mode_ == TransportType::truck())
+				{
+					c = length_*(_fleet->cost(slot, 2));
+				}
+
+				// assume that by default there is always a truck
+				else c = length_*(_fleet->cost(slot, 2));
+				//cerr << "difficulty_.value = " << difficulty_.value() << "\n";
+				return Cost(c.value()*difficulty_.value());
+			}
 
 			 Time time(Fleet::Ptr _fleet) {
 				double factor  = 1;
@@ -161,37 +190,106 @@ namespace Shipping
 				return length_/(_fleet->speed(2))/factor;
 			}
 
+      Time time(Fleet::Ptr _fleet, Time _time) {
+			  uint32_t  mod = ((uint32_t)(_time.value()))%24;
+			  uint32_t slot = ( mod >= 8 && mod <= 20) ? 0 : 1;
+
+				double factor  = 1;
+				if(expediteSupport_) {factor= 1.5;}
+				if(mode_ == TransportType::boat())
+				{
+					return length_/(_fleet->speed(slot, 0))/factor;
+				}
+				if(mode_ == TransportType::plane())
+				{
+					return length_/(_fleet->speed(slot, 1))/factor;
+				}
+				if(mode_ == TransportType::truck())
+				{
+					return length_/(_fleet->speed(slot, 2))/factor;
+				}
+
+				return length_/(_fleet->speed(slot, 2))/factor;
+			}
+
+			Capacity capacity() const { return capacity_; }
       Capacity totalCapacity(Fleet::Ptr _fleet)
 			{
 			  
 				if(mode_ == TransportType::boat())
 				{
-				  return capacity_*_fleet->capacity(0);
+				  return capacity()*_fleet->capacity(0);
 				}
 	      
 				if(mode_ == TransportType::plane())
 				{
-				  return capacity_*_fleet->capacity(1);
+				  return capacity()*_fleet->capacity(1);
 				}
 	      
 				if(mode_ == TransportType::truck())
 				{
-				  return capacity_*_fleet->capacity(2);
+				  return capacity()*_fleet->capacity(2);
 				}
 
-				  return capacity_*_fleet->capacity(2);
+				  return capacity()*_fleet->capacity(2);
+			}
+      Capacity capacity(Time _time)
+			{
+		    uint32_t  mod = ((uint32_t)(_time.value()) )%24;
+			  uint32_t slot = ( mod >= 8 && mod <= 20) ? 0 : 1;
+
+	      Capacity c = capacity();
+
+				if(slot == 1)
+				{
+				  return  (c.value()/2) ? (c.value()/2) : 1;
+
+				}
+				return c;
 			}
 
+      Capacity totalCapacity(Fleet::Ptr _fleet, Time _time)
+			{
+			  uint32_t  mod = ((uint32_t)(_time.value())) %24;
+			  uint32_t slot = ( mod >= 8 && mod <= 20) ? 0 : 1;
 
+
+				if(mode_ == TransportType::boat())
+				{
+				  return capacity(_time)*_fleet->capacity(slot, 0);
+				}
+	      
+				if(mode_ == TransportType::plane())
+				{
+				  return capacity(_time)*_fleet->capacity(slot, 1);
+				}
+	      
+				if(mode_ == TransportType::truck())
+				{
+				  return capacity(_time)*_fleet->capacity(slot, 2);
+				}
+
+				  return capacity(_time)*_fleet->capacity(slot, 2);
+			}
+
+      // Segment's capacity depends upon the time
+			
 			Segment::Ptr returnSegment() const {return returnSegment_;}
 			void returnSegmentIs(Segment::Ptr);
 			void onReturnSegmentChange(Segment::Ptr);
 			void notifieeIs(Notifiee* const _notifiee) { notifiee_.push_back(_notifiee);}
 			void packageCountInc(PackageCount _count) { packageCount_ += _count;} 
 			PackageCount packageCount() { return packageCount_;}
-			Capacity capacity() const { return capacity_; }
 			void capacityIs(Capacity _capacity) { capacity_=_capacity;}
-			Cost transferCost(PackageCount _count, Fleet::Ptr _fleet)
+			Cost transferCost(PackageCount _count, Fleet::Ptr _fleet, Time _time)
+			{
+		          int capacity = totalCapacity(_fleet, _time).value();
+			  int count = _count.value();
+			  unsigned int times = (count%capacity) ? ( (count/capacity) + 1):(count/capacity);
+                          return Cost( times*(cost(_fleet, _time)).value()); 
+		          	      
+			}
+    	Cost transferCost(PackageCount _count, Fleet::Ptr _fleet)
 			{
 		          int capacity = totalCapacity(_fleet).value();
 			  int count = _count.value();
@@ -199,6 +297,7 @@ namespace Shipping
                           return Cost( times*(cost(_fleet)).value()); 
 		          	      
 			}
+
 			Time transferTime(PackageCount _count, Fleet::Ptr _fleet)  { 
 			  // Segment Capacity is number of packets 
         int capacity = totalCapacity(_fleet).value();
@@ -206,6 +305,19 @@ namespace Shipping
 			  unsigned int times = (count%capacity) ? ( (count/capacity) + 1):(count/capacity);
 				return Time( times*(time(_fleet)).value());
 			}
+
+      Time transferTime(PackageCount _count, Fleet::Ptr _fleet, Time _time)  { 
+			  // Segment Capacity is number of packets 
+				
+        int capacity = totalCapacity(_fleet, _time).value();
+			  std::cerr << "capcity is " << capacity << std::endl;	
+				int count = _count.value();
+			  unsigned int times = (count%capacity) ? ( (count/capacity) + 1):(count/capacity);
+				return Time( times*(time(_fleet, _time)).value());
+			}
+
+
+
 			  public:
 			Segment(const String& _name) : name_(_name) {
 				expediteSupport_ = false;
