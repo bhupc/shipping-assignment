@@ -151,7 +151,7 @@ void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr des
 	}
 
 	//Get the best path from the path list for the given source and diestina
-	Conn::Path p = getBestPath(location_, destination, pathList);
+	Conn::Path p = getBestPath(location_, destination, pathList, _count);
   
   // What if there is no path from this location to the destination
 	//Now take the first segment in the best path
@@ -196,11 +196,97 @@ const string LocationReactor::getNewActivityName()
   return strstream.str();
 }
 
+/* We just consider the time as it looks  now and not considering the actual time due to scheduled changes in fleet attributes*/
 
-Conn::Path LocationReactor::getBestPath(Location::Ptr _src, Location::Ptr _dest, Conn::PathList _pathList)
+Time LocationReactor::getPathTime(Conn::Path _path, PackageCount _count)
+{
+  Conn::Path::iterator it = _path.begin();
+	Time total;
+	for(; it != _path.end(); it++)
+	{
+	  total = total + (*it)->transferTime(_count, fleet_, manager_->now());   
+	}
+
+
+	return total;
+}
+
+
+Conn::Path LocationReactor::getLeastTimeDJPath(Conn::PathList _pathList, PackageCount _count)
+{
+  Conn::PathList pathList(_pathList);
+  Time leastTime;
+	Conn::Path retPath;
+  
+  while(!pathList.empty())
+	{
+	  Conn::Path path = pathList.front();
+    Time t = getPathTime(path, _count);
+    if(leastTime == Time(0))
+		{
+		  leastTime = t;
+			retPath = path;
+		}
+		else if(t < leastTime)
+		{
+		  leastTime = t;
+		  retPath = path;    
+		}
+
+		pathList.pop();
+
+
+	}
+  
+	return retPath;
+}
+
+
+
+
+Conn::Path LocationReactor::getLeastTimeGDPath(Conn::PathList _pathList, PackageCount _count)
+{
+  Conn::Path retPath;
+  
+	Conn::PathList pathList(_pathList);
+  Time leastTime;
+  
+  while(!pathList.empty())
+	{
+	  Conn::Path path = pathList.front();
+    Time t = path[0]->transferTime(_count, fleet_, manager_->now());
+		if(leastTime == Time(0))
+		{
+		  leastTime = t;
+			retPath = path;
+		}
+		else if(t < leastTime)
+		{
+		  leastTime = t;
+		  retPath = path;    
+		}
+
+		pathList.pop();
+
+
+	}
+
+	return retPath;
+}
+
+Conn::Path LocationReactor::getBestPath(Location::Ptr _src, Location::Ptr _dest, Conn::PathList _pathList, PackageCount _count)
 {
   
-  return _pathList.front();
+	Conn::Path ret ;
+	if(conn_->routeAlgorithm() == "1")
+	{
+    ret = getLeastTimeDJPath(_pathList, _count);
+	}
+	else
+	{
+	  ret = getLeastTimeGDPath(_pathList, _count);
+	}
+  return  ret;
 }
 
 }
