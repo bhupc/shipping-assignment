@@ -37,6 +37,8 @@ namespace Shipping
 		uint32_t truckTerminalCount() const { return truckTerminalCount_;}
     uint32_t customerLocationCount() const {return customerLocationCount_;}
     uint32_t portCount() const { return portCount_;}
+		uint32_t totalLocationCount() { return boatTerminalCount_ + planeTerminalCount_ + truckTerminalCount_ + customerLocationCount_ + portCount_;}
+
     
 
      Stats(const string& _name){

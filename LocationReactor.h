@@ -43,7 +43,11 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr, Cost, Time);
 	void scheduleInjectActivity();
 	void onStatus();
-  Conn::Path getBestPath(Location::Ptr src, Location::Ptr dest, Conn::PathList pathList);
+  Conn::Path getBestPath(Location::Ptr src, Location::Ptr dest, Conn::PathList pathList, PackageCount);
+	Conn::Path getLeastTimeDJPath(Conn::PathList, PackageCount);
+	Conn::Path getLeastTimeGDPath(Conn::PathList, PackageCount);
+	Time getPathTime(Conn::Path, PackageCount);
+
 	
 };
 

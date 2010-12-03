@@ -820,10 +820,10 @@ namespace Shipping {
 		if(name.compare("routing")== 0){
 			
 			if(value.compare("1")==0){
-				ConnEng_->routingAlgoIs(value);
+				ConnEng_->routeAlgorithmIs(value);
 			}
 			else if(value.compare("2")==0){
-				ConnEng_->routingAlgoIs(value);
+				ConnEng_->routeAlgorithmIs(value);
 			}
 			else{
 				cerr << "Only available algorithms are 1. Dijkstra 2. BFS. Select appropriate number for the same" << endl;
@@ -840,7 +840,7 @@ namespace Shipping {
 
 		input >> token;
 		if(token == "routing"){
-			return ConnEng_->routingAlgo();
+			return ConnEng_->routeAlgorithm();
 		}
 		if(token == "explore"){
 			string src;

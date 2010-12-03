@@ -101,10 +101,10 @@ class Conn : public PtrInterface<Conn>
 	
 
 	public:
-	Conn(string _name) : name_(_name){routing_algo == "1";}
+	Conn(string _name) : name_(_name){routeAlgorithm_ = "1";}
   string name() const {return name_;}
-	void routingAlgoIs(string _algo){routing_algo = _algo;}
-	string routingAlgo(){return routing_algo;}
+	void routeAlgorithmIs(string _routeAlgorithm){routeAlgorithm_ = _routeAlgorithm;}
+	string routeAlgorithm(){return routeAlgorithm_;}
  
   Conn::PathList path(Location::Ptr _source, Location::Ptr _destination);
   Conn::StatPathList path(Fleet::Ptr, Location::Ptr _source, Cost, Mile, bool, Time);
@@ -114,7 +114,7 @@ class Conn : public PtrInterface<Conn>
 
 	private:
 	String name_;
-	String routing_algo;
+	String routeAlgorithm_;
 	void pathInternal(Location::Ptr, Conn::PathList&, Conn::PathList&);
   bool nodeExistsInPath(Location::Ptr, Conn::Path);
 	void copyPath(Path&, Path&);
