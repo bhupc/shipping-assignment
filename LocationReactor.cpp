@@ -33,9 +33,17 @@ void LocationReactor::onPackageCountDelivered(PackageCount _count, Cost _cummula
 {
   if(location_->locType() == 0)
   {
+	  
     // increment the totalCost
     location_->totalCostIs(location_->totalCost() +  _cummulativeCost);
+		packageDelivered_ += _count;
+		std::cerr << "delivered " << _count.value() << "packets " << std::endl; 
+		std::cerr << "Total packets delivered " << packageDelivered_.value() << "packets " << std::endl; 
+
     std:: cerr << "total cost of this delivery = " << location_->totalCost().value() << " " << std::endl;
+		
+    std:: cerr << "Average latency of delivery for location = " << (manager_->now().value())/(packageDelivered_.value())  << " " << std::endl;
+  
   }
 }
 

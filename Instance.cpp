@@ -500,10 +500,14 @@ namespace Shipping {
 		}
 
 		// Read Only
-		if(name == "Shipments Received"){}
+		if(name == "Shipments Received"){
+		  return (SegmentEng_->packageCount()).string();  
+		}
 		
 		// Read Only
-		if(name == "Shipments Refused"){}
+		if(name == "Shipments Refused"){
+		  return (ShipmentCount::nil()).string();
+		}
 
 		
 		if(name == "Capacity"){

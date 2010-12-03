@@ -116,8 +116,29 @@ int main(){
 	
     		
     Activity::Manager::Ptr activityManager = activityManagerInstance();
-    activityManager->nowIs(10.00);
+    activityManager->nowIs(100.00);
     
 
+    // after simulation statistics
+    
+    Ptr<Instance> d = m->instance("d"); 
+    std::cout << "Total packets received at d  =  " << d->attribute("Shipments Received") << "" << std::endl;
+    std::cout << "Average packet latency at d  =  " << d->attribute("Average Latency") << "" << std::endl;
+    std::cout << "Total delivery cost at  d  =  " << d->attribute("Total Cost") << "" << std::endl;
+
+    Ptr<Instance> seg1 = m->instance("1"); 
+		std::cout << "Total packets received on 1 = " << seg1->attribute("Shipments Received") << "" << std::endl;
+		std::cout << "Total packets refused on 1 = " << seg1->attribute("Shipments Refused") << "" << std::endl;
+    
+		Ptr<Instance> seg3 = m->instance("3"); 
+		std::cout << "Total packets received on 3 = " << seg3->attribute("Shipments Received") << "" << std::endl;
+		std::cout << "Total packets refused on 3 = " << seg3->attribute("Shipments Refused") << "" << std::endl;
+
+
+
+
+
+
+   
 return 0;
 }

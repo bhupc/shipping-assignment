@@ -39,7 +39,8 @@ namespace Shipping
 
 				virtual void onPackageCountInc(PackageCount _count, Cost _c) {}
 				virtual void onPackageCountDelivered(PackageCount _count, Cost _cost) {}
-
+        virtual Time averageLatency() { return Time::nil() ; }
+				virtual PackageCount packageCountDelivered() { return PackageCount::nil(); }
 			protected:
 				Location::Ptr location_;
 		};
@@ -88,8 +89,23 @@ namespace Shipping
 		virtual ShipmentCount transferRate(){ return transferRate_;} //ShipmentCount
 		virtual PackageCount shipmentSize(){ return shipmentSize_;} //packagecount
 
-		virtual ShipmentCount shipmentsReceived(){ return ShipmentCount::nil();} //ShipemntCount
-		virtual Time averageLatency(){ return Time::nil();} //Time
+		virtual PackageCount shipmentsReceived(){ 
+		  if(notifiee_[0])
+			{
+			  // we know there is always one location reactor for this location
+			  return notifiee_[0]->packageCountDelivered();
+			}
+			return PackageCount::nil();
+
+		} //ShipemntCount
+		virtual Time averageLatency(){ 
+		  if(notifiee_[0])
+			{
+			  // we know there is always one location reactor for this location
+			  return notifiee_[0]->averageLatency();
+			}
+			return Time::nil();
+		} //Time
 		virtual Cost totalCost(){ return totalCost_;} //Cost
                 virtual void totalCostIs(Cost _totalCost) { totalCost_ = _totalCost; }
 

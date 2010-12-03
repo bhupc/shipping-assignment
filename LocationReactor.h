@@ -21,12 +21,14 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	  totalActivities_ = 0;  
 		lastScheduled_ = Time::nil();
 		first_ = true;
+		packageDelivered_ = 0;
 	}
 
 
   void onPackageCountInc(PackageCount, Cost);
   void onPackageCountDelivered(PackageCount, Cost);
-  
+  Time averageLatency() { return manager_->now().value()/packageDelivered_.value();}  
+	PackageCount packageCountDelivered() { return packageDelivered_;}
 	private:
 	Activity::Ptr injectActivity_;
   Activity::Manager::Ptr manager_;
@@ -35,6 +37,7 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	unsigned int totalActivities_;
 	Time lastScheduled_;
 	bool first_;
+	PackageCount packageDelivered_;
   const string getNewActivityName(); 
 	void scheduleNewActivity(PackageCount, Location::Ptr, Cost) throw (DestinationUnreachableException);
 	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr, Cost);

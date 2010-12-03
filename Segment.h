@@ -188,6 +188,7 @@ namespace Shipping
 			void onReturnSegmentChange(Segment::Ptr);
 			void notifieeIs(Notifiee* const _notifiee) { notifiee_.push_back(_notifiee);}
 			void packageCountInc(PackageCount _count) { packageCount_ += _count;} 
+			PackageCount packageCount() { return packageCount_;}
 			Capacity capacity() const { return capacity_; }
 			void capacityIs(Capacity _capacity) { capacity_=_capacity;}
 			Cost transferCost(PackageCount _count, Fleet::Ptr _fleet)
