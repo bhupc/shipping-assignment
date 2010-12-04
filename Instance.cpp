@@ -578,7 +578,7 @@ namespace Shipping {
 				}
 			}
 			else{
-				cerr << "No such Location exists, Ignored" << endl;
+				cerr << "No such Location with name " << v << " exists, Ignored" << endl;
 			}
 			return;
 		}
