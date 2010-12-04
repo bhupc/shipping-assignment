@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 		Ptr<Instance> destination = manager->instanceNew("Destination", "Customer");
 
 		// Make 100 sources pointing to above destination
-    int num_left_srcs = 2;
+    int num_left_srcs = 100;
 		for(int i=1;i<=num_left_srcs;i++){
 
 			string src_name = "cust" + Stringify(i);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 		seg32->attributeIs("return segment","main_seg23");
 
 
-			int j_limit = 2;
+			int j_limit = 10;
 			for(int j=1;j<=j_limit;j++){
 				string lev4_term_name = "lev4_term"+ Stringify(j);
 				Ptr<Instance> lev4_term = manager->instanceNew(lev4_term_name,"Truck terminal");
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 				rev_truck_seg->attributeIs("source",lev4_term_name);
 
 				/* Now build 10 more customers from each of these leav4_term_name*/
-        int k_limit = 2;
+        int k_limit = 10;
 				for(int k=1;k<=k_limit;k++){
 					string lev5_cust_name = "lev5_cust"+ Stringify(j) +Stringify(k);
 					Ptr<Instance> lev5_cust = manager->instanceNew(lev5_cust_name,"Customer");
