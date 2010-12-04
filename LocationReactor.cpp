@@ -1,12 +1,32 @@
 #include "LocationReactor.h"
 #include "ShipmentActivityReactor.h"
 #include <sstream>
+#include <vector>
 
 
 using namespace std;
 
 namespace Shipping
 {
+
+
+void LocationReactor::updateToNow()
+{
+  vector<SegmentPtr> segments = location_->segments();
+	vector<SegmentPtr>::iterator it = segments.begin();
+
+	for( ; it != segments.end() ; it++)
+	{
+	  Time t = 	lastScheduled_[ (*it)->name()]; 
+    if(t < manager_->now())
+	  {
+
+	  	lastScheduled_[ (*it)->name()] = manager_->now();  
+	  }
+   
+	}
+
+}
 
 void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCost, Time _cummulativeTime)
 {
@@ -17,11 +37,14 @@ void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCo
 		first_ = false;
 	}
   
+	
+/*	
 	if(lastScheduled_ < manager_->now())
 	{
 	  lastScheduled_ = manager_->now();
 	}
-
+*/
+  updateToNow();
 
   PackageCount newPackageCount = _count;
   Location::Ptr destination = location_->destination(); 
@@ -73,11 +96,14 @@ void LocationReactor::scheduleInjectActivity()
 void LocationReactor::onStatus()
 {
   std::cerr << "In LocationReactor::onStatus()" << std::endl;
-
+  /*
 	if(lastScheduled_ < manager_->now())
 	{
 	  lastScheduled_ = manager_->now();
 	}
+	*/
+	updateToNow();
+
   if(injectActivity_->status() != Activity::free) return;
 
   scheduleInjectActivity();
@@ -110,18 +136,21 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
   
 	std::cerr << "Transfer time of the segment is " << transferTime.value() << " " << std::endl;
 
-  Time t = lastScheduled_ + transferTime;
+  //Time t = lastScheduled_ + transferTime;
+  Time t = lastScheduled_[_segment->name()] + transferTime;
+	
 	if(t >= manager_->now())
 	{
 	  // Increase the refuse count for this segment to be this activity 
     // FIXME
 	}
 	act->nextTimeIs(t);
-	lastScheduled_ = t;
+	lastScheduled_[_segment->name()] = t;
 
    Cost transferCost = _segment->transferCost(_count, fleet_, manager_->now());
    sar->cummulativeCostIs(_cost + transferCost);	
-   sar->cummulativeTimeIs(_cummulativeTime + transferTime);
+   //sar->cummulativeTimeIs(_cummulativeTime + transferTime + (act->nextTime() - manager_->now()) );
+   sar->cummulativeTimeIs(_cummulativeTime + act->nextTime() - manager_->now() );
 	act->lastNotifieeIs(sar);
 	//sar->notifierIs(act);
 

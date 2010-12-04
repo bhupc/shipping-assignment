@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
 		Ptr<Instance> destination = manager->instanceNew("Destination", "Customer");
 
 		// Make 100 sources pointing to above destination
-
-		for(int i=1;i<=100;i++){
+    int num_left_srcs = 2;
+		for(int i=1;i<=num_left_srcs;i++){
 
 			string src_name = "cust" + Stringify(i);
 			Ptr<Instance> cust_loc = manager->instanceNew(src_name, "Customer");
@@ -54,7 +54,8 @@ int main(int argc, char *argv[]) {
 		seg32->attributeIs("return segment","main_seg23");
 
 
-			for(int j=1;j<=10;j++){
+			int j_limit = 2;
+			for(int j=1;j<=j_limit;j++){
 				string lev4_term_name = "lev4_term"+ Stringify(j);
 				Ptr<Instance> lev4_term = manager->instanceNew(lev4_term_name,"Truck terminal");
 
@@ -68,7 +69,8 @@ int main(int argc, char *argv[]) {
 				rev_truck_seg->attributeIs("source",lev4_term_name);
 
 				/* Now build 10 more customers from each of these leav4_term_name*/
-				for(int k=1;k<=10;k++){
+        int k_limit = 2;
+				for(int k=1;k<=k_limit;k++){
 					string lev5_cust_name = "lev5_cust"+ Stringify(j) +Stringify(k);
 					Ptr<Instance> lev5_cust = manager->instanceNew(lev5_cust_name,"Customer");
 					cust_locs.push_back(lev5_cust);
@@ -97,7 +99,7 @@ int main(int argc, char *argv[]) {
     
     // attributes of the fleet between 8PM-8AM
 
-		fleet->attributeIs("Truck, speed, slot 2", "2");
+		fleet->attributeIs("Truck, speed, slot 2", "1");
     fleet->attributeIs("Truck, capacity, slot 2", "10");
     fleet->attributeIs("Truck, cost, slot 2", "30");
 
@@ -105,14 +107,17 @@ int main(int argc, char *argv[]) {
 
 
 	Ptr<Instance> conn = manager->instanceNew("myConn", "Conn");
-	conn->attributeIs("routing algorithm", "Dijkstra"); 
+	//conn->attributeIs("routing algorithm", "Dijkstra"); 
+	conn->attributeIs("routing algorithm", "1"); 
+	
+	/*
 	cout << conn->attribute("connect Destination : lev5_cust11") << endl;
 
 	cout << conn->attribute("connect lev4_term1 : lev5_cust11") << endl;
 
 	cout << conn->attribute("connect Destination : lev3_truck_terminal") << endl;;
 	cout << conn->attribute("connect Destination : cust1") << endl;
-
+*/
 
 	vector<Ptr<Instance> >::iterator itr = cust_locs.begin();
 
@@ -121,8 +126,30 @@ int main(int argc, char *argv[]) {
 		(*itr)->attributeIs("Shipment Size", "5");
 		(*itr)->attributeIs("Destination", "Destination");
 	}
+
+ 
+
 	Activity::Manager::Ptr activityManager = activityManagerInstance();
-	activityManager->nowIs(6.0);
+	
+	// Set the scaleFactor to 0.0 to behave like a virtual activity manager 
+	activityManager->scaleFactorIs(2.0);
+  // Start the simulation now	
+	activityManager->nowIs(30.0);
+	
+	// Print statistics
+
+  Ptr<Instance> d = manager->instance("Destination"); 
+	std::cout << "Total packets received at   =  " << d->attribute("Shipments Received") << "" << std::endl;
+    std::cout << "Average packet latency at d  =  " << d->attribute("Average Latency") << "" << std::endl;
+    std::cout << "Total delivery cost at  d  =  " << d->attribute("Total Cost") << "" << std::endl;
+
+
+  Ptr<Instance> seg1 = manager->instance("main_seg32"); 
+		std::cout << "Total packets received on 1 = " << seg1->attribute("Shipments Received") << "" << std::endl;
+		std::cout << "Total packets refused on 1 = " << seg1->attribute("Shipments Refused") << "" << std::endl;
+  
+  
+	
 	}
 	catch(Exception e)
 	{

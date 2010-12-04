@@ -2,20 +2,22 @@ user: bhupc
 user: shreyg
 
 
-Exception Handliing:
-
-Shipment Transfer Implementation:
-
-The shipment transfer is implemented through the LocationReactor and ShipmentActivityReactor classes. Te 
- 
+=======Exception Handliing:=================================
 
 
-
-
-
- Scheduled changes to the fleet object's attributes.
 
  
+======Scheduled changes to the fleet object's attributes:===============
+
+ The attributes of the fleet can be set depending on the time of the day the fleet is going to operate. The
+ two time slots we have chosen are: 
+ 
+   1. "slot 1" = 8AM-8PM
+   2. "slot 2" = 8PM-8AM
+
+ Any fleet attribute can be set for these time slots, making the simulation closer to reality. Following in an
+ example of how this could be done:
+
  fleet->attribute("Truck, speed, slot 1", "1");  // slot 1 =  8AM-8PM
  fleet->attribute("Truck, speed, slot 2", "2");  // slot 2 = 8PM-8AM
 
@@ -26,7 +28,52 @@ The shipment transfer is implemented through the LocationReactor and ShipmentAct
  fleet->attribute("Truck, cost, slot 2", "10");  // slot 2 = 8PM-8AM
 
 
+==== Real Time and Virtual Time activity Managers =====================
+
+We implemented the both real time and the virtual time activity managers. Appropriate activity manager can be selected by setting the attribute "scaleFactor" for the activity manager instance. The value of scaleFactor attribute should be a double value. The scaleFactor determines the amount of time the activity manager should sleep for a given duration of activity time. The exact equation is:
+ _________________________________________________
+|                                                 |
+|sleep_time = 100000us * scaleFactor * real_time  |
+|_________________________________________________| 
+  
+
+Example code to do this is:
+
+This would make activity Manager to behave as a virtual manager:
+
+     activityManager->scaleFactorIs(0.0);
+
+Following would make activity Manager to behave as a realtime activity manager which sleeps for 200,000 us for each unit of activity time
+
+    activityManager->scaleFactorIs(2.0);
 
 
 
+======Shipment Transfer Implementation:==========================
 
+  The shipment transfer is implemented through the LocationReactor and ShipmentActivityReactor interfaces. Every location has a location reactor.  A LocationReactor is solely responsible for scheduling activities at a given location. A LocationReactor also does the work of an inject Activity Reactor. The way we have implemented inject ativity reactor is to always inject a timeout activity, with a nextTime attribute set to 24 hrs, into the activity manager queue. When this activity is run to completion, it notifies it's reactor, ie. the LocationReactor which reschedules this inject activity for the next day. Note that only Customer locations can have inject activities since they inject new shipments everyday.
+	The ShipmentActivityReactor reacts to activities scheduled by LocationReactor other than the inject activity. The "onStatus" method of the shipment activity reactor is called once the activity is over. ShipmentActivityReactor keeps complete information of the activity it is responsible for. So, there is always a one-one relationship between a ShipmentActivityReactor and it's activity. SAR keeps a reference to the segment on which this activity is scheduled to happen. Once the activity is over, SAR signals the segment and the end point of the segments that the activity is over and thus increments and decrements the package count at the two end point of the segment. Any location triggers it's LocationReactor on it's "onPackageInc" method. The location reactor for this location then schedules the activities for the new bunch of packets received.
+ 
+ Note:: We don't decline shipments
+  Routing Algorithms:
+
+  The LocationReactor schedules a new activity based on the destination. Since, there could be multiple paths to reach it's destination, an activity can be scheduled on multiple segments starting at a given intermediate node on the path. Since, every node is computing the path to the destination of the activity to schedule, our shipping simulation is robust to changing network topology during to the simuation. However, it's not completely robust as it does not take care of packets that might be lost because of previous scheduling on a bad path. 
+	There are two algorithms we have implemented based on which every node can decide which is the next segment on which this activity could be scheduled:
+	1. Least Time Dijkstra: An intermediate node calculates the least time path using the "Dijkstra" algorithm. The first segment on this path is where it will schedule the new activity.
+	2. Least Time Greedy: An intermediate node calculates the least time segment towards the destination. So, this is greedy and might not be the least cost path to the destination, but node can make such choices because they might not have information about the complete network graph.
+
+ Client is free to chose any one of the two routing algorithms. This can be done by setting the "routing algorithm" attribute of the connectivity instance. Example code to do this is:
+
+     conn->attributeIs("1"); // THis is for Dijkstra
+     conn->attributeIs("2"); // This is for Greedy
+
+
+
+Running Simulations:
+
+ 1. verification.cpp
+
+    Following is the diagram of our test network:
+
+		The simulation test performed are:
+    1. Light network congestion: 
