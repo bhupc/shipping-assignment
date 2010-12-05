@@ -10,6 +10,7 @@ namespace Shipping
     // this is to keep the segment stats
 		std::cerr << "\n\n Activity Done \n\n"; 
     segment_->packageCountInc(packageCount_);
+		std::cerr << "Added " << packageCount_.value() << "packets to the segment " << segment_->name() << " " << std::endl;
     
 		// this will call the src location reactor
 		segment_->source()->packageCountDec(packageCount_);
