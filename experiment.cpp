@@ -121,9 +121,12 @@ int main(int argc, char *argv[]) {
 
 	vector<Ptr<Instance> >::iterator itr = cust_locs.begin();
 
+	int index = 0;
 	for(;itr!=cust_locs.end();itr++){
-		(*itr)->attributeIs("Transfer Rate", "10");
-		(*itr)->attributeIs("Shipment Size", "5");
+		(*itr)->attributeIs("Transfer Rate", "1");
+		int i = (index<100)?100:(rand()%1000 +1);
+		index++;
+		(*itr)->attributeIs("Shipment Size", Stringify(i));
 		(*itr)->attributeIs("Destination", "Destination");
 	}
 
@@ -134,12 +137,12 @@ int main(int argc, char *argv[]) {
 	// Set the scaleFactor to 0.0 to behave like a virtual activity manager 
 	activityManager->scaleFactorIs(2.0);
   // Start the simulation now	
-	activityManager->nowIs(30.0);
+	activityManager->nowIs(24.0);
 	
 	// Print statistics
 
   Ptr<Instance> d = manager->instance("Destination"); 
-	std::cout << "Total packets received at   =  " << d->attribute("Shipments Received") << "" << std::endl;
+	std::cout << "Total packets received at d  =  " << d->attribute("Shipments Received") << "" << std::endl;
     std::cout << "Average packet latency at d  =  " << d->attribute("Average Latency") << "" << std::endl;
     std::cout << "Total delivery cost at  d  =  " << d->attribute("Total Cost") << "" << std::endl;
 

@@ -16,6 +16,11 @@ using namespace std;
 
 int main(int ac, char** av){
 
+    if(ac!=3){
+		cout << "Correct usage is ./verification <A-size> <B-size>, e.g. ./verification 40 40" << endl;
+		return 0;
+	}
+
     Ptr<Instance::Manager> m = shippingInstanceManager();
 
     /* Create a diamond-shaped graph with two alternate routes */
@@ -112,7 +117,7 @@ int main(int ac, char** av){
     s->attributeIs("length", "10");
     s->attributeIs("difficulty", "2");
     s->attributeIs("expedite support", "yes");
-		s->attributeIs("Capacity", "5");
+    s->attributeIs("Capacity", "80");
     s = m->instanceNew("7r", "Truck segment");
     s->attributeIs("source", "e");
     s->attributeIs("length", "10");
