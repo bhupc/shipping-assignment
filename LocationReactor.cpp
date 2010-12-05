@@ -68,23 +68,34 @@ void LocationReactor::onPackageCountDelivered(PackageCount _count, Cost _cummula
 	   
 		//check whether this was sent by me
 
-		vector<uint32_t>::iterator it = shipmentId_.begin();
-		for(; it != shipmentId_.end(); it++)
+		vector<uint32_t> temp(shipmentId_);
+		vector<uint32_t>::iterator it = temp.begin();
+		shipmentId_.clear();
+		bool got = false;
+		for(; it != temp.end(); it++)
 		{
 		  if( *it == _shipmentId)
 			{
-			  shipmentId_.erase(it);
+			  got = true;
 				std::cerr << "Got the receipt for the shipment ID " << _shipmentId << "at location " << location_->name() << " "  << std::endl;
 				location_->ackReceivedInc(1);
-				return;
+				
+			}
+			else
+			{
+			  shipmentId_.push_back(*it);
 			}
 		}
+
+		if(got) { return;}
 
 	  // increment the totalCost
     location_->totalCostIs(location_->totalCost() +  _cummulativeCost);
     location_->totalTimeIs(location_->totalTime() +  _cummulativeTime);
 		
 		packageDelivered_ += _count;
+		std::cerr << "ADDED " << _count.value() << "to the number of packets at " << location_->name() << " " << std::endl;
+
 		std::cerr << "delivered " << _count.value() << "packets " << std::endl; 
 		std::cerr << "Total packets delivered " << packageDelivered_.value() << "packets " << std::endl; 
 

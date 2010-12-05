@@ -77,3 +77,11 @@ Running Simulations:
 
 		The simulation test performed are:
     1. Light network congestion: 
+
+
+
+EXTRA CREDIT:
+
+  We have implemented a shipment acknowledgement mechanism in which the source of the shipment gets the acknowledgement back from the destination of the shipment once the destination receives the shipment. For, this we added a new attribute to the source customer location called "Acknowledegments Received" , the value of which would be the number of shipments for which this source has received acknowledgement packets.
+
+    source->attribute("Acknowledgements Received");
