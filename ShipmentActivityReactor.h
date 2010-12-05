@@ -43,10 +43,14 @@ namespace Shipping
     void packageCountIs(PackageCount _packageCount) { packageCount_=_packageCount;}
 		Location::Ptr destination() const { return destination_;}
 		void destinationIs(Location::Ptr _destination) {  destination_=_destination;}
+		Location::Ptr source() const { return source_;}
+    void sourceIs(Location::Ptr _source) { source_ = _source;}
+
     Cost cummulativeCost() { return cummulativeCost_;}
     void cummulativeCostIs( Cost _cummulativeCost) { cummulativeCost_ = _cummulativeCost;}
     void cummulativeTimeIs( Time _cummulativeTime) { cummulativeTime_ = _cummulativeTime;}
-
+    void shipmentIdIs(uint32_t _id) { shipmentId_ = _id;}
+		uint32_t shipmentId() { return shipmentId_;}
 		void onStatus();
 
 	  protected:
@@ -56,9 +60,10 @@ namespace Shipping
 
 		PackageCount packageCount_;
 		Fwk::Ptr<Location> destination_;
+		Fwk::Ptr<Location> source_;
     Cost cummulativeCost_;
     Time cummulativeTime_;	 
-
+    uint32_t shipmentId_;
  };
 
 }

@@ -28,7 +28,15 @@ void LocationReactor::updateToNow()
 
 }
 
-void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCost, Time _cummulativeTime)
+
+void LocationReactor::scheduleAckPackage(Location::Ptr _destination, uint32_t _shipmentId)
+{
+    
+  updateToNow();
+  scheduleNewActivity(PackageCount(1), _destination, Cost(0), Time(0), location_, _shipmentId);
+}
+
+void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCost, Time _cummulativeTime, Location::Ptr _source, uint32_t _shipmentId)
 {
   if(location_->locType() == 0 && first_)
 	{
@@ -48,16 +56,31 @@ void LocationReactor::onPackageCountInc(PackageCount _count, Cost _cummulativeCo
 
   PackageCount newPackageCount = _count;
   Location::Ptr destination = location_->destination(); 
-  scheduleNewActivity(newPackageCount, destination, _cummulativeCost, _cummulativeTime);
+  scheduleNewActivity(newPackageCount, destination, _cummulativeCost, _cummulativeTime, _source, _shipmentId);
+	
 }
 
 
-void LocationReactor::onPackageCountDelivered(PackageCount _count, Cost _cummulativeCost, Time _cummulativeTime)
+void LocationReactor::onPackageCountDelivered(PackageCount _count, Cost _cummulativeCost, Time _cummulativeTime, Location::Ptr _source, uint32_t _shipmentId)
 {
   if(location_->locType() == 0)
   {
-	  
-    // increment the totalCost
+	   
+		//check whether this was sent by me
+
+		vector<uint32_t>::iterator it = shipmentId_.begin();
+		for(; it != shipmentId_.end(); it++)
+		{
+		  if( *it == _shipmentId)
+			{
+			  shipmentId_.erase(it);
+				std::cerr << "Got the receipt for the shipment ID " << _shipmentId << "at location " << location_->name() << " "  << std::endl;
+				location_->ackReceivedInc(1);
+				return;
+			}
+		}
+
+	  // increment the totalCost
     location_->totalCostIs(location_->totalCost() +  _cummulativeCost);
     location_->totalTimeIs(location_->totalTime() +  _cummulativeTime);
 		
@@ -69,7 +92,14 @@ void LocationReactor::onPackageCountDelivered(PackageCount _count, Cost _cummula
 		
     std:: cerr << "Average latency of delivery for location = " << (manager_->now().value())/(packageDelivered_.value())  << " " << std::endl;
   
-  }
+  
+	  // Do send the receipt back to the source of this activity
+    
+    scheduleAckPackage(_source, _shipmentId);
+   		
+
+	
+	}
 }
 
 void LocationReactor::scheduleInjectActivity()
@@ -115,12 +145,13 @@ void LocationReactor::onStatus()
   PackageCount p = PackageCount( (location_->transferRate().value())*(location_->shipmentSize().value())) ;
 
   std::cerr << "Injected " << p.value() << " packets into the location " << location_->name() << " " << std::endl;
-
-  location_->packageCountInc(p, Cost(0), Time(0));
+  uint32_t id = location_->nextShipmentId();
+  location_->packageCountInc(p, Cost(0), Time(0), location_, id);
+	shipmentIdIs(id);
 }
 
 
-void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount _count, Location::Ptr _dest, Cost _cost, Time _cummulativeTime)
+void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount _count, Location::Ptr _dest, Cost _cost, Time _cummulativeTime, Location::Ptr _source, uint32_t shipmentId)
 {
 
   const string name = getNewActivityName();
@@ -129,7 +160,8 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
   ShipmentActivityReactor*  sar = new ShipmentActivityReactor(manager_, act, _segment);
 	sar->packageCountIs(_count);
 	sar->destinationIs(_dest);
-	
+	sar->sourceIs(_source);
+  sar->shipmentIdIs(shipmentId);	
 
 	//Assuming that we are transfering package size <= segment capacity
 	Time transferTime = _segment->transferTime(_count, fleet_, manager_->now());
@@ -162,7 +194,7 @@ void LocationReactor::scheduleNewActivityInt(Segment::Ptr _segment, PackageCount
 } 
 
 
-void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr destination, Cost _cost, Time _time) throw (DestinationUnreachableException)
+void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr destination, Cost _cost, Time _time, Location::Ptr _source, uint32_t shipmentId) throw (DestinationUnreachableException)
 {
   if(_count == 0)
 	{
@@ -188,7 +220,7 @@ void LocationReactor::scheduleNewActivity(PackageCount _count, Location::Ptr des
 	Segment::Ptr nextSeg = p[0];
   
   
-	scheduleNewActivityInt(nextSeg, _count, destination, _cost, _time);        
+	scheduleNewActivityInt(nextSeg, _count, destination, _cost, _time, _source, shipmentId);        
 
   //unsigned int capacity = (unsigned int)(nextSeg->capacity().value());	
   

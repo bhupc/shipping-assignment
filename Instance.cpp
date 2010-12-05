@@ -6,6 +6,7 @@
 #include "Instance.h"
 #include "Stats.h"
 #include "Engine.h"
+#include "Location.h"
 #include "Conn.h"
 #include <sstream>
 #include <cstring>
@@ -435,6 +436,13 @@ namespace Shipping {
 }
 		else if(name == "Total Cost"){ 	return LocationEng_->totalCost().string();
  }
+    else if(name == "Acknowledgements Received") 
+		    {
+		       stringstream str;
+				   str << LocationEng_->ackReceived();
+		       return str.str();
+				
+		    }
 		}
 
 		int i = segmentNumber(name);

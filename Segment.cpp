@@ -5,7 +5,7 @@
 namespace Shipping
 {
 
-void Shipping::Segment::sourceIs(Location::Ptr _source)
+void Shipping::Segment::sourceIs(Fwk::Ptr<Location> _source)
 {
   
 	if(source_ == _source)

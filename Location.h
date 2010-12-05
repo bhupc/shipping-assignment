@@ -6,8 +6,8 @@
 #include "Types.h"
 #include "Segment.h"
 #include "Exceptions.h"
-
 #include <vector>
+
 
 using namespace std;
 
@@ -37,8 +37,8 @@ namespace Shipping
 				Notifiee(Location::Ptr _location) : location_(_location) {}
 				Notifiee(){}
 
-				virtual void onPackageCountInc(PackageCount _count, Cost _c, Time _time) {}
-				virtual void onPackageCountDelivered(PackageCount _count, Cost _cost, Time _time) {}
+				virtual void onPackageCountInc(PackageCount _count, Cost _c, Time _time, Location::Ptr _source, uint32_t _shipmentId) {}
+				virtual void onPackageCountDelivered(PackageCount _count, Cost _cost, Time _time, Location::Ptr _source, uint32_t _shipmentId) {}
         virtual Time averageLatency() { return Time::nil() ; }
 				virtual PackageCount packageCountDelivered() { return PackageCount::nil(); }
 			protected:
@@ -59,6 +59,7 @@ namespace Shipping
 		virtual void segmentIs(unsigned int offset, SegmentPtr _segment) {}
 		virtual void onSegmentSourceChanged(SegmentPtr _segment) throw (IllegalSegmentException){}
 
+    uint32_t nextShipmentId() { return Location::nextShipmentId_++;}
 		void activate()
 		{
 		  if 
@@ -71,7 +72,7 @@ namespace Shipping
 			{
 			  for(unsigned int i = 0; i < notifiee_.size(); i++)
 				{
-				  notifiee_[i]->onPackageCountInc( PackageCount(shipmentSize_.value() * transferRate_.value()), Cost::nil(), Time::nil());
+				  notifiee_[i]->onPackageCountInc( PackageCount(shipmentSize_.value() * transferRate_.value()), Cost::nil(), Time::nil(), Ptr(this), nextShipmentId());
 				}
 
 			}
@@ -129,13 +130,18 @@ namespace Shipping
 
 		PackageCount packageCount() { return packageCount_;}
 		void packageCountIs(PackageCount _count) { packageCount_ = _count;}
-		void packageCountInc(PackageCount, Cost _cost, Time _time);
-		void packageCountDelivered(PackageCount, Cost, Time _time);
+		void packageCountInc(PackageCount, Cost _cost, Time _time, Location::Ptr, uint32_t);
+		void packageCountDelivered(PackageCount, Cost, Time _time, Location::Ptr, uint32_t);
 		void packageCountDec(PackageCount _count) {packageCount_ -= _count;}
 		Location::Ptr destination() const { return destination_;}
 		void destinationIs(Location::Ptr _destination) { destination_=_destination; activate(); }
 
-
+    void ackReceivedInc(uint32_t _count)
+		{
+		  ackReceived_ += _count;
+		}
+		uint32_t ackReceived() { return ackReceived_;}
+	  static uint32_t nextShipmentId_;
 		protected:
 		/* This is the global name of this location */
 		String name_;
@@ -150,16 +156,18 @@ namespace Shipping
 		PackageCount shipmentSize_;
     Cost totalCost_;
     Time totalTime_;
+		uint32_t ackReceived_;
 		Location() { 
 		
 		  transferRate_ = ShipmentCount::nil();
 		  shipmentSize_ = PackageCount::nil();
 		  destination_ = NULL;
                   totalCost_ = Cost::nil();
-
+			ackReceived_ = 0;
 			// Create the reactor here
 		}
 	};
+
 
 
 	class CustomerLocation : public Location

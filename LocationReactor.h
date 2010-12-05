@@ -29,11 +29,12 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 		{
 		  lastScheduled_[(*it)->name()] = Time::nil();  
 		}
+
   }
 
 
-  void onPackageCountInc(PackageCount, Cost, Time);
-  void onPackageCountDelivered(PackageCount, Cost, Time);
+  void onPackageCountInc(PackageCount, Cost, Time, Location::Ptr, uint32_t);
+  void onPackageCountDelivered(PackageCount, Cost, Time, Location::Ptr, uint32_t);
   Time averageLatency() { return manager_->now().value()/packageDelivered_.value();}  
 	PackageCount packageCountDelivered() { return packageDelivered_;}
   
@@ -48,6 +49,15 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 			}
 	};
 
+  void shipmentIdIs(uint32_t id)
+	{
+	  shipmentId_.push_back(id);
+	}
+	uint32_t shipmentId(int index)
+	{
+	  return shipmentId_[index];
+	}
+
 
 
 	private:
@@ -60,9 +70,10 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	//Time lastScheduled_;
 	bool first_;
 	PackageCount packageDelivered_;
+	vector<uint32_t> shipmentId_;
   const string getNewActivityName(); 
-	void scheduleNewActivity(PackageCount, Location::Ptr, Cost, Time) throw (DestinationUnreachableException);
-	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr, Cost, Time);
+	void scheduleNewActivity(PackageCount, Location::Ptr, Cost, Time, Location::Ptr, uint32_t) throw (DestinationUnreachableException);
+	void scheduleNewActivityInt(Segment::Ptr, PackageCount, Location::Ptr, Cost, Time, Location::Ptr,  uint32_t);
 	void scheduleInjectActivity();
 	void onStatus();
   Conn::Path getBestPath(Location::Ptr src, Location::Ptr dest, Conn::PathList pathList, PackageCount);
@@ -70,7 +81,7 @@ class LocationReactor : public Location::Notifiee, public Activity::Notifiee
 	Conn::Path getLeastTimeGDPath(Conn::PathList, PackageCount);
 	Time getPathTime(Conn::Path, PackageCount);
 	void updateToNow();
-
+  void scheduleAckPackage(Location::Ptr, uint32_t);
 	
 };
 

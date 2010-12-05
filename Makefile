@@ -29,7 +29,7 @@ verification: verification.o $(OBJECTS)
 untar:	ActivityExample.tar.gz
 	tar xvzf ActivityExample.tar.gz
 clean:
-	rm -f test1 example test1.o example.o experiment.o test2.o test3.o $(OBJECTS) *~
+	rm -f test1 test2 test3 test4 experiment example verification *.o
 
 Instance.o: Instance.h Instance.cpp PtrInterface.h Ptr.h Engine.h Location.h Segment.h 
 Segment.o: Segment.h Segment.cpp Types.h

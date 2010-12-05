@@ -5,7 +5,9 @@
 #include "Activity.h"
 #include "LocationReactor.h"
 
-using namespace Shipping;
+
+namespace Shipping
+{
 
  Engine::Engine()
 {
@@ -167,5 +169,5 @@ TruckTerminal::Ptr Engine::TruckTerminalNew(const String& name)
 }
 
 
-
+}
 
